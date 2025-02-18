@@ -1,0 +1,24 @@
+NAME firstprocess
+
+TYPE MODEL
+TYPE REPORT
+
+// Inputs
+INPUT first.csv -> input 
+IN second.csv -> input2
+INPUT vor_stream_db.input -> input3 DB=PG
+INPUT s3://bucket_name/path -> input_queue
+
+// Nodes
+NODE usernode(input)(output) DESCR="Usernode"
+NODE usernode2(input2)(output2) SETDYN=dynFact
+NODE usernode3(null)(null) GETDYN=dynFact LANG=PYTHON
+
+SQL SELECT * FROM output WHERE value1 < 123 AND value2 > -42 INTO output4;
+
+// Outputs
+OUTPUT output -> output.csv EXEC_WHEN=debug
+OUTPUT output2 -> output2.csv
+
+OUTPUT output2 -> s3://bucket_name/${var.run_name}/${dyn.dynFact}/output.csv MODE=APPEND
+OUTPUT output -> vor_stream_db.output DB=MSSQL COMPRESS

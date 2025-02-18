@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es2020",
+        "lib": ["es2020"],
+        "outDir": "out",
+        "sourceMap": true,
+        "strict": true,
+        "rootDir": "src",
+        "allowJs": true,        // Allows JavaScript files
+        "checkJs": false,       // Turns off type checking for JavaScript files
+        "esModuleInterop": true // Ensures compatibility with CommonJS modules
+    },
+    "exclude": [
+        "node_modules",
+        ".vscode-test"
+    ],
+    "include": [
+        "src/**/*",
+        "_js_parser/**/*.js"   // Ensure JavaScript parser files are included
+    ]
+}
