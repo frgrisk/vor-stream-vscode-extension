@@ -32,7 +32,7 @@
             "patterns": [
                 {
                     "name": "comment.line.double-slash.process",
-                    "match": "^//.*$"
+                    "match": "(?<!:)//.*$"
                 },
                 {
                     "name": "comment.block.process",
