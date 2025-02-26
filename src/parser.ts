@@ -3,7 +3,6 @@ import antlr4 from "antlr4";
 import processLexer from "./_js_parser/processLexer";
 
 export function getTokensForCompletion(inputText: string): string[] {
-
   const chars = new antlr4.InputStream(inputText);
   const lexer = new processLexer(chars);
   const tokens = new antlr4.CommonTokenStream(lexer);
