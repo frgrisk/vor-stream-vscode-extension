@@ -1,0 +1,28 @@
+# Ignore node_modules
+node_modules
+
+# Ignore build artifacts
+dist
+
+# Ignore configuration files
+.gitignore
+.goreleaser.yaml
+tsconfig.json
+webpack.config.js
+package-lock.json
+
+# Ignore documentation and examples
+examples/
+docs/
+
+# Ignore tests
+test/
+tests/
+
+# Ignore IDE configuration
+.vscode/
+
+# Ignore any other unnecessary files
+*.log
+*.tmp
+*.bak

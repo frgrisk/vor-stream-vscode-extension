@@ -1,9 +1,9 @@
 # Dependencies
 node_modules/
-package-lock.json
 
 # Build output
 out/
+dist/
 
 # VS Code specific files
 *.vsix

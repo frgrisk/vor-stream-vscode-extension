@@ -8,15 +8,18 @@ as well as custom completions for commonly used keywords.
 ## Features
 
 - **Syntax Highlighting**
+
   - Automatic syntax highlighting for `.strm` files
   - Support for process-specific keywords and constructs
 
 - **Intelligent Auto-Completion**
+
   - Context-aware suggestions based on your grammar
   - Common keywords like `NAME`, `TYPE=`, `LANG=`
   - Process-specific completions
 
 - **Template Support**
+
   - Quick insertion of process templates for Go and Python
   - Command palette integration
 
@@ -28,6 +31,7 @@ as well as custom completions for commonly used keywords.
 ## Installation
 
 ### VS Code Marketplace
+
 1. Open Visual Studio Code
 2. Press `Ctrl+Shift+X` (Windows/Linux) or `Cmd+Shift+X` (macOS) to open Extensions
 3. Search for "VOR Stream"
@@ -58,6 +62,7 @@ npm run compile
 - Node.js 16.x or higher (for development)
 
 ### Development Dependencies
+
 - TypeScript 5.7+
 - ANTLR4 4.13.2 (for grammar parsing)
 - ESLint 9.13.0 (for code linting)
