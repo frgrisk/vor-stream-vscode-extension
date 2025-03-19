@@ -26,6 +26,11 @@ jobs:
       - name: Install NPM packages
         run: npm ci
 
+      - name: Update version in package.json from git tag
+        run: npm run update-version
+        env:
+          GITHUB_REF: ${{ github.ref }}
+
       - name: Compile TypeScript
         run: npm run compile
 
@@ -41,6 +46,11 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
+
+      - name: Update version in package.json from git tag
+        run: npm run update-version
+        env:
+          GITHUB_REF: ${{ github.ref }}
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
