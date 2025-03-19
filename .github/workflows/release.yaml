@@ -54,14 +54,6 @@ jobs:
           cache: "npm"
           cache-dependency-path: ./package-lock.json
 
-      - name: Install NPM packages
-        run: npm ci
-
-      - name: Update version in package.json from git tag
-        run: npm run update-version
-        env:
-          GITHUB_REF: ${{ github.ref }}
-
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
         with:
