@@ -65,10 +65,7 @@ export function activate(context: vscode.ExtensionContext) {
 
       // 🔹 INPUT Completion: Provide step-by-step placeholders
       // Check the directory for CSV files after the user selects INPUT
-      const inputDirectory = path.join(
-        path.dirname(document.fileName),
-        "in",
-      );
+      const inputDirectory = path.join(path.dirname(document.fileName), "in");
       const parentDirectory = path.join(
         path.dirname(path.dirname(document.fileName)),
         "in",
@@ -108,15 +105,13 @@ export function activate(context: vscode.ExtensionContext) {
         {
           type: "out",
           label: "DB",
-          snippet:
-            "out ${1:output_queue} -> ${2:schema_name}.${3:table_name}",
+          snippet: "out ${1:output_queue} -> ${2:schema_name}.${3:table_name}",
           description: descriptions["OUTPUT_DB"],
         },
         {
           type: "out",
           label: "S3",
-          snippet:
-            "out ${1:output_queue} -> s3://${2:bucket_name}/${3:path}",
+          snippet: "out ${1:output_queue} -> s3://${2:bucket_name}/${3:path}",
           description: descriptions["OUTPUT_S3"],
         },
       ];
