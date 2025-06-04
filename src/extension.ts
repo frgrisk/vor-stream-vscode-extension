@@ -427,7 +427,7 @@ const templates = {
   Go: `// Stream Go Template
 name firstprocess
 in input.csv -> input
-mode usernode(input)(output)
+node usernode(input)(output)
 out output -> output.csv
 `,
   Python: `// Stream Python Template
