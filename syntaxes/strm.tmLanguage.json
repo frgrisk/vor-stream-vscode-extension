@@ -1,5 +1,5 @@
 {
-  "name": "Process Language",
+  "name": "vor-stream",
   "fileTypes": ["strm"],
   "scopeName": "source.process",
   "patterns": [
@@ -43,11 +43,11 @@
       "patterns": [
         {
           "name": "keyword.control.process",
-          "match": "\\b(PROCESS|SUBPROCESS|IN|OUT|INPUT|OUTPUT|NODE|SQL|SAS|TYPE|LANG|PREDICT|SELECT|WHERE)\\b"
+          "match": "^[ \\t]*(?i)\\b(PROCESS|SUBPROCESS|IN|OUT|INPUT|OUTPUT|NODE|SQL|SAS|TYPE|NAME|DESCR|LABEL)\\b"
         },
         {
           "name": "keyword.other.process",
-          "match": "\\b(NAME|DESCR|DELIM|FRAMEWORK|EXEC_WHEN|GETFACT|SETFACT|GETSIG|SETSIG|GETDYN|SETDYN|SYNTAX_VERSION|MODE|APPEND|REPLACE)\\b"
+          "match": "(?i)\\b(LANG|PREDICT|SELECT|WHERE|NAME|DESCR|DELIM|FRAMEWORK|EXEC_WHEN|GETFACT|SETFACT|GETSIG|SETSIG|GETDYN|SETDYN|SYNTAX_VERSION|MODE|APPEND|REPLACE|LABEL)\\b"
         }
       ]
     },
@@ -55,7 +55,7 @@
       "patterns": [
         {
           "name": "storage.type.process",
-          "match": "\\b(MODEL|REPORT|DEFAULT|MEMORY|TIME|PYTHON|GO)\\b"
+          "match": "(?i)\\b(MODEL|REPORT|DEFAULT|MEMORY|TIME|PYTHON|GO)\\b"
         }
       ]
     },
