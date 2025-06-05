@@ -23,36 +23,36 @@ export function activate(context: vscode.ExtensionContext) {
       const predefinedCompletions = [
         // 🔹 NAME= Completion: Suggests filename
         {
-          label: `NAME ${fileName}`,
-          insertText: `NAME ${fileName}`,
+          label: `name ${fileName}`,
+          insertText: `name ${fileName}`,
           detail: "Suggests filename",
           kind: vscode.CompletionItemKind.Variable,
         },
         // 🔹 TYPE= Completion: Suggest MODEL, REPORT, DEFAULT
         {
-          label: "TYPE",
-          insertText: "TYPE ${1|DEFAULT,REPORT,MODEL|}",
+          label: "type",
+          insertText: "type ${1|Default,Report,Model|}",
           detail: "Select a type",
           kind: vscode.CompletionItemKind.Enum,
         },
         // 🔹 LANG= Completion: Suggest PYTHON, GO
         {
-          label: "LANG",
-          insertText: "LANG=${1|GO,PYTHON|}",
+          label: "lang",
+          insertText: "lang=${1|go,python|}",
           detail: "Select a language",
           kind: vscode.CompletionItemKind.Enum,
         },
         // 🔹 DB= Completion: Suggest PG, MSSQL
         {
-          label: "DB",
-          insertText: "DB=${1|PG,MSSQL|}",
+          label: "db",
+          insertText: "db=${1|PG,MSSQL|}",
           detail: "Select a database",
           kind: vscode.CompletionItemKind.Enum,
         },
         // 🔹 MODE= Completion: Suggest APPEND, REPLACE
         {
-          label: "MODE",
-          insertText: "MODE=${1|APPEND,REPLACE|}",
+          label: "mode",
+          insertText: "mode=${1|Append,Replace|}",
           detail: "Select a mode",
           kind: vscode.CompletionItemKind.Enum,
         },
@@ -65,13 +65,10 @@ export function activate(context: vscode.ExtensionContext) {
 
       // 🔹 INPUT Completion: Provide step-by-step placeholders
       // Check the directory for CSV files after the user selects INPUT
-      const inputDirectory = path.join(
-        path.dirname(document.fileName),
-        "input",
-      );
+      const inputDirectory = path.join(path.dirname(document.fileName), "in");
       const parentDirectory = path.join(
         path.dirname(path.dirname(document.fileName)),
-        "input",
+        "in",
       );
       const directoriesToCheck = [inputDirectory, parentDirectory];
       const csvFiles: string[] = await getCSVFiles(directoriesToCheck);
@@ -80,43 +77,41 @@ export function activate(context: vscode.ExtensionContext) {
 
       const snippetTemplates = [
         {
-          type: "INPUT",
+          type: "in",
           label: "CSV",
-          snippet: `INPUT \${1|${csvFilesString}|} -> \${2:input_queue}`,
+          snippet: `in \${1|${csvFilesString}|} -> \${2:input_queue}`,
           description: `CSV Input Template
 > INPUT \${1|${csvFilesString}|} -> \${2:input_queue}
                                         `,
         },
         {
-          type: "INPUT",
+          type: "in",
           label: "DB",
-          snippet: "INPUT ${1:schema_name}.${2:table_name} -> ${3:input_queue}",
+          snippet: "in ${1:schema_name}.${2:table_name} -> ${3:input_queue}",
           description: descriptions["INPUT_DB"],
         },
         {
-          type: "INPUT",
+          type: "in",
           label: "S3",
-          snippet: "INPUT s3://${1:bucket_name}/${2:path} -> ${3:input_queue}",
+          snippet: "in s3://${1:bucket_name}/${2:path} -> ${3:input_queue}",
           description: descriptions["INPUT_S3"],
         },
         {
-          type: "OUTPUT",
+          type: "out",
           label: "CSV",
-          snippet: "OUTPUT ${1:output_queue} -> ${2:output.csv}",
+          snippet: "out ${1:output_queue} -> ${2:output.csv}",
           description: descriptions["OUTPUT_CSV"],
         },
         {
-          type: "OUTPUT",
+          type: "out",
           label: "DB",
-          snippet:
-            "OUTPUT ${1:output_queue} -> ${2:schema_name}.${3:table_name}",
+          snippet: "out ${1:output_queue} -> ${2:schema_name}.${3:table_name}",
           description: descriptions["OUTPUT_DB"],
         },
         {
-          type: "OUTPUT",
+          type: "out",
           label: "S3",
-          snippet:
-            "OUTPUT ${1:output_queue} -> s3://${2:bucket_name}/${3:path}",
+          snippet: "out ${1:output_queue} -> s3://${2:bucket_name}/${3:path}",
           description: descriptions["OUTPUT_S3"],
         },
       ];
@@ -126,25 +121,25 @@ export function activate(context: vscode.ExtensionContext) {
         seenKeywords.add(type);
       });
 
-      seenKeywords.add("INPUT");
-      seenKeywords.add("OUTPUT");
+      seenKeywords.add("in");
+      seenKeywords.add("out");
 
       // 🔹 NODE Completion with Snippet
       const nodeItem = new vscode.CompletionItem(
-        "NODE",
+        "node",
         vscode.CompletionItemKind.Keyword,
       );
       nodeItem.detail = "Define a NODE statement";
       nodeItem.documentation = new vscode.MarkdownString(
         "Defines a processing node with input and output queues.\n\n" +
-          "```strm\nNODE nodeName(input1)(output1)\n```",
+          "```strm\nnode nodeName(input1)(output1)\n```",
       );
       nodeItem.insertText = new vscode.SnippetString(
-        "NODE ${1:nodeName}(${2:input1})(${3:output1})$4",
+        "node ${1:nodeName}(${2:input1})(${3:output1})$4",
       );
 
       suggestions.push(nodeItem);
-      seenKeywords.add("NODE");
+      seenKeywords.add("node");
 
       const text = document.getText();
       const keywords = getTokensForCompletion(text); // Parse and get tokens
@@ -184,7 +179,7 @@ export function activate(context: vscode.ExtensionContext) {
       const lineText = document.lineAt(position.line).text;
 
       // 🔹 Find "INPUT " in the line and extract the word after it
-      const match = lineText.match(/\b(?:INPUT|IN)\s+(\w+)/);
+      const match = lineText.match(/\b(?:INPUT|IN)\s+(\w+)/i);
       if (!match || position.character <= match.index! + 4) {
         vscode.window.showErrorMessage(
           "No INPUT statement found at the cursor.",
@@ -240,7 +235,7 @@ export function activate(context: vscode.ExtensionContext) {
       const lineText = document.lineAt(position.line).text;
 
       // 🔹 Find "NODE " in the line and extract the word after it
-      const match = lineText.match(/\bNODE\s+(\w+)/);
+      const match = lineText.match(/\bNODE\s+(\w+)/i);
       if (!match || position.character <= match.index! + 4) {
         vscode.window.showErrorMessage(
           "No NODE statement found at the cursor.",
@@ -332,7 +327,7 @@ export function activate(context: vscode.ExtensionContext) {
       const lineText = document.lineAt(position.line).text;
 
       // 🔹 Extract the process name after "NAME "
-      const match = lineText.match(/\bNAME\s+(\w+)/);
+      const match = lineText.match(/\bNAME\s+(\w+)/i);
       if (!match || position.character <= match.index! + 4) {
         vscode.window.showErrorMessage("No process name found at cursor.");
         return;
@@ -430,35 +425,35 @@ async function getCSVFiles(directories: string[]): Promise<string[]> {
 
 const templates = {
   Go: `// Stream Go Template
-NAME firstprocess
-IN input.csv -> input
-NODE usernode(input)(output)
-OUT output -> output.csv
+name firstprocess
+in input.csv -> input
+node usernode(input)(output)
+out output -> output.csv
 `,
   Python: `// Stream Python Template
-NAME testpy
-IN first.csv -> input
-NODE usernodepy(input)(output) lang=python
-OUT output -> output.csv
+name testpy
+in first.csv -> input
+node usernodepy(input)(output) lang=python
+out output -> output.csv
 `,
 };
 
 const descriptions = {
   // 'INPUT_CSV': ``,
   INPUT_DB: `Database Input Template
-> INPUT schemaname.table_name -> input_queue
+> input schemaname.table_name -> input_queue
                         `,
   INPUT_S3: `S3 Input Template
-> INPUT s3://bucket_name/path -> input_queue
+> input s3://bucket_name/path -> input_queue
                         `,
   OUTPUT_CSV: `CSV Output Template
-> OUTPUT output_queue -> output.csv                    
+> output output_queue -> output.csv                    
                         `,
   OUTPUT_DB: `Database Output Template
-> OUTPUT output_queue -> schemaname.table_name                    
+> output output_queue -> schemaname.table_name                    
                         `,
   OUTPUT_S3: `S3 Output Template
-> OUTPUT output_queue -> s3://bucket_name/path                    
+> output output_queue -> s3://bucket_name/path                    
                         `,
 };
 
