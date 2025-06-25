@@ -259,17 +259,22 @@ export function activate(context: vscode.ExtensionContext) {
       // 🔹 Get the directory of the currently open file
       const currentFileDir = path.dirname(document.uri.fsPath);
 
-      // 🔹 Possible file locations
-      const possiblePaths = [
-        path.join(
-          workspaceFolder,
-          "src",
-          "nodes",
-          `${nodeName}`,
-          `${nodeName}U.go`,
-        ), // Workspace root/src
-        path.join(currentFileDir, `${nodeName}`, "nodes", `${nodeName}U.go`), // Same directory as the .strm file
-      ];
+      // Check if the node statement has lang=python or lang=py
+      const isPython = /lang\s*=\s*(python|py)/i.test(lineText);
+      let possiblePaths: string[] = [];
+      if (isPython) {
+        // Python node file
+        possiblePaths = [
+          path.join(currentFileDir, "src", "python", `${nodeName}U.py`),
+          path.join(currentFileDir, "python", `${nodeName}U.py`),
+        ];
+      } else {
+        // Go node file (default)
+        possiblePaths = [
+          path.join(currentFileDir, "src", "nodes", `${nodeName}`, `${nodeName}U.go`),
+          path.join(currentFileDir, "nodes", `${nodeName}`, `${nodeName}U.go`),
+        ];
+      }
 
       // 🔹 Try opening the first existing file
       for (const filePath of possiblePaths) {
