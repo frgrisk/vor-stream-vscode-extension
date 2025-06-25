@@ -8,18 +8,15 @@ as well as custom completions for commonly used keywords.
 ## Features
 
 - **Syntax Highlighting**
-
   - Automatic syntax highlighting for `.strm` files
   - Support for process-specific keywords and constructs
 
 - **Intelligent Auto-Completion**
-
   - Context-aware suggestions based on your grammar
   - Common keywords like `NAME`, `TYPE=`, `LANG=`
   - Process-specific completions
 
 - **Template Support**
-
   - Quick insertion of process templates for Go and Python
   - Command palette integration
 
