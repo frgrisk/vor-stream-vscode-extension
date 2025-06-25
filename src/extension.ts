@@ -178,7 +178,7 @@ export function activate(context: vscode.ExtensionContext) {
       // 🔹 Get the current line text
       const lineText = document.lineAt(position.line).text;
 
-      // 🔹 Find "INPUT " in the line and extract the word after it
+      // 🔹 Find "INPUT " or "IN " in the line and extract the word after it
       const match = lineText.match(/\b(?:INPUT|IN)\s+(\w+)/i);
       if (!match || position.character <= match.index! + 4) {
         vscode.window.showErrorMessage(
@@ -198,21 +198,26 @@ export function activate(context: vscode.ExtensionContext) {
       // 🔹 Get the directory of the currently open file
       const currentFileDir = path.dirname(document.uri.fsPath);
 
-      const filePath = path.join(workspaceFolder, "input", `${inputName}.csv`); // Workspace root/input
+      // 🔹 Possible file locations
+      const possiblePaths = [
+        path.join(currentFileDir, "input", `${inputName}.csv`),
+        path.join(path.dirname(currentFileDir), "input", `${inputName}.csv`),
+      ];
 
       // 🔹 Try opening the first existing file
-      const fullPath = vscode.Uri.file(filePath);
-      try {
-        await vscode.workspace.fs.stat(fullPath); // Check if file exists
-        vscode.window.showTextDocument(fullPath);
-        return;
-      } catch (err) {
-        console.log(`File not found: ${filePath}`);
-        vscode.window.showErrorMessage(`File not found: ${filePath}`);
+      for (const filePath of possiblePaths) {
+        const fullPath = vscode.Uri.file(filePath);
+        try {
+          await vscode.workspace.fs.stat(fullPath); // Check if file exists
+          vscode.window.showTextDocument(fullPath);
+          return;
+        } catch (err) {
+          console.log(`File not found: ${filePath}`);
+        }
       }
 
       vscode.window.showErrorMessage(
-        `File not found in expected location:\n- ${filePath}`,
+        `File not found in expected locations:\n- ${possiblePaths.join("\n- ")}`,
       );
     },
   );
