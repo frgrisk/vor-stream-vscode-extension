@@ -249,6 +249,8 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const nodeName = match[1]; // Extracted node name
+      const nodeNameLower = nodeName.toLowerCase();
+
       // 🔹 Get workspace root
       const workspaceFolder = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
       if (!workspaceFolder) {
@@ -265,14 +267,14 @@ export function activate(context: vscode.ExtensionContext) {
       if (isPython) {
         // Python node file
         possiblePaths = [
-          path.join(currentFileDir, "src", "python", `${nodeName}U.py`),
-          path.join(currentFileDir, "python", `${nodeName}U.py`),
+          path.join(currentFileDir, "src", "python", `${nodeNameLower}U.py`),
+          path.join(currentFileDir, "python", `${nodeNameLower}U.py`),
         ];
       } else {
         // Go node file (default)
         possiblePaths = [
-          path.join(currentFileDir, "src", "nodes", `${nodeName}`, `${nodeName}U.go`),
-          path.join(currentFileDir, "nodes", `${nodeName}`, `${nodeName}U.go`),
+          path.join(currentFileDir, "src", "nodes", `${nodeNameLower}`, `${nodeNameLower}U.go`),
+          path.join(currentFileDir, "nodes", `${nodeNameLower}`, `${nodeNameLower}U.go`),
         ];
       }
 
