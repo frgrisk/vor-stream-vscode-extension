@@ -65,10 +65,10 @@ export function activate(context: vscode.ExtensionContext) {
 
       // 🔹 INPUT Completion: Provide step-by-step placeholders
       // Check the directory for CSV files after the user selects INPUT
-      const inputDirectory = path.join(path.dirname(document.fileName), "in");
+      const inputDirectory = path.join(path.dirname(document.fileName), "input");
       const parentDirectory = path.join(
         path.dirname(path.dirname(document.fileName)),
-        "in",
+        "input",
       );
       const directoriesToCheck = [inputDirectory, parentDirectory];
       const csvFiles: string[] = await getCSVFiles(directoriesToCheck);
