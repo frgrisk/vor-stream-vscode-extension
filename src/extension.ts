@@ -65,7 +65,10 @@ export function activate(context: vscode.ExtensionContext) {
 
       // 🔹 INPUT Completion: Provide step-by-step placeholders
       // Check the directory for CSV files after the user selects INPUT
-      const inputDirectory = path.join(path.dirname(document.fileName), "input");
+      const inputDirectory = path.join(
+        path.dirname(document.fileName),
+        "input",
+      );
       const parentDirectory = path.join(
         path.dirname(path.dirname(document.fileName)),
         "input",
@@ -273,8 +276,19 @@ export function activate(context: vscode.ExtensionContext) {
       } else {
         // Go node file (default)
         possiblePaths = [
-          path.join(currentFileDir, "src", "nodes", `${nodeNameLower}`, `${nodeNameLower}U.go`),
-          path.join(currentFileDir, "nodes", `${nodeNameLower}`, `${nodeNameLower}U.go`),
+          path.join(
+            currentFileDir,
+            "src",
+            "nodes",
+            `${nodeNameLower}`,
+            `${nodeNameLower}U.go`,
+          ),
+          path.join(
+            currentFileDir,
+            "nodes",
+            `${nodeNameLower}`,
+            `${nodeNameLower}U.go`,
+          ),
         ];
       }
 
