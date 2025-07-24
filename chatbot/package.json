@@ -1,0 +1,67 @@
+{
+  "name": "vor-chatbot",
+  "displayName": "VOR Chatbot",
+  "description": "Chat with our AI chatbot directly in VS Code",
+  "version": "0.0.1",
+  "publisher": "FRG",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.73.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "icon": "images/favicon.ico",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frgrisk/vor-stream-vscode-extension.git"
+  },
+  "bugs": {
+    "url": "https://github.com/frgrisk/vor-stream-vscode-extension/issues"
+  },
+  "homepage": "https://github.com/frgrisk/vor-stream-vscode-extension#readme",
+  "keywords": [
+    "chatbot",
+    "AI",
+    "VOR",
+    "vscode",
+    "iframe"
+  ],
+  "activationEvents": [
+    "onCommand:chatbot.openIframe"
+  ],
+  "main": "./out/extension.js",
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "chatbot.openIframe",
+        "title": "VOR: Open Chatbot",
+        "category": "VOR AI"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "VOR Chatbot Settings",
+      "properties": {
+        "vorChatbot.baseUrl": {
+          "type": "string",
+          "default": "https://vor-02.vsd.frgrisk.com:8081",
+          "description": "Base URL of your VOR server. It must have `vor` preinstalled and running."
+        }
+      }
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^18.16.18",
+    "@types/vscode": "^1.73.0",
+    "typescript": "^5.1.6",
+    "vsce": "^2.12.0"
+  },
+  "dependencies": {}
+}
