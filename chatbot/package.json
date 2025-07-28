@@ -41,7 +41,7 @@
     "commands": [
       {
         "command": "chatbot.openIframe",
-        "title": "VOR: Open Chatbot",
+        "title": "Open Chatbot",
         "category": "VOR AI"
       }
     ],
