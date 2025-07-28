@@ -2,7 +2,7 @@
   "name": "vor-chatbot",
   "displayName": "VOR Chatbot",
   "description": "Chat with our VOR AI chatbot directly in VS Code",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "publisher": "FRG",
   "license": "MIT",
   "engines": {
