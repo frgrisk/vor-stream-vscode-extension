@@ -8,12 +8,12 @@ export function activate(ctx: vscode.ExtensionContext) {
   const disposable = vscode.commands.registerCommand(
     "chatbot.openIframe",
     async () => {
-      // 1) read baseUrl from user settings
+      // read baseUrl from user settings
       const config = vscode.workspace.getConfiguration("vorChatbot");
       const baseUrlRaw = config.get<string>("baseUrl")!;
       const baseUrl = baseUrlRaw.replace(/\/+$/, ""); // strip trailing slash
 
-      // 2) run the CLI to create a token
+      // run the CLI to create a token
       let token: string;
       try {
         const { stdout } = await execPromise("vor create token");
@@ -29,10 +29,10 @@ export function activate(ctx: vscode.ExtensionContext) {
         );
       }
 
-      // 3) build the chat URL
+      // build the chat URL
       const chatUrl = `${baseUrl}/chat?auth=${encodeURIComponent(token)}`;
 
-      // 4) create the Webview panel
+      // create the Webview panel
       const panel = vscode.window.createWebviewPanel(
         "vorChatbot",
         "VOR Chatbot",
@@ -43,10 +43,10 @@ export function activate(ctx: vscode.ExtensionContext) {
         },
       );
 
-      // 5) set HTML content with our iframe
+      // set HTML content with the iframe
       panel.webview.html = getHtml(chatUrl);
 
-      // 6) handle messages from iframe (e.g. openLogin)
+      // handle messages from iframe
       panel.webview.onDidReceiveMessage((message) => {
         if (message.type === "openLogin" && message.uri) {
           vscode.env.openExternal(vscode.Uri.parse(message.uri));

@@ -1,7 +1,7 @@
 {
   "name": "vor-chatbot",
   "displayName": "VOR Chatbot",
-  "description": "Chat with our AI chatbot directly in VS Code",
+  "description": "Chat with our VOR AI chatbot directly in VS Code",
   "version": "0.0.1",
   "publisher": "FRG",
   "license": "MIT",
@@ -52,7 +52,7 @@
         "vorChatbot.baseUrl": {
           "type": "string",
           "default": "https://vor-02.vsd.frgrisk.com:8081",
-          "description": "Base URL of your VOR server. It must have `vor` preinstalled and running."
+          "description": "Base URL of your VOR server. It must have vor preinstalled and running."
         }
       }
     }
