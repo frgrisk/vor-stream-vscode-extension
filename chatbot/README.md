@@ -43,7 +43,6 @@ Recommended for local development or testing:
 
 2. In VS Code, press **⇧⌘P** / **Ctrl+Shift+P** → **Extensions: Install from VSIX...** → select your `.vsix`.
 
-> [!NOTE]
 > Make sure that the VS Code instance you are installing the extension into is running on the machine where VOR CLI is installed and configured, otherwise the extension will not be able to generate the OIDC token required for authentication!
 
 ---
@@ -70,16 +69,15 @@ Alternatively, search for the **VOR Chatbot** extension and click on the gear ic
 
 ## Usage
 
-1. **Open the command palette**: **⇧⌘P** / **Ctrl+Shift+P**
-2. Run **VOR: Open Chatbot**
-3. The extension:
-   - Executes `vor create token` in the background
-   - If **no token**, prompts you to run `vor login` first
-   - Otherwise opens a Webview to
-
-     ```
-     <baseUrl>/chat?auth=<your‑token>
-     ```
+1. Install the extension as described above.
+2. Ensure you have the VOR CLI installed and logged in on your machine (`vor login`).
+3. Open your VS Code editor.
+4. Click the **VOR icon** in the VS Code Activity Bar to open the sidebar.
+5. The chatbot will appear in the sidebar view.
+6. The extension will automatically:
+   - Execute `vor create token` in the background to get an authentication token.
+   - If no token can be created, it will show an error message prompting you to run `vor login`.
+   - Otherwise, it will load the chat interface from your configured `vorChatbot.baseUrl`.
 
 ---
 
