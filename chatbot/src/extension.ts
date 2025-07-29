@@ -26,7 +26,13 @@ export function activate(context: vscode.ExtensionContext) {
   );
 }
 
-export function deactivate() {}
+/**
+ * Deactivate the extension.
+ * This function is called when the extension is deactivated in VS Code.
+ */
+export function deactivate() {
+  // No specific cleanup needed for this extension
+}
 
 /**
  * ChatSidebarProvider is a class that implements the vscode.WebviewViewProvider interface.
