@@ -16,6 +16,7 @@ This extension provides the following features:
 - Automatically obtains an OIDC token via `vor create token`
 - Falls back to error messages if not logged in
 - Configuration option for your VOR server base‑URL
+- Opens in the VS Code Activity Bar for easy access (so it does not clutter your editor)
 
 ---
 
@@ -51,19 +52,19 @@ Recommended for local development or testing:
 
 Open **File → Preferences → Settings**, search **“VOR Chatbot”**, and set:
 
-| Setting              | Default                               | Description                                                            |
-| -------------------- | ------------------------------------- | ---------------------------------------------------------------------- |
-| `vorChatbot.baseUrl` | `https://vor-02.vsd.frgrisk.com:8081` | Base URL of your VOR server (must be reachable and running `vor` CLI). |
+| Setting    | Default                               | Description                                                            |
+| ---------- | ------------------------------------- | ---------------------------------------------------------------------- |
+| `Base URL` | `https://vor-02.vsd.frgrisk.com:8081` | Base URL of your VOR server (must be reachable and running `vor` CLI). |
 
 Or in your `settings.json`:
 
 ```jsonc
 {
-  "vorChatbot.baseUrl": "https://my-vor-host.example.com:8081",
+  "vorChatbot.baseUrl": "https://my-vor-host.example.com:8081"
 }
 ```
 
-Alternatively, search for the **VOR Chatbot** extension and click on the gear icon to access the **Extension Settings**. You can then modify the `vorChatbot.baseUrl` setting directly from there.
+Alternatively, search for the **VOR Chatbot** extension and click on the gear icon to access the **Extension Settings**. You can then modify the `Base URL` setting directly from there.
 
 ---
 
@@ -102,6 +103,8 @@ npm install
 npm run compile     # one‑off build
 npm run watch       # continuous (add in your package.json scripts if you like)
 ```
+
+For the extension to work, you must have the `vor` CLI installed and logged in on your machine. The extension will automatically handle OIDC token generation using the `vor create token` command.
 
 ---
 
