@@ -1,7 +1,7 @@
 {
   "name": "vor-chatbot",
   "displayName": "VOR Chatbot",
-  "description": "Chat with our VOR AI chatbot directly in VS Code",
+  "description": "Chat with our VOR AI chatbot directly in VS Code sidebar",
   "version": "1.0.0",
   "publisher": "FRG",
   "license": "MIT",
@@ -28,7 +28,7 @@
     "iframe"
   ],
   "activationEvents": [
-    "onCommand:chatbot.openIframe"
+    "onView:vorChatbot.sidebarView"
   ],
   "main": "./out/extension.js",
   "scripts": {
@@ -38,13 +38,24 @@
     "package": "vsce package"
   },
   "contributes": {
-    "commands": [
-      {
-        "command": "chatbot.openIframe",
-        "title": "Open Chatbot",
-        "category": "VOR AI"
-      }
-    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "vorChatbot",
+          "title": "VOR",
+          "icon": "images/favicon.ico"
+        }
+      ]
+    },
+    "views": {
+      "vorChatbot": [
+        {
+          "id": "vorChatbot.sidebarView",
+          "name": "Chatbot",
+          "type": "webview"
+        }
+      ]
+    },
     "configuration": {
       "type": "object",
       "title": "VOR Chatbot Settings",
@@ -52,7 +63,7 @@
         "vorChatbot.baseUrl": {
           "type": "string",
           "default": "https://vor-02.vsd.frgrisk.com:8081",
-          "description": "Base URL of your VOR server. It must have vor preinstalled and running."
+          "description": "Base URL of your VOR server (no trailing slash)"
         }
       }
     }
