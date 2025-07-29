@@ -139,8 +139,17 @@ function getHtml(src: string): string {
   />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    html, body { margin:0; padding:0; height:100%; }
-    iframe      { width:100%; height:100%; border:none; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+      
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
   </style>
 </head>
 <body>
