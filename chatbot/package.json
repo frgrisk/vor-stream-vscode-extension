@@ -63,7 +63,7 @@
         "vorChatbot.baseUrl": {
           "type": "string",
           "default": "https://vor-02.vsd.frgrisk.com:8081",
-          "description": "Base URL of your VOR server (no trailing slash)"
+          "description": "Paste the link to your VOR app here. It must have vor preinstalled and running."
         }
       }
     }
