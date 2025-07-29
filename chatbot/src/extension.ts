@@ -58,7 +58,8 @@ class ChatSidebarProvider implements vscode.WebviewViewProvider {
   /**
    * This method is called when the webview view is resolved.
    * It sets up the webview with the necessary options and HTML content.
-   * It also handles messages from the webview, such as opening login links.
+   * It also handles messages from the webview, such as opening login links
+   * and catching authentication errors surfaced by the chat iframe.
    *
    * @param webviewView The webview view that is being resolved
    */
@@ -66,22 +67,25 @@ class ChatSidebarProvider implements vscode.WebviewViewProvider {
     // allow scripts
     webviewView.webview.options = { enableScripts: true };
 
-    // read baseUrl from user settings
-    const config = vscode.workspace.getConfiguration("vorChatbot");
-    const baseUrlRaw = config.get<string>("baseUrl")!;
-    const baseUrl = baseUrlRaw.replace(/\/+$/, "");
+    // Register message handler
+    webviewView.webview.onDidReceiveMessage((message) => {
+      if (message.type === "openLogin" && message.uri) {
+        vscode.env.openExternal(vscode.Uri.parse(message.uri));
+      }
+      if (message.type === "authError" && typeof message.status === "number") {
+        const detail =
+          message.status === 401 || message.status === 403
+            ? "Unauthorized or expired token. Please run `vor login` again."
+            : `Server error (${message.status}). Try again later.`;
+        webviewView.webview.html = this.errorHtml(`VOR: ${detail}`);
+      }
+    });
 
-    // run the CLI to create a token
+    // Run the CLI to create a token
     let token: string;
     try {
       const { stdout } = await execPromise("vor create token");
-      token = stdout.trim();
-      if (token.startsWith("Valid Vault token not found")) {
-        webviewView.webview.html = this.errorHtml(
-          "VOR: No valid Vault token found. Please run `vor login` first.",
-        );
-        return;
-      }
+      token = stdout;
     } catch {
       webviewView.webview.html = this.errorHtml(
         "VOR: Failed to create token. Ensure `vor` is installed and on your PATH.",
@@ -89,21 +93,19 @@ class ChatSidebarProvider implements vscode.WebviewViewProvider {
       return;
     }
 
-    // build and load the chat URL
+    // Read baseUrl from user settings
+    const config = vscode.workspace.getConfiguration("vorChatbot");
+    const baseUrlRaw = config.get<string>("baseUrl")!;
+    const baseUrl = baseUrlRaw.replace(/\/+$/, "");
+
+    // Build the chat URL and render the iframe wrapper
     const chatUrl = `${baseUrl}/chat?auth=${encodeURIComponent(token)}`;
     webviewView.webview.html = getHtml(chatUrl);
-
-    // forward openLogin messages
-    webviewView.webview.onDidReceiveMessage((message) => {
-      if (message.type === "openLogin" && message.uri) {
-        vscode.env.openExternal(vscode.Uri.parse(message.uri));
-      }
-    });
   }
 
   /**
    * Generates an HTML string to display an error message in the webview.
-   * This is used when there are issues with loading the chatbot or creating a token.
+   * This is used when there are issues with loading the chatbot or token.
    *
    * @param msg The error message to display
    * @returns A string containing the HTML for the error page
@@ -123,6 +125,7 @@ class ChatSidebarProvider implements vscode.WebviewViewProvider {
 /**
  * Generates the HTML content for the webview that displays the chatbot interface.
  * This includes a script to handle messages from the webview and an iframe to load the chat URL.
+ * It listens for `openLogin` and `authError` messages posted from inside the iframe.
  *
  * @param src The source URL for the chat interface
  * @returns A string containing the HTML for the webview
@@ -161,10 +164,13 @@ function getHtml(src: string): string {
 <body>
   <script>
     const vscode = acquireVsCodeApi();
-    window.addEventListener('message', event => {
+    window.addEventListener("message", (event) => {
       const msg = event.data;
-      if (msg?.type === 'openLogin' && msg.uri) {
+      if (msg?.type === "openLogin" && msg.uri) {
         vscode.postMessage(msg);
+      }
+      if (msg?.type === "authError" && typeof msg.status === "number") {
+        vscode.postMessage({ type: "authError", status: msg.status });
       }
     });
   </script>
