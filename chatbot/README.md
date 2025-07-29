@@ -60,7 +60,7 @@ Or in your `settings.json`:
 
 ```jsonc
 {
-  "vorChatbot.baseUrl": "https://my-vor-host.example.com:8081"
+  "vorChatbot.baseUrl": "https://my-vor-host.example.com:8081",
 }
 ```
 
