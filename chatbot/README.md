@@ -60,7 +60,7 @@ Or in your `settings.json`:
 
 ```jsonc
 {
-  "vorChatbot.baseUrl": "https://my-vor-host.example.com:8081"
+  "vorChatbot.baseUrl": "https://my-vor-host.example.com:8081",
 }
 ```
 
@@ -73,7 +73,6 @@ Alternatively, search for the **VOR Chatbot** extension and click on the gear ic
 1. **Open the command palette**: **⇧⌘P** / **Ctrl+Shift+P**
 2. Run **VOR: Open Chatbot**
 3. The extension:
-
    - Executes `vor create token` in the background
    - If **no token**, prompts you to run `vor login` first
    - Otherwise opens a Webview to

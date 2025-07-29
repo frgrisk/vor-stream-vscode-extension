@@ -16,11 +16,8 @@
       "name": "Run Chatbot Extension",
       "type": "extensionHost",
       "request": "launch",
-      "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}/chatbot"
-      ],
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}/chatbot"],
       "outFiles": ["${workspaceFolder}/chatbot/out/**/*.js"]
     }
   ]
 }
-

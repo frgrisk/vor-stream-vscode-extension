@@ -9,7 +9,7 @@ const execPromise = promisify(exec);
  * This function is called when the extension is activated in VS Code.
  * It registers a webview view provider for the chat sidebar, allowing users
  * to interact with the VOR chatbot directly within the VS Code interface.
- * 
+ *
  * @param context The extension context provided by VS Code
  */
 export function activate(context: vscode.ExtensionContext) {
@@ -19,10 +19,10 @@ export function activate(context: vscode.ExtensionContext) {
       new ChatSidebarProvider(context),
       {
         webviewOptions: {
-          retainContextWhenHidden: true
-        }
-      }
-    )
+          retainContextWhenHidden: true,
+        },
+      },
+    ),
   );
 }
 
@@ -44,7 +44,7 @@ class ChatSidebarProvider implements vscode.WebviewViewProvider {
   /**
    * Constructor for the ChatSidebarProvider class.
    * It initializes the provider with the extension context.
-   * 
+   *
    * @param ctx The extension context provided by VS Code
    */
   constructor(private readonly ctx: vscode.ExtensionContext) {}
@@ -53,7 +53,7 @@ class ChatSidebarProvider implements vscode.WebviewViewProvider {
    * This method is called when the webview view is resolved.
    * It sets up the webview with the necessary options and HTML content.
    * It also handles messages from the webview, such as opening login links.
-   * 
+   *
    * @param webviewView The webview view that is being resolved
    */
   public async resolveWebviewView(webviewView: vscode.WebviewView) {
@@ -72,13 +72,13 @@ class ChatSidebarProvider implements vscode.WebviewViewProvider {
       token = stdout.trim();
       if (token.startsWith("Valid Vault token not found")) {
         webviewView.webview.html = this.errorHtml(
-          "VOR: No valid Vault token found. Please run `vor login` first."
+          "VOR: No valid Vault token found. Please run `vor login` first.",
         );
         return;
       }
     } catch {
       webviewView.webview.html = this.errorHtml(
-        "VOR: Failed to create token. Ensure `vor` is installed and on your PATH."
+        "VOR: Failed to create token. Ensure `vor` is installed and on your PATH.",
       );
       return;
     }
@@ -98,7 +98,7 @@ class ChatSidebarProvider implements vscode.WebviewViewProvider {
   /**
    * Generates an HTML string to display an error message in the webview.
    * This is used when there are issues with loading the chatbot or creating a token.
-   * 
+   *
    * @param msg The error message to display
    * @returns A string containing the HTML for the error page
    */
@@ -117,7 +117,7 @@ class ChatSidebarProvider implements vscode.WebviewViewProvider {
 /**
  * Generates the HTML content for the webview that displays the chatbot interface.
  * This includes a script to handle messages from the webview and an iframe to load the chat URL.
- * 
+ *
  * @param src The source URL for the chat interface
  * @returns A string containing the HTML for the webview
  */
