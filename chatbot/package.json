@@ -11,7 +11,7 @@
   "categories": [
     "Other"
   ],
-  "icon": "images/favicon.ico",
+  "icon": "images/VORIcon.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/frgrisk/vor-stream-vscode-extension.git"
@@ -42,8 +42,8 @@
       "activitybar": [
         {
           "id": "vorChatbot",
-          "title": "VOR",
-          "icon": "images/favicon.ico"
+          "title": "VOR Chatbot",
+          "icon": "images/VORIcon.png"
         }
       ]
     },
