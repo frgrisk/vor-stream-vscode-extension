@@ -84,9 +84,47 @@ class ChatSidebarProvider implements vscode.WebviewViewProvider {
     // Run the CLI to create a token
     let token: string;
     try {
-      const { stdout } = await execPromise("vor create token");
-      token = stdout;
-    } catch {
+      const { stdout, stderr } = await execPromise("vor create token");
+      const combinedOutput = `${stdout}\n${stderr}`;
+
+      // Detect unauthenticated case: prompt user to run `vor login` instead of interactive flow
+      if (
+        combinedOutput.includes(
+          "Valid Vault token not found. Authentication required.",
+        )
+      ) {
+        webviewView.webview.html = this.errorHtml(
+          "VOR: Not authenticated. Please run `vor login` first.",
+        );
+        return;
+      }
+
+      token = stdout.trim();
+      if (!token) {
+        // Unexpected empty token
+        webviewView.webview.html = this.errorHtml(
+          "VOR: Received empty token. Please run `vor login` and try again.",
+        );
+        return;
+      }
+    } catch (err: any) {
+      const errOut = (
+        (err && (err.stdout || "")) +
+        "\n" +
+        (err && (err.stderr || ""))
+      ).toString();
+
+      // If the error output contains the unauthenticated indicator, tell user to login
+      if (
+        errOut.includes("Valid Vault token not found. Authentication required.")
+      ) {
+        webviewView.webview.html = this.errorHtml(
+          "VOR: Not authenticated. Please run `vor login` first.",
+        );
+        return;
+      }
+
+      // Generic failure (e.g., `vor` not installed or PATH issue)
       webviewView.webview.html = this.errorHtml(
         "VOR: Failed to create token. Ensure `vor` is installed and on your PATH.",
       );
@@ -95,11 +133,12 @@ class ChatSidebarProvider implements vscode.WebviewViewProvider {
 
     // Read baseUrl from user settings
     const config = vscode.workspace.getConfiguration("vorChatbot");
-    const baseUrlRaw = config.get<string>("baseUrl")!;
+    const baseUrlRaw = config.get<string>("baseUrl") ?? "";
     const baseUrl = baseUrlRaw.replace(/\/+$/, "");
 
     // Build the chat URL and render the iframe wrapper
-    const chatUrl = `${baseUrl}/chat?auth=${encodeURIComponent(token)}`;
+    const encodedToken = encodeURIComponent(token.trim());
+    const chatUrl = `${baseUrl}/chat?auth=${encodedToken}`;
     webviewView.webview.html = getHtml(chatUrl);
   }
 
