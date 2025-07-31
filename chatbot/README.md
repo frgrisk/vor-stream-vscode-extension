@@ -2,7 +2,7 @@
 
 Chat with our AI chatbot directly in VS Code. This allows developers to interact with the VOR AI chatbot to get help with implementation, `.strm` coding questions, creating processes, and more right within their development environment. The extension opens a Webview that displays the VOR Angular chat UI, enabling users to communicate with the AI chatbot seamlessly.
 
-![Screenshot of VOR Chatbot Extension](images/extension.png)
+![Screenshot of VOR Chatbot Extension](https://github.com/hoangsonww/vor-stream-vscode-extension/blob/feat/add-chatbot-extension/chatbot/images/extension.png?raw=true)
 
 This extension is designed to work with the VOR CLI, which must be installed and configured on your system. It automatically handles OIDC token generation for secure access to the chatbot. Be sure to have the VOR CLI installed and logged in on your machine before using this extension.
 
