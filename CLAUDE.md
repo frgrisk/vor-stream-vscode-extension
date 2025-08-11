@@ -7,8 +7,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ### Build and Compile
 
 ```bash
-npm run compile       # Compile TypeScript to JavaScript
-npm run watch        # Watch mode for development
+npm run compile       # Build with webpack (development mode)
+npm run package       # Build with webpack (production mode)
+npm run watch        # Watch mode for development with webpack
+npm run compile-ts    # Legacy TypeScript compilation (if needed)
 ```
 
 ### Linting
@@ -20,7 +22,7 @@ npm run lint         # Run ESLint
 ### Publishing
 
 ```bash
-npm run vscode:prepublish  # Prepare for publishing (compile + update version)
+npm run vscode:prepublish  # Prepare for publishing (webpack bundle + update version)
 ```
 
 ## Architecture Overview

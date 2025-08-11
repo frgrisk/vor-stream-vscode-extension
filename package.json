@@ -1,36 +1,59 @@
 {
   "name": "vor-stream",
   "displayName": "VOR Stream",
-  "description": "VOR Stream VSCode Extension",
+  "description": "Language support and tooling for VOR Stream process files (.strm) with syntax highlighting, auto-completion, and navigation features",
   "publisher": "FRG",
+  "icon": "vor_lime_bullseye.png",
+  "license": "MIT",
+  "homepage": "https://github.com/frgrisk/vor-stream-vscode-extension",
+  "bugs": {
+    "url": "https://github.com/frgrisk/vor-stream-vscode-extension/issues"
+  },
+  "qna": "https://github.com/frgrisk/vor-stream-vscode-extension/discussions/categories/q-a",
   "repository": {
     "type": "git",
     "url": "https://github.com/frgrisk/vor-stream-vscode-extension.git"
   },
-  "version": "0.0.1",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.73.0"
   },
   "categories": [
-    "Programming Languages"
+    "Programming Languages",
+    "Snippets",
+    "Other"
   ],
+  "keywords": [
+    "vor",
+    "stream",
+    "strm",
+    "data processing",
+    "syntax highlighting",
+    "auto-completion",
+    "language server"
+  ],
+  "galleryBanner": {
+    "color": "#f5f5f5",
+    "theme": "light"
+  },
   "activationEvents": [
     "onLanguage:strm"
   ],
-  "main": "./out/extension.js",
+  "main": "./dist/extension.js",
   "scripts": {
     "update-version": "ts-node scripts/update-version.ts",
-    "vscode:prepublish": "npm run compile  && npm run update-version",
-    "compile": "tsc -p ./",
-    "lint": "eslint",
-    "watch": "tsc -watch -p ./"
+    "vscode:prepublish": "npm run package && npm run update-version",
+    "compile": "webpack --mode development",
+    "compile-ts": "tsc -p ./",
+    "watch": "webpack --mode development --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "lint": "eslint"
   },
   "contributes": {
     "languages": [
       {
         "id": "strm",
         "aliases": [
-          "strm",
           "strm"
         ],
         "extensions": [
@@ -55,27 +78,39 @@
     "commands": [
       {
         "command": "extension.insertTemplateGo",
-        "title": "Insert .strm Go Template"
+        "title": "Insert Go Template",
+        "category": "VOR Stream",
+        "icon": "$(file-code)"
       },
       {
         "command": "extension.insertTemplatePython",
-        "title": "Insert .strm Python Template"
+        "title": "Insert Python Template",
+        "category": "VOR Stream",
+        "icon": "$(file-code)"
       },
       {
         "command": "extension.openNodeFile",
-        "title": "Go To Node File"
+        "title": "Go to Node File",
+        "category": "VOR Stream",
+        "icon": "$(go-to-file)"
       },
       {
         "command": "extension.openInputFile",
-        "title": "Go To Input File"
+        "title": "Go to Input File",
+        "category": "VOR Stream",
+        "icon": "$(go-to-file)"
       },
       {
         "command": "extension.createProcessCommand",
-        "title": "VOR Create Process"
+        "title": "Create Process",
+        "category": "VOR Stream",
+        "icon": "$(plus)"
       },
       {
         "command": "extension.runProcessCommand",
-        "title": "VOR Run Process"
+        "title": "Run Process",
+        "category": "VOR Stream",
+        "icon": "$(play)"
       }
     ],
     "keybindings": [
@@ -120,8 +155,11 @@
     "@types/node": "^22.13.1",
     "@types/vscode": "^1.73.0",
     "eslint": "^9.13.0",
+    "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.16.0"
+    "typescript-eslint": "^8.16.0",
+    "webpack": "^5.101.0",
+    "webpack-cli": "^6.0.1"
   }
 }
