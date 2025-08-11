@@ -33,7 +33,7 @@
     "language server"
   ],
   "galleryBanner": {
-    "color": "#ffffff",
+    "color": "#f5f5f5",
     "theme": "light"
   },
   "activationEvents": [
@@ -52,7 +52,6 @@
       {
         "id": "strm",
         "aliases": [
-          "strm",
           "strm"
         ],
         "extensions": [
