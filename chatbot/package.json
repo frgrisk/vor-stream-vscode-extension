@@ -1,0 +1,77 @@
+{
+  "name": "vor-chatbot",
+  "displayName": "VOR Chatbot",
+  "description": "Chat with our VOR AI chatbot directly in VS Code sidebar",
+  "version": "1.0.0",
+  "publisher": "FRG",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.73.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "icon": "images/VORIcon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frgrisk/vor-stream-vscode-extension.git"
+  },
+  "bugs": {
+    "url": "https://github.com/frgrisk/vor-stream-vscode-extension/issues"
+  },
+  "homepage": "https://github.com/frgrisk/vor-stream-vscode-extension#readme",
+  "keywords": [
+    "chatbot",
+    "AI",
+    "VOR",
+    "vscode",
+    "iframe"
+  ],
+  "activationEvents": [
+    "onView:vorChatbot.sidebarView"
+  ],
+  "main": "./out/extension.js",
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "vorChatbot",
+          "title": "VOR Chatbot",
+          "icon": "images/VORIcon.png"
+        }
+      ]
+    },
+    "views": {
+      "vorChatbot": [
+        {
+          "id": "vorChatbot.sidebarView",
+          "name": "Chatbot",
+          "type": "webview"
+        }
+      ]
+    },
+    "configuration": {
+      "type": "object",
+      "title": "VOR Chatbot Settings",
+      "properties": {
+        "vorChatbot.baseUrl": {
+          "type": "string",
+          "default": "https://vor-02.vsd.frgrisk.com:8081",
+          "description": "Paste the link to your VOR app here. It must have vor preinstalled and running."
+        }
+      }
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^18.16.18",
+    "@types/vscode": "^1.73.0",
+    "typescript": "^5.1.6",
+    "vsce": "^2.12.0"
+  }
+}
