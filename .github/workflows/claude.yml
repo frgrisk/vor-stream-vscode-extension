@@ -42,6 +42,8 @@ jobs:
 
           # Optional: Specify model (defaults to Claude Sonnet 4, uncomment for Claude Opus 4.1)
           model: ${{ vars.CLAUDE_MODEL || 'claude-opus-4-1-20250805' }}
+          timeout_minutes: ${{ vars.CLAUDE_TIMEOUT || 10 }}
+          max_turns: ${{ vars.CLAUDE_MAX_TURNS || 5 }}
 
           # Optional: Customize the trigger phrase (default: @claude)
           # trigger_phrase: "/claude"
