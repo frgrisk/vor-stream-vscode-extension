@@ -1,25 +1,48 @@
-# Ignore build artifacts
-dist
+# Source files (TypeScript will be bundled)
+src/**
+**/*.ts
+**/*.map
 
-# Ignore configuration files
+# Build artifacts (keep only bundled output)
+out/
+node_modules/
+
+# Development files
+.vscode/**
+.vscode-test/**
 .gitignore
-.goreleaser.yaml
-tsconfig.json
-webpack.config.js
-package-lock.json
+.yarnrc
+.editorconfig
 
-# Ignore documentation and examples
+# Documentation (except README)
+CLAUDE.md
 examples/
 docs/
 
-# Ignore tests
+# Configuration files
+tsconfig.json
+webpack.config.js
+.eslintrc*
+.prettierrc*
+package-lock.json
+
+# Scripts and tools
+scripts/
+
+# Test files
 test/
 tests/
+**/*.test.ts
+**/*.test.js
 
-# Ignore IDE configuration
-.vscode/
-
-# Ignore any other unnecessary files
+# Logs and temporary files
 *.log
 *.tmp
 *.bak
+
+# Package files
+*.vsix
+
+# OS generated files
+.DS_Store
+Thumbs.db
