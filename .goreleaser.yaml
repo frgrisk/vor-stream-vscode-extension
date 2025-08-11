@@ -1,8 +1,9 @@
 version: 2
+dist: build
 before:
   hooks:
     - npm install
-    - npm run compile
+    - npm run package
     - npx vsce package --out vor-stream-{{ .Version }}.vsix
 
 builds:
