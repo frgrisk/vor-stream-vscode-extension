@@ -29,7 +29,10 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
         // Closing brace: ends the current subprocess block
         if (trimmed === "}" && subprocessStack.length > 0) {
           const entry = subprocessStack[subprocessStack.length - 1];
-          entry.range = new vscode.Range(entry.range.start, new vscode.Position(i, text.length));
+          entry.range = new vscode.Range(
+            entry.range.start,
+            new vscode.Position(i, text.length),
+          );
           subprocessStack.pop();
           continue;
         }
