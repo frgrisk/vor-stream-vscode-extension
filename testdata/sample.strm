@@ -1,0 +1,104 @@
+// sample.strm — comprehensive syntax reference for the VOR Stream extension
+// Use this file to manually verify syntax highlighting and auto-completion.
+//
+// Open in VS Code with the extension installed and check:
+//   - Keywords are highlighted (blue/purple)
+//   - Types are highlighted (teal/green)
+//   - Strings are highlighted
+//   - Comments are greyed out
+//   - Auto-complete triggers on Ctrl+Space
+
+/* --------------------------------------------------------------------------
+   PROCESS-LEVEL DECLARATIONS
+   -------------------------------------------------------------------------- */
+
+name sampleprocess
+type Default
+label "Sample process covering all syntax"
+descr "Used for extension testing"
+
+/* --------------------------------------------------------------------------
+   CSV INPUT / OUTPUT
+   -------------------------------------------------------------------------- */
+
+in input.csv -> raw_input
+in transactions -> filtered name=txn_input where="amount > 0"
+
+out results -> output.csv
+out summary -> report.csv mode=Replace
+out append_out -> output_append.csv mode=Append
+
+/* --------------------------------------------------------------------------
+   DATABASE INPUT / OUTPUT  (db=PG, db=MSSQL)
+   -------------------------------------------------------------------------- */
+
+in public.transactions -> db_input db=PG
+in dbo.accounts -> mssql_input db=MSSQL
+
+out db_output -> analytics.results db=PG mode=Append
+out mssql_output -> reporting.summary db=MSSQL compress
+
+/* --------------------------------------------------------------------------
+   S3 INPUT / OUTPUT
+   -------------------------------------------------------------------------- */
+
+in s3://my-bucket/data/input.csv -> s3_input
+out s3_output -> s3://my-bucket/data/output.csv
+
+// Variable and dynamic fact interpolation in S3 paths
+out var_output -> s3://my-bucket/${var.run_name}/${dyn.dynFact}/output.csv mode=Append
+
+/* --------------------------------------------------------------------------
+   GO NODES
+   -------------------------------------------------------------------------- */
+
+node filternode(raw_input)(filtered)
+node enrichnode(filtered, db_input)(enriched) lang=go
+node aggregatenode(enriched)(results, summary) execwhen=daily,monthly
+
+/* --------------------------------------------------------------------------
+   PYTHON NODES
+   -------------------------------------------------------------------------- */
+
+node scoringnode(enriched)(scored) lang=python
+node reportnode(scored)(s3_output) lang=python execwhen=monthly
+
+/* --------------------------------------------------------------------------
+   NODES WITH FACTS / SIGNALS
+   -------------------------------------------------------------------------- */
+
+node factnode(filtered)(enriched) getfact=rate_table setfact=computed_rate
+node signode(enriched)(results) getsig=trigger_signal setsig=done_signal
+node dynnode(null)(null) getdyn=dynFact setdyn=dynFact lang=python
+
+/* --------------------------------------------------------------------------
+   MODEL NODE  (newer grammar feature)
+   -------------------------------------------------------------------------- */
+
+model regressionmodel(enriched)(scored) type="Default" modelname="Credit Risk Model" label="Regression v2"
+
+model classifiermodel(enriched)(classified) type="Default"
+  exceptq=exception_queue
+  scenario=true
+  unittest=false
+
+/* --------------------------------------------------------------------------
+   SUBPROCESS BLOCK
+   -------------------------------------------------------------------------- */
+
+subprocess preprocessing(raw_input)(filtered) {
+  node cleannode(raw_input)(cleaned)
+  node validatenode(cleaned)(filtered)
+}
+
+/* --------------------------------------------------------------------------
+   SQL NODE
+   -------------------------------------------------------------------------- */
+
+sql SELECT amount, account_id FROM public.transactions WHERE amount > 0; name=sql_filter descr="Filter positive transactions"
+
+/* --------------------------------------------------------------------------
+   EXEC_WHEN + COMPRESS (standalone keyword)
+   -------------------------------------------------------------------------- */
+
+out compressed_out -> s3://my-bucket/compressed/output.csv compress execwhen=debug
