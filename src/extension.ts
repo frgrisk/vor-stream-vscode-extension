@@ -259,22 +259,21 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const document = editor.document;
-      const position = editor.selection.active;
+      const lineText = document.lineAt(editor.selection.active.line).text;
 
-      // Get the current line text
-      const lineText = document.lineAt(position.line).text;
-
-      // Find "IN " in the line and extract the queue name after it
-      const match = lineText.match(/\b(?:INPUT|IN)\s+(\w+)/i);
-      if (!match) {
+      const inMatch = lineText.match(/^\s*IN\s+(\S+)\s*->/i);
+      if (!inMatch) {
+        vscode.window.showInformationMessage(
+          "No input source found on the current line.",
+        );
         return;
       }
 
-      const inputName = match[1];
       const currentFileDir = path.dirname(document.uri.fsPath);
+      const baseName = path.basename(inMatch[1]).replace(/\.csv$/i, "");
       await openFirstExisting([
-        path.join(currentFileDir, "input", `${inputName}.csv`),
-        path.join(path.dirname(currentFileDir), "input", `${inputName}.csv`),
+        path.join(currentFileDir, "input", `${baseName}.csv`),
+        path.join(path.dirname(currentFileDir), "input", `${baseName}.csv`),
       ]);
     },
   );
@@ -471,8 +470,8 @@ async function openFirstExisting(possiblePaths: string[]): Promise<void> {
       console.log(`File not found: ${filePath}`);
     }
   }
-  vscode.window.showErrorMessage(
-    `File not found in expected locations:\n- ${possiblePaths.join("\n- ")}`,
+  vscode.window.showInformationMessage(
+    `File not found in expected locations: ${possiblePaths.join(", ")}`,
   );
 }
 
