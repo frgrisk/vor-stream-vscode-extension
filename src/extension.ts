@@ -259,18 +259,14 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const document = editor.document;
-      const selection = editor.selection;
-      const position = selection.active;
+      const position = editor.selection.active;
 
       // Get the current line text
       const lineText = document.lineAt(position.line).text;
 
-      // Find "INPUT " or "IN " in the line and extract the word after it
+      // Find "IN " in the line and extract the queue name after it
       const match = lineText.match(/\b(?:INPUT|IN)\s+(\w+)/i);
-      if (!match || position.character <= match.index! + 4) {
-        vscode.window.showErrorMessage(
-          "No INPUT statement found at the cursor.",
-        );
+      if (!match) {
         return;
       }
 
@@ -320,18 +316,14 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const document = editor.document;
-      const selection = editor.selection;
-      const position = selection.active;
+      const position = editor.selection.active;
 
       // Get the current line text
       const lineText = document.lineAt(position.line).text;
 
-      // Find "NODE " in the line and extract the word after it
+      // Find "NODE " in the line and extract the node name after it
       const match = lineText.match(/\bNODE\s+(\w+)/i);
-      if (!match || position.character <= match.index! + 4) {
-        vscode.window.showErrorMessage(
-          "No NODE statement found at the cursor.",
-        );
+      if (!match) {
         return;
       }
 
@@ -430,16 +422,14 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const document = editor.document;
-      const selection = editor.selection;
-      const position = selection.active;
+      const position = editor.selection.active;
 
       // Get the current line text
       const lineText = document.lineAt(position.line).text;
 
       // Extract the process name after "NAME "
       const match = lineText.match(/\bNAME\s+(\w+)/i);
-      if (!match || position.character <= match.index! + 4) {
-        vscode.window.showErrorMessage("No process name found at cursor.");
+      if (!match) {
         return;
       }
 
