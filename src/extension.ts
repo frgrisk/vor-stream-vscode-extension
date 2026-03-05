@@ -270,38 +270,12 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      const inputName = match[1]; // Extracted node name
-      // Get workspace root
-      const workspaceFolder = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
-      if (!workspaceFolder) {
-        vscode.window.showErrorMessage("No workspace folder found.");
-        return;
-      }
-
-      // Get the directory of the currently open file
+      const inputName = match[1];
       const currentFileDir = path.dirname(document.uri.fsPath);
-
-      // Possible file locations
-      const possiblePaths = [
+      await openFirstExisting([
         path.join(currentFileDir, "input", `${inputName}.csv`),
         path.join(path.dirname(currentFileDir), "input", `${inputName}.csv`),
-      ];
-
-      // Try opening the first existing file
-      for (const filePath of possiblePaths) {
-        const fullPath = vscode.Uri.file(filePath);
-        try {
-          await vscode.workspace.fs.stat(fullPath); // Check if file exists
-          vscode.window.showTextDocument(fullPath);
-          return;
-        } catch (_err) {
-          console.log(`File not found: ${filePath}`);
-        }
-      }
-
-      vscode.window.showErrorMessage(
-        `File not found in expected locations:\n- ${possiblePaths.join("\n- ")}`,
-      );
+      ]);
     },
   );
 
@@ -316,73 +290,51 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const document = editor.document;
-      const position = editor.selection.active;
-
-      // Get the current line text
-      const lineText = document.lineAt(position.line).text;
-
-      // Find "NODE " in the line and extract the node name after it
-      const match = lineText.match(/\bNODE\s+(\w+)/i);
-      if (!match) {
-        return;
-      }
-
-      const nodeName = match[1]; // Extracted node name
-      const nodeNameLower = nodeName.toLowerCase();
-
-      // Get workspace root
-      const workspaceFolder = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
-      if (!workspaceFolder) {
-        vscode.window.showErrorMessage("No workspace folder found.");
-        return;
-      }
-
-      // Get the directory of the currently open file
+      const lineText = document.lineAt(editor.selection.active.line).text;
       const currentFileDir = path.dirname(document.uri.fsPath);
 
-      // Check if the node statement has lang=python or lang=py
+      // Route based on line type: "in" → input file, "node"/"model" → implementation file
+      const inMatch = lineText.match(/^\s*(?:IN)\s+(\S+)\s*->/i);
+      if (inMatch) {
+        // Extract the source part (before "->"), strip s3:// prefix if present
+        const source = inMatch[1];
+        const baseName = path.basename(source).replace(/\.csv$/i, "");
+        const possiblePaths = [
+          path.join(currentFileDir, "input", `${baseName}.csv`),
+          path.join(path.dirname(currentFileDir), "input", `${baseName}.csv`),
+        ];
+        await openFirstExisting(possiblePaths);
+        return;
+      }
+
+      const nodeMatch = lineText.match(/\b(?:NODE|MODEL)\s+(\w+)/i);
+      if (!nodeMatch) {
+        return;
+      }
+
+      const nodeNameLower = nodeMatch[1].toLowerCase();
       const isPython = /lang\s*=\s*(python|py)/i.test(lineText);
-      let possiblePaths: string[] = [];
-      if (isPython) {
-        // Python node file
-        possiblePaths = [
-          path.join(currentFileDir, "src", "python", `${nodeNameLower}U.py`),
-          path.join(currentFileDir, "python", `${nodeNameLower}U.py`),
-        ];
-      } else {
-        // Go node file (default)
-        possiblePaths = [
-          path.join(
-            currentFileDir,
-            "src",
-            "nodes",
-            `${nodeNameLower}`,
-            `${nodeNameLower}U.go`,
-          ),
-          path.join(
-            currentFileDir,
-            "nodes",
-            `${nodeNameLower}`,
-            `${nodeNameLower}U.go`,
-          ),
-        ];
-      }
-
-      // Try opening the first existing file
-      for (const filePath of possiblePaths) {
-        const fullPath = vscode.Uri.file(filePath);
-        try {
-          await vscode.workspace.fs.stat(fullPath); // Check if file exists
-          vscode.window.showTextDocument(fullPath);
-          return;
-        } catch (_err) {
-          console.log(`File not found: ${filePath}`);
-        }
-      }
-
-      vscode.window.showErrorMessage(
-        `File not found in expected locations:\n- ${possiblePaths.join("\n- ")}`,
-      );
+      const possiblePaths = isPython
+        ? [
+            path.join(currentFileDir, "src", "python", `${nodeNameLower}U.py`),
+            path.join(currentFileDir, "python", `${nodeNameLower}U.py`),
+          ]
+        : [
+            path.join(
+              currentFileDir,
+              "src",
+              "nodes",
+              nodeNameLower,
+              `${nodeNameLower}U.go`,
+            ),
+            path.join(
+              currentFileDir,
+              "nodes",
+              nodeNameLower,
+              `${nodeNameLower}U.go`,
+            ),
+          ];
+      await openFirstExisting(possiblePaths);
     },
   );
 
@@ -504,6 +456,22 @@ function createSnippet(
   item.insertText = new vscode.SnippetString(snippet);
   item.detail = description;
   return item;
+}
+
+async function openFirstExisting(possiblePaths: string[]): Promise<void> {
+  for (const filePath of possiblePaths) {
+    const uri = vscode.Uri.file(filePath);
+    try {
+      await vscode.workspace.fs.stat(uri);
+      vscode.window.showTextDocument(uri);
+      return;
+    } catch (_err) {
+      console.log(`File not found: ${filePath}`);
+    }
+  }
+  vscode.window.showErrorMessage(
+    `File not found in expected locations:\n- ${possiblePaths.join("\n- ")}`,
+  );
 }
 
 async function getCSVFiles(directories: string[]): Promise<string[]> {
