@@ -44,9 +44,7 @@ export function registerDiagnosticProvider(
 
   context.subscriptions.push(
     vscode.workspace.onDidOpenTextDocument(updateDiagnostics),
-    vscode.workspace.onDidChangeTextDocument((e) =>
-      scheduleUpdate(e.document),
-    ),
+    vscode.workspace.onDidChangeTextDocument((e) => scheduleUpdate(e.document)),
     vscode.workspace.onDidCloseTextDocument((doc) => {
       diagnostics.delete(doc.uri);
       const key = doc.uri.toString();
