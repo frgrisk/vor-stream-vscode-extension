@@ -10,7 +10,7 @@ export function activate(context: vscode.ExtensionContext) {
   const provider = vscode.languages.registerCompletionItemProvider("strm", {
     async provideCompletionItems(
       document: vscode.TextDocument,
-      position: vscode.Position,
+      _position: vscode.Position,
     ) {
       // Extract suggestions from the parse tree
       const suggestions: vscode.CompletionItem[] = [];
@@ -214,7 +214,7 @@ export function activate(context: vscode.ExtensionContext) {
           await vscode.workspace.fs.stat(fullPath); // Check if file exists
           vscode.window.showTextDocument(fullPath);
           return;
-        } catch (err) {
+        } catch (_err) {
           console.log(`File not found: ${filePath}`);
         }
       }
@@ -299,7 +299,7 @@ export function activate(context: vscode.ExtensionContext) {
           await vscode.workspace.fs.stat(fullPath); // Check if file exists
           vscode.window.showTextDocument(fullPath);
           return;
-        } catch (err) {
+        } catch (_err) {
           console.log(`File not found: ${filePath}`);
         }
       }
@@ -312,7 +312,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(openNodeFileCommand);
 
-  let disposable = vscode.commands.registerCommand(
+  const disposable = vscode.commands.registerCommand(
     "extension.createProcessCommand",
     async () => {
       const editor = vscode.window.activeTextEditor;
@@ -336,7 +336,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(disposable);
 
-  let runProcessCommand = vscode.commands.registerCommand(
+  const runProcessCommand = vscode.commands.registerCommand(
     "extension.runProcessCommand",
     async () => {
       const editor = vscode.window.activeTextEditor;
@@ -395,12 +395,11 @@ function insertTemplate(template: string) {
       editBuilder.insert(new vscode.Position(0, 0), template);
     })
     .then((success) => {
-      const message = success
-        ? "Inserted .strm template."
-        : "Failed to insert template.";
-      success
-        ? vscode.window.showInformationMessage(message)
-        : vscode.window.showErrorMessage(message);
+      if (success) {
+        vscode.window.showInformationMessage("Inserted .strm template.");
+      } else {
+        vscode.window.showErrorMessage("Failed to insert template.");
+      }
     });
 }
 
@@ -439,8 +438,8 @@ async function getCSVFiles(directories: string[]): Promise<string[]> {
       try {
         const files = await fs.promises.readdir(dir);
         return files.filter((file) => file.endsWith(".csv"));
-      } catch (err) {
-        console.error(`Error reading directory ${dir}: ${err}`);
+      } catch (_err) {
+        console.error(`Error reading directory ${dir}: ${_err}`);
         return [];
       }
     }),
