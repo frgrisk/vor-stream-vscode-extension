@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
 import { getTokensForCompletion } from "./parser";
+import { registerDiagnosticProvider } from "./diagnosticProvider";
 
 const templates = {
   Go: `// Stream Go Template
@@ -39,6 +40,8 @@ const descriptions = {
 export function activate(context: vscode.ExtensionContext) {
   // Register commands dynamically for inserting templates
   registerCommands(context);
+
+  registerDiagnosticProvider(context);
 
   const provider = vscode.languages.registerCompletionItemProvider("strm", {
     async provideCompletionItems(
