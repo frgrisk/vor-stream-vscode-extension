@@ -439,7 +439,7 @@ async function getCSVFiles(directories: string[]): Promise<string[]> {
         const files = await fs.promises.readdir(dir);
         return files.filter((file) => file.endsWith(".csv"));
       } catch (_err) {
-        console.error(`Error reading directory ${dir}: ${err}`);
+        console.error(`Error reading directory ${dir}: ${_err}`);
         return [];
       }
     }),
