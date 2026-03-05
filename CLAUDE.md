@@ -23,12 +23,12 @@ npm run format:check  # Run Prettier (check only, used in CI)
 
 ### Pre-commit Hooks
 
-This project uses [pre-commit](https://pre-commit.com/) to enforce formatting before every commit,
-mirroring the practice in `vor-stream`. Install once after cloning:
+This project uses [pre-commit](https://pre-commit.com/) to enforce formatting and commit messages.
+Install once after cloning:
 
 ```bash
 pip install pre-commit
-pre-commit install
+pre-commit install --hook-type pre-commit --hook-type commit-msg
 ```
 
 Hooks run automatically on `git commit`. To run manually against all files:
@@ -42,6 +42,8 @@ The hooks configured in `.pre-commit-config.yaml`:
 - **end-of-file-fixer** — ensures files end with a newline
 - **trailing-whitespace** — strips trailing whitespace
 - **prettier** — formats `.ts`, `.js`, `.json`, `.md`, `.yaml` files
+- **conventional-pre-commit** (`commit-msg` stage) — enforces conventional commit format locally,
+  matching the CI check (allowed types: feat, fix, docs, style, refactor, test, build, ci, chore, revert, perf)
 
 ### Publishing
 

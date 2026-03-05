@@ -1,7 +1,7 @@
 # VOR Stream
 
 VOR Stream is a Visual Studio Code extension designed for syntax highlighting
-and auto-completion of `.strm` files used in VOR Stream processes. The
+and auto-completion of `.strm` files used in [VOR Stream](https://github.com/frgrisk/vor-stream) processes. The
 extension provides suggestions based on your grammar and predefined templates,
 as well as custom completions for commonly used keywords.
 
@@ -24,9 +24,18 @@ as well as custom completions for commonly used keywords.
   - Command palette integration
 
 - **Navigation**
-  - Go to node file (`F12`)
-  - Go to input file
+
+  - `F12` (Go to Definition) routes by line type:
+    - `in` lines → CSV file in `input/` directory (S3/DB sources skipped)
+    - `node` / `model` lines → Go (`src/nodes/<name>/<name>U.go`) or Python (`src/python/<name>U.py`) implementation
+    - `out` lines — not supported (output paths are runtime-determined)
+  - Go to input file (context menu)
   - Create and run process commands
+
+## Known Limitations
+
+- Autocomplete suggestions include quoted strings from the ANTLR parser (noisy); identifier-only filtering is planned
+- F12 on `out` lines is intentionally unsupported
 
 ## Installation
 

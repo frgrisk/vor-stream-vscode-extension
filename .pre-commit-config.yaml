@@ -13,3 +13,23 @@ repos:
       - id: prettier
         types_or: [javascript, ts, json, markdown, yaml]
         exclude: "src/_js_parser/"
+
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v3.4.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args:
+          [
+            feat,
+            fix,
+            docs,
+            style,
+            refactor,
+            test,
+            build,
+            ci,
+            chore,
+            revert,
+            perf,
+          ]
