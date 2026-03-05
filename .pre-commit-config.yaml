@@ -1,0 +1,15 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: end-of-file-fixer
+        exclude: "src/_js_parser/"
+      - id: trailing-whitespace
+        exclude: "src/_js_parser/"
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v3.5.3
+    hooks:
+      - id: prettier
+        types_or: [javascript, ts, json, markdown, yaml]
+        exclude: "src/_js_parser/"

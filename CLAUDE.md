@@ -13,11 +13,35 @@ npm run watch         # Watch mode for development with webpack
 npm run compile-ts    # Legacy TypeScript compilation (if needed)
 ```
 
-### Linting
+### Linting and Formatting
 
 ```bash
 npm run lint          # Run ESLint
+npm run format        # Run Prettier (auto-fix)
+npm run format:check  # Run Prettier (check only, used in CI)
 ```
+
+### Pre-commit Hooks
+
+This project uses [pre-commit](https://pre-commit.com/) to enforce formatting before every commit,
+mirroring the practice in `vor-stream`. Install once after cloning:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
+
+Hooks run automatically on `git commit`. To run manually against all files:
+
+```bash
+pre-commit run --all-files
+```
+
+The hooks configured in `.pre-commit-config.yaml`:
+
+- **end-of-file-fixer** — ensures files end with a newline
+- **trailing-whitespace** — strips trailing whitespace
+- **prettier** — formats `.ts`, `.js`, `.json`, `.md`, `.yaml` files
 
 ### Publishing
 
@@ -27,10 +51,10 @@ npm run vscode:prepublish  # Prepare for publishing (webpack bundle + update ver
 
 ## Repository Relationships
 
-| Repo | Location | Role |
-|---|---|---|
-| `vor-stream` | `/home/kng/repo/vor-stream` | Source of truth for the `.strm` grammar (`cmd/process/process.g4`) |
-| `vor-stream-vscode-extension` | this repo | VS Code extension that consumes the ANTLR-generated JS parser |
+| Repo                          | Location                    | Role                                                               |
+| ----------------------------- | --------------------------- | ------------------------------------------------------------------ |
+| `vor-stream`                  | `/home/kng/repo/vor-stream` | Source of truth for the `.strm` grammar (`cmd/process/process.g4`) |
+| `vor-stream-vscode-extension` | this repo                   | VS Code extension that consumes the ANTLR-generated JS parser      |
 
 The ANTLR-generated files in `src/_js_parser/` are produced from `vor-stream/cmd/process/process.g4`.
 
@@ -62,15 +86,15 @@ Add new keywords to the appropriate `keyword.control.process` or `keyword.other.
 
 The extension is behind `vor-stream`'s grammar. Missing:
 
-| Grammar addition | `extension.ts` | `tmLanguage.json` |
-|---|---|---|
-| `labelStmt` / `label=` option | Missing | Partial (LABEL in control only) |
-| `modelStmt` (standalone model node) | Missing | Missing |
-| `EXCEPTQ=` (model exception queue) | Missing | Missing |
-| `SCENARIO=` (true/false) | Missing | Missing |
-| `UNITTEST=` (true/false) | Missing | Missing |
-| `MODELNAME=` | Missing | Missing |
-| `DB` keyword | In completions | Missing from highlighting |
+| Grammar addition                    | `extension.ts` | `tmLanguage.json`               |
+| ----------------------------------- | -------------- | ------------------------------- |
+| `labelStmt` / `label=` option       | Missing        | Partial (LABEL in control only) |
+| `modelStmt` (standalone model node) | Missing        | Missing                         |
+| `EXCEPTQ=` (model exception queue)  | Missing        | Missing                         |
+| `SCENARIO=` (true/false)            | Missing        | Missing                         |
+| `UNITTEST=` (true/false)            | Missing        | Missing                         |
+| `MODELNAME=`                        | Missing        | Missing                         |
+| `DB` keyword                        | In completions | Missing from highlighting       |
 
 ## Architecture Overview
 
@@ -79,12 +103,14 @@ This VSCode extension provides language support for `.strm` files used in VOR St
 ### Core Components
 
 1. **Grammar Parser** (`src/_js_parser/`)
+
    - ANTLR4-generated JavaScript parser for `.strm` syntax
    - Generated from `vor-stream/cmd/process/process.g4` via ANTLR 4.12.0
    - Uses the `antlr4` npm package (official JS runtime) — **not** `antlr4ts`
    - Consumed by `src/parser.ts` to extract tokens for auto-completion
 
 2. **Extension Entry Point** (`src/extension.ts`)
+
    - Registers completion providers for intelligent auto-completion
    - Implements commands for template insertion (Go/Python)
    - Handles navigation commands (Go to Node File, Go to Input File)
