@@ -294,16 +294,18 @@ export function activate(context: vscode.ExtensionContext) {
       const currentFileDir = path.dirname(document.uri.fsPath);
 
       // Route based on line type: "in" → input file, "node"/"model" → implementation file
-      const inMatch = lineText.match(/^\s*(?:IN)\s+(\S+)\s*->/i);
+      const inMatch = lineText.match(/^\s*IN\s+(\S+)\s*->/i);
       if (inMatch) {
-        // Extract the source part (before "->"), strip s3:// prefix if present
         const source = inMatch[1];
-        const baseName = path.basename(source).replace(/\.csv$/i, "");
-        const possiblePaths = [
-          path.join(currentFileDir, "input", `${baseName}.csv`),
-          path.join(path.dirname(currentFileDir), "input", `${baseName}.csv`),
-        ];
-        await openFirstExisting(possiblePaths);
+        const isS3 = source.startsWith("s3://");
+        const isDb = /\bdb\s*=/i.test(lineText);
+        if (!isS3 && !isDb) {
+          const baseName = path.basename(source).replace(/\.csv$/i, "");
+          await openFirstExisting([
+            path.join(currentFileDir, "input", `${baseName}.csv`),
+            path.join(path.dirname(currentFileDir), "input", `${baseName}.csv`),
+          ]);
+        }
         return;
       }
 
