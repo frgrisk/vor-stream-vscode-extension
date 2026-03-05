@@ -64,7 +64,7 @@ node scoringnode(enriched)(scored) lang=python
 node reportnode(scored)(s3_output) lang=python execwhen=monthly
 
 /* --------------------------------------------------------------------------
-   NODES WITH FACTS / SIGNALS / DYNAMICS
+   NODES WITH FACTS / SIGNALS
    -------------------------------------------------------------------------- */
 
 node factnode(filtered)(enriched) getfact=rate_table setfact=computed_rate
