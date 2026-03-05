@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
 import { getTokensForCompletion } from "./parser";
+import { createDocumentSymbolProvider } from "./documentSymbolProvider";
 
 const templates = {
   Go: `// Stream Go Template
@@ -39,6 +40,13 @@ const descriptions = {
 export function activate(context: vscode.ExtensionContext) {
   // Register commands dynamically for inserting templates
   registerCommands(context);
+
+  context.subscriptions.push(
+    vscode.languages.registerDocumentSymbolProvider(
+      "strm",
+      createDocumentSymbolProvider(),
+    ),
+  );
 
   const provider = vscode.languages.registerCompletionItemProvider("strm", {
     async provideCompletionItems(
