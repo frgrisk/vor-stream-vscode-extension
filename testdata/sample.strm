@@ -26,6 +26,7 @@ in transactions -> filtered name=txn_input where="amount > 0"
 
 out results -> output.csv
 out summary -> report.csv mode=Replace
+out append_out -> output_append.csv mode=Append
 
 /* --------------------------------------------------------------------------
    DATABASE INPUT / OUTPUT  (db=PG, db=MSSQL)
@@ -35,7 +36,7 @@ in public.transactions -> db_input db=PG
 in dbo.accounts -> mssql_input db=MSSQL
 
 out db_output -> analytics.results db=PG mode=Append
-out mssql_output -> reporting.summary db=MSSQL
+out mssql_output -> reporting.summary db=MSSQL compress
 
 /* --------------------------------------------------------------------------
    S3 INPUT / OUTPUT
@@ -43,6 +44,9 @@ out mssql_output -> reporting.summary db=MSSQL
 
 in s3://my-bucket/data/input.csv -> s3_input
 out s3_output -> s3://my-bucket/data/output.csv
+
+// Variable and dynamic fact interpolation in S3 paths
+out var_output -> s3://my-bucket/${var.run_name}/${dyn.dynFact}/output.csv mode=Append
 
 /* --------------------------------------------------------------------------
    GO NODES
@@ -60,11 +64,12 @@ node scoringnode(enriched)(scored) lang=python
 node reportnode(scored)(s3_output) lang=python execwhen=monthly
 
 /* --------------------------------------------------------------------------
-   NODES WITH FACTS / SIGNALS
+   NODES WITH FACTS / SIGNALS / DYNAMICS
    -------------------------------------------------------------------------- */
 
 node factnode(filtered)(enriched) getfact=rate_table setfact=computed_rate
 node signode(enriched)(results) getsig=trigger_signal setsig=done_signal
+node dynnode(null)(null) getdyn=dynFact setdyn=dynFact lang=python
 
 /* --------------------------------------------------------------------------
    MODEL NODE  (newer grammar feature)
@@ -93,13 +98,7 @@ subprocess preprocessing(raw_input)(filtered) {
 sql SELECT amount, account_id FROM public.transactions WHERE amount > 0; name=sql_filter descr="Filter positive transactions"
 
 /* --------------------------------------------------------------------------
-   MISC OPTIONS REFERENCE
+   EXEC_WHEN + COMPRESS (standalone keyword)
    -------------------------------------------------------------------------- */
 
-// label=  on in/out statements
-in s3://other-bucket/ref.csv -> ref_data label="Reference data"
-out db_output2 -> public.archive db=PG mode=Append label="Archive output"
-
-// mode values
-out replace_out -> output_replace.csv mode=Replace
-out append_out -> output_append.csv mode=Append
+out compressed_out -> s3://my-bucket/compressed/output.csv compress execwhen=debug
