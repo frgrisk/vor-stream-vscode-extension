@@ -56,12 +56,48 @@ export function activate(context: vscode.ExtensionContext) {
           detail: "Select a mode",
           kind: vscode.CompletionItemKind.Enum,
         },
+        // label completion
+        {
+          label: "label",
+          insertText: 'label "${1:description}"',
+          detail: "Process label",
+          kind: vscode.CompletionItemKind.Variable,
+        },
+        // exceptq completion
+        {
+          label: "exceptq",
+          insertText: "exceptq=${1:exception_queue}",
+          detail: "Exception queue for model nodes",
+          kind: vscode.CompletionItemKind.Property,
+        },
+        // scenario completion
+        {
+          label: "scenario",
+          insertText: "scenario=${1|true,false|}",
+          detail: "Enable scenario for model nodes",
+          kind: vscode.CompletionItemKind.Enum,
+        },
+        // unittest completion
+        {
+          label: "unittest",
+          insertText: "unittest=${1|true,false|}",
+          detail: "Enable unit test for model nodes",
+          kind: vscode.CompletionItemKind.Enum,
+        },
+        // modelname completion
+        {
+          label: "modelname",
+          insertText: 'modelname="${1:model_name}"',
+          detail: "Model name for model nodes",
+          kind: vscode.CompletionItemKind.Property,
+        },
       ];
 
       predefinedCompletions.forEach(({ label, insertText, detail, kind }) => {
         suggestions.push(createCompletionItem(label, insertText, detail, kind));
         seenKeywords.add(label.split(" ")[0]);
       });
+      seenKeywords.add("label");
 
       // 🔹 INPUT Completion: Provide step-by-step placeholders
       // Check the directory for CSV files after the user selects INPUT
@@ -143,6 +179,21 @@ export function activate(context: vscode.ExtensionContext) {
 
       suggestions.push(nodeItem);
       seenKeywords.add("node");
+
+      const modelItem = new vscode.CompletionItem(
+        "model",
+        vscode.CompletionItemKind.Keyword,
+      );
+      modelItem.detail = "Define a MODEL statement";
+      modelItem.documentation = new vscode.MarkdownString(
+        "Defines a model node with input and output queues.\n\n" +
+          "```strm\nmodel nodeName(input1)(output1)\n```",
+      );
+      modelItem.insertText = new vscode.SnippetString(
+        "model ${1:nodeName}(${2:input1})(${3:output1})$4",
+      );
+      suggestions.push(modelItem);
+      seenKeywords.add("model");
 
       const text = document.getText();
       const keywords = getTokensForCompletion(text); // Parse and get tokens
