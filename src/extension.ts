@@ -3,8 +3,41 @@ import * as path from "path";
 import * as fs from "fs";
 import { getTokensForCompletion } from "./parser";
 
+const templates = {
+  Go: `// Stream Go Template
+name firstprocess
+in input.csv -> input
+node usernode(input)(output)
+out output -> output.csv
+`,
+  Python: `// Stream Python Template
+name testpy
+in first.csv -> input
+node usernodepy(input)(output) lang=python
+out output -> output.csv
+`,
+};
+
+const descriptions = {
+  INPUT_DB: `Database Input Template
+> input schemaname.table_name -> input_queue
+                        `,
+  INPUT_S3: `S3 Input Template
+> input s3://bucket_name/path -> input_queue
+                        `,
+  OUTPUT_CSV: `CSV Output Template
+> output output_queue -> output.csv
+                        `,
+  OUTPUT_DB: `Database Output Template
+> output output_queue -> schemaname.table_name
+                        `,
+  OUTPUT_S3: `S3 Output Template
+> output output_queue -> s3://bucket_name/path
+                        `,
+};
+
 export function activate(context: vscode.ExtensionContext) {
-  // 🔹 Register commands dynamically for inserting templates
+  // Register commands dynamically for inserting templates
   registerCommands(context);
 
   const provider = vscode.languages.registerCompletionItemProvider("strm", {
@@ -21,35 +54,35 @@ export function activate(context: vscode.ExtensionContext) {
 
       // Predefined completion items
       const predefinedCompletions = [
-        // 🔹 NAME= Completion: Suggests filename
+        // NAME= Completion: Suggests filename
         {
           label: `name ${fileName}`,
           insertText: `name ${fileName}`,
           detail: "Suggests filename",
           kind: vscode.CompletionItemKind.Variable,
         },
-        // 🔹 TYPE= Completion: Suggest MODEL, REPORT, DEFAULT
+        // TYPE= Completion: Suggest MODEL, REPORT, DEFAULT
         {
           label: "type",
           insertText: "type ${1|Default,Report,Model|}",
           detail: "Select a type",
           kind: vscode.CompletionItemKind.Enum,
         },
-        // 🔹 LANG= Completion: Suggest PYTHON, GO
+        // LANG= Completion: Suggest PYTHON, GO
         {
           label: "lang",
           insertText: "lang=${1|go,python|}",
           detail: "Select a language",
           kind: vscode.CompletionItemKind.Enum,
         },
-        // 🔹 DB= Completion: Suggest PG, MSSQL
+        // DB= Completion: Suggest PG, MSSQL
         {
           label: "db",
           insertText: "db=${1|PG,MSSQL|}",
           detail: "Select a database",
           kind: vscode.CompletionItemKind.Enum,
         },
-        // 🔹 MODE= Completion: Suggest APPEND, REPLACE
+        // MODE= Completion: Suggest APPEND, REPLACE
         {
           label: "mode",
           insertText: "mode=${1|Append,Replace|}",
@@ -99,7 +132,7 @@ export function activate(context: vscode.ExtensionContext) {
       });
       seenKeywords.add("label");
 
-      // 🔹 INPUT Completion: Provide step-by-step placeholders
+      // INPUT Completion: Provide step-by-step placeholders
       // Check the directory for CSV files after the user selects INPUT
       const inputDirectory = path.join(
         path.dirname(document.fileName),
@@ -163,7 +196,7 @@ export function activate(context: vscode.ExtensionContext) {
       seenKeywords.add("in");
       seenKeywords.add("out");
 
-      // 🔹 NODE Completion with Snippet
+      // NODE Completion with Snippet
       const nodeItem = new vscode.CompletionItem(
         "node",
         vscode.CompletionItemKind.Keyword,
@@ -226,53 +259,23 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const document = editor.document;
-      const selection = editor.selection;
-      const position = selection.active;
+      const position = editor.selection.active;
 
-      // 🔹 Get the current line text
+      // Get the current line text
       const lineText = document.lineAt(position.line).text;
 
-      // 🔹 Find "INPUT " or "IN " in the line and extract the word after it
+      // Find "IN " in the line and extract the queue name after it
       const match = lineText.match(/\b(?:INPUT|IN)\s+(\w+)/i);
-      if (!match || position.character <= match.index! + 4) {
-        vscode.window.showErrorMessage(
-          "No INPUT statement found at the cursor.",
-        );
+      if (!match) {
         return;
       }
 
-      const inputName = match[1]; // Extracted node name
-      // 🔹 Get workspace root
-      const workspaceFolder = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
-      if (!workspaceFolder) {
-        vscode.window.showErrorMessage("No workspace folder found.");
-        return;
-      }
-
-      // 🔹 Get the directory of the currently open file
+      const inputName = match[1];
       const currentFileDir = path.dirname(document.uri.fsPath);
-
-      // 🔹 Possible file locations
-      const possiblePaths = [
+      await openFirstExisting([
         path.join(currentFileDir, "input", `${inputName}.csv`),
         path.join(path.dirname(currentFileDir), "input", `${inputName}.csv`),
-      ];
-
-      // 🔹 Try opening the first existing file
-      for (const filePath of possiblePaths) {
-        const fullPath = vscode.Uri.file(filePath);
-        try {
-          await vscode.workspace.fs.stat(fullPath); // Check if file exists
-          vscode.window.showTextDocument(fullPath);
-          return;
-        } catch (_err) {
-          console.log(`File not found: ${filePath}`);
-        }
-      }
-
-      vscode.window.showErrorMessage(
-        `File not found in expected locations:\n- ${possiblePaths.join("\n- ")}`,
-      );
+      ]);
     },
   );
 
@@ -287,77 +290,53 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const document = editor.document;
-      const selection = editor.selection;
-      const position = selection.active;
-
-      // 🔹 Get the current line text
-      const lineText = document.lineAt(position.line).text;
-
-      // 🔹 Find "NODE " in the line and extract the word after it
-      const match = lineText.match(/\bNODE\s+(\w+)/i);
-      if (!match || position.character <= match.index! + 4) {
-        vscode.window.showErrorMessage(
-          "No NODE statement found at the cursor.",
-        );
-        return;
-      }
-
-      const nodeName = match[1]; // Extracted node name
-      const nodeNameLower = nodeName.toLowerCase();
-
-      // 🔹 Get workspace root
-      const workspaceFolder = vscode.workspace.workspaceFolders?.[0].uri.fsPath;
-      if (!workspaceFolder) {
-        vscode.window.showErrorMessage("No workspace folder found.");
-        return;
-      }
-
-      // 🔹 Get the directory of the currently open file
+      const lineText = document.lineAt(editor.selection.active.line).text;
       const currentFileDir = path.dirname(document.uri.fsPath);
 
-      // Check if the node statement has lang=python or lang=py
-      const isPython = /lang\s*=\s*(python|py)/i.test(lineText);
-      let possiblePaths: string[] = [];
-      if (isPython) {
-        // Python node file
-        possiblePaths = [
-          path.join(currentFileDir, "src", "python", `${nodeNameLower}U.py`),
-          path.join(currentFileDir, "python", `${nodeNameLower}U.py`),
-        ];
-      } else {
-        // Go node file (default)
-        possiblePaths = [
-          path.join(
-            currentFileDir,
-            "src",
-            "nodes",
-            `${nodeNameLower}`,
-            `${nodeNameLower}U.go`,
-          ),
-          path.join(
-            currentFileDir,
-            "nodes",
-            `${nodeNameLower}`,
-            `${nodeNameLower}U.go`,
-          ),
-        ];
-      }
-
-      // 🔹 Try opening the first existing file
-      for (const filePath of possiblePaths) {
-        const fullPath = vscode.Uri.file(filePath);
-        try {
-          await vscode.workspace.fs.stat(fullPath); // Check if file exists
-          vscode.window.showTextDocument(fullPath);
-          return;
-        } catch (_err) {
-          console.log(`File not found: ${filePath}`);
+      // Route based on line type: "in" → input file, "node"/"model" → implementation file
+      const inMatch = lineText.match(/^\s*IN\s+(\S+)\s*->/i);
+      if (inMatch) {
+        const source = inMatch[1];
+        const isS3 = source.startsWith("s3://");
+        const isDb = /\bdb\s*=/i.test(lineText);
+        if (!isS3 && !isDb) {
+          const baseName = path.basename(source).replace(/\.csv$/i, "");
+          await openFirstExisting([
+            path.join(currentFileDir, "input", `${baseName}.csv`),
+            path.join(path.dirname(currentFileDir), "input", `${baseName}.csv`),
+          ]);
         }
+        return;
       }
 
-      vscode.window.showErrorMessage(
-        `File not found in expected locations:\n- ${possiblePaths.join("\n- ")}`,
-      );
+      const nodeMatch = lineText.match(/\b(?:NODE|MODEL)\s+(\w+)/i);
+      if (!nodeMatch) {
+        return;
+      }
+
+      const nodeNameLower = nodeMatch[1].toLowerCase();
+      const isPython = /lang\s*=\s*(python|py)/i.test(lineText);
+      const possiblePaths = isPython
+        ? [
+            path.join(currentFileDir, "src", "python", `${nodeNameLower}U.py`),
+            path.join(currentFileDir, "python", `${nodeNameLower}U.py`),
+          ]
+        : [
+            path.join(
+              currentFileDir,
+              "src",
+              "nodes",
+              nodeNameLower,
+              `${nodeNameLower}U.go`,
+            ),
+            path.join(
+              currentFileDir,
+              "nodes",
+              nodeNameLower,
+              `${nodeNameLower}U.go`,
+            ),
+          ];
+      await openFirstExisting(possiblePaths);
     },
   );
 
@@ -374,13 +353,13 @@ export function activate(context: vscode.ExtensionContext) {
 
       const filePath = path.parse(editor.document.fileName).name;
 
-      // 🔹 Open a new terminal or reuse an existing one
+      // Open a new terminal or reuse an existing one
       const terminal =
         vscode.window.terminals.find((t) => t.name === "VOR Terminal") ||
         vscode.window.createTerminal("VOR Terminal");
       terminal.show();
 
-      // 🔹 Run "vor create process <filename>"
+      // Run "vor create process <filename>"
       terminal.sendText(`vor create process ${filePath}`);
     },
   );
@@ -397,28 +376,26 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const document = editor.document;
-      const selection = editor.selection;
-      const position = selection.active;
+      const position = editor.selection.active;
 
-      // 🔹 Get the current line text
+      // Get the current line text
       const lineText = document.lineAt(position.line).text;
 
-      // 🔹 Extract the process name after "NAME "
+      // Extract the process name after "NAME "
       const match = lineText.match(/\bNAME\s+(\w+)/i);
-      if (!match || position.character <= match.index! + 4) {
-        vscode.window.showErrorMessage("No process name found at cursor.");
+      if (!match) {
         return;
       }
 
       const processName = match[1]; // Extracted process name
 
-      // 🔹 Open a new terminal or reuse an existing one
+      // Open a new terminal or reuse an existing one
       const terminal =
         vscode.window.terminals.find((t) => t.name === "VOR Terminal") ||
         vscode.window.createTerminal("VOR Terminal");
       terminal.show();
 
-      // 🔹 Run "vor run process <processName>"
+      // Run "vor run process <processName>"
       terminal.sendText(`vor run ${processName}`);
     },
   );
@@ -428,7 +405,7 @@ export function activate(context: vscode.ExtensionContext) {
 
 export function deactivate() {}
 
-// 🔹 Function to insert a template into the active editor
+// Function to insert a template into the active editor
 function insertTemplate(template: string) {
   const editor = vscode.window.activeTextEditor;
   if (!editor) {
@@ -454,7 +431,7 @@ function insertTemplate(template: string) {
     });
 }
 
-// 🔹 Function to create a completion item
+// Function to create a completion item
 function createCompletionItem(
   label: string,
   insertText: string,
@@ -467,7 +444,7 @@ function createCompletionItem(
   return item;
 }
 
-// 🔹 Function to create INPUT completion items with step-by-step placeholders
+// Function to create INPUT completion items with step-by-step placeholders
 function createSnippet(
   type: string,
   label: string,
@@ -481,6 +458,22 @@ function createSnippet(
   item.insertText = new vscode.SnippetString(snippet);
   item.detail = description;
   return item;
+}
+
+async function openFirstExisting(possiblePaths: string[]): Promise<void> {
+  for (const filePath of possiblePaths) {
+    const uri = vscode.Uri.file(filePath);
+    try {
+      await vscode.workspace.fs.stat(uri);
+      vscode.window.showTextDocument(uri);
+      return;
+    } catch (_err) {
+      console.log(`File not found: ${filePath}`);
+    }
+  }
+  vscode.window.showErrorMessage(
+    `File not found in expected locations:\n- ${possiblePaths.join("\n- ")}`,
+  );
 }
 
 async function getCSVFiles(directories: string[]): Promise<string[]> {
@@ -498,40 +491,6 @@ async function getCSVFiles(directories: string[]): Promise<string[]> {
 
   return csvFiles.flat();
 }
-
-const templates = {
-  Go: `// Stream Go Template
-name firstprocess
-in input.csv -> input
-node usernode(input)(output)
-out output -> output.csv
-`,
-  Python: `// Stream Python Template
-name testpy
-in first.csv -> input
-node usernodepy(input)(output) lang=python
-out output -> output.csv
-`,
-};
-
-const descriptions = {
-  // 'INPUT_CSV': ``,
-  INPUT_DB: `Database Input Template
-> input schemaname.table_name -> input_queue
-                        `,
-  INPUT_S3: `S3 Input Template
-> input s3://bucket_name/path -> input_queue
-                        `,
-  OUTPUT_CSV: `CSV Output Template
-> output output_queue -> output.csv                    
-                        `,
-  OUTPUT_DB: `Database Output Template
-> output output_queue -> schemaname.table_name                    
-                        `,
-  OUTPUT_S3: `S3 Output Template
-> output output_queue -> s3://bucket_name/path                    
-                        `,
-};
 
 function registerCommands(context: vscode.ExtensionContext) {
   Object.entries(templates).forEach(([lang, template]) => {

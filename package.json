@@ -71,12 +71,6 @@
         "path": "./syntaxes/strm.tmLanguage.json"
       }
     ],
-    "completionItemProvider": [
-      {
-        "language": "strm",
-        "provideCompletionItems": true
-      }
-    ],
     "commands": [
       {
         "command": "extension.insertTemplateGo",
@@ -119,7 +113,7 @@
       {
         "command": "extension.openNodeFile",
         "key": "f12",
-        "when": "editorTextFocus"
+        "when": "editorLangId == strm"
       }
     ],
     "menus": {
