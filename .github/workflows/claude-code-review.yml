@@ -10,7 +10,7 @@ concurrency:
 
 jobs:
   claude-review:
-    runs-on: [self-hosted, permanent, X64]
+    runs-on: ubuntu-latest
     if: |
       !contains(github.event.pull_request.title, '[skip-review]') &&
       !contains(github.event.pull_request.title, '[WIP]') &&
@@ -22,9 +22,6 @@ jobs:
       id-token: write
 
     steps:
-      - name: Clean Claude state
-        run: rm -rf ~/.claude
-
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
