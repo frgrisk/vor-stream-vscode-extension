@@ -1,0 +1,10 @@
+name testprocess
+type Default
+label "Test process"
+
+in input.csv -> raw_input
+
+node filternode(raw_input)(filtered)
+node enrichnode(filtered)(enriched) lang=go
+
+out enriched -> output.csv
