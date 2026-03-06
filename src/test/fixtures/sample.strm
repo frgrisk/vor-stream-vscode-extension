@@ -1,6 +1,5 @@
 name testprocess
 type Default
-label "Test process"
 
 in input.csv -> raw_input
 

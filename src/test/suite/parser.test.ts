@@ -29,7 +29,7 @@ suite("Parser: getParseErrors", () => {
   });
 
   test("error has correct shape", () => {
-    const errors = getParseErrors("@@@");
+    const errors = getParseErrors("@@@invalid@@@");
     assert.ok(errors.length > 0);
     const err = errors[0];
     assert.ok(typeof err.line === "number", "line should be a number");
