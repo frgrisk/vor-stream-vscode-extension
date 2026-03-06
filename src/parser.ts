@@ -56,7 +56,7 @@ export function getParseErrors(inputText: string): ParseError[] {
   parser.removeErrorListeners();
   parser.addErrorListener(parserErrors);
 
-  parser.process();
+  parser.parse();
 
   return [...lexerErrors.errors, ...parserErrors.errors];
 }

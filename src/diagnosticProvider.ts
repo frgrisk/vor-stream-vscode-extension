@@ -8,6 +8,12 @@ export function registerDiagnosticProvider(
   context.subscriptions.push(diagnostics);
 
   const timers = new Map<string, ReturnType<typeof setTimeout>>();
+  context.subscriptions.push({
+    dispose() {
+      timers.forEach(clearTimeout);
+      timers.clear();
+    },
+  });
 
   function updateDiagnostics(document: vscode.TextDocument): void {
     if (document.languageId !== "strm") {
@@ -56,6 +62,8 @@ export function registerDiagnosticProvider(
     }),
   );
 
-  // Run on already-open documents (e.g. reopening VS Code with a .strm file)
-  vscode.workspace.textDocuments.forEach(updateDiagnostics);
+  // Catch documents already open when the extension activates.
+  // onDidOpenTextDocument replays them, but scheduling here ensures they
+  // are debounced and not parsed twice if VS Code fires both.
+  vscode.workspace.textDocuments.forEach(scheduleUpdate);
 }
