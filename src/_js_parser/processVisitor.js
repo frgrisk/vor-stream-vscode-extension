@@ -40,6 +40,11 @@ export default class processVisitor extends antlr4.tree.ParseTreeVisitor {
     return this.visitChildren(ctx);
   }
 
+  // Visit a parse tree produced by processParser#labelStmt.
+  visitLabelStmt(ctx) {
+    return this.visitChildren(ctx);
+  }
+
   // Visit a parse tree produced by processParser#processType.
   visitProcessType(ctx) {
     return this.visitChildren(ctx);
@@ -77,6 +82,16 @@ export default class processVisitor extends antlr4.tree.ParseTreeVisitor {
 
   // Visit a parse tree produced by processParser#processStmt.
   visitProcessStmt(ctx) {
+    return this.visitChildren(ctx);
+  }
+
+  // Visit a parse tree produced by processParser#modelStmt.
+  visitModelStmt(ctx) {
+    return this.visitChildren(ctx);
+  }
+
+  // Visit a parse tree produced by processParser#label.
+  visitLabel(ctx) {
     return this.visitChildren(ctx);
   }
 
@@ -175,6 +190,36 @@ export default class processVisitor extends antlr4.tree.ParseTreeVisitor {
     return this.visitChildren(ctx);
   }
 
+  // Visit a parse tree produced by processParser#modelOpts.
+  visitModelOpts(ctx) {
+    return this.visitChildren(ctx);
+  }
+
+  // Visit a parse tree produced by processParser#modelTypeOpt.
+  visitModelTypeOpt(ctx) {
+    return this.visitChildren(ctx);
+  }
+
+  // Visit a parse tree produced by processParser#modelNameOpt.
+  visitModelNameOpt(ctx) {
+    return this.visitChildren(ctx);
+  }
+
+  // Visit a parse tree produced by processParser#scenario.
+  visitScenario(ctx) {
+    return this.visitChildren(ctx);
+  }
+
+  // Visit a parse tree produced by processParser#unittest.
+  visitUnittest(ctx) {
+    return this.visitChildren(ctx);
+  }
+
+  // Visit a parse tree produced by processParser#exceptionQueue.
+  visitExceptionQueue(ctx) {
+    return this.visitChildren(ctx);
+  }
+
   // Visit a parse tree produced by processParser#inSelect.
   visitInSelect(ctx) {
     return this.visitChildren(ctx);
@@ -225,18 +270,18 @@ export default class processVisitor extends antlr4.tree.ParseTreeVisitor {
     return this.visitChildren(ctx);
   }
 
+  // Visit a parse tree produced by processParser#sas.
+  visitSas(ctx) {
+    return this.visitChildren(ctx);
+  }
+
   // Visit a parse tree produced by processParser#s3.
   visitS3(ctx) {
     return this.visitChildren(ctx);
   }
 
-  // Visit a parse tree produced by processParser#bulkStatement.
-  visitBulkStatement(ctx) {
-    return this.visitChildren(ctx);
-  }
-
-  // Visit a parse tree produced by processParser#bulkOpts.
-  visitBulkOpts(ctx) {
+  // Visit a parse tree produced by processParser#mssqlOpts.
+  visitMssqlOpts(ctx) {
     return this.visitChildren(ctx);
   }
 
@@ -310,8 +355,8 @@ export default class processVisitor extends antlr4.tree.ParseTreeVisitor {
     return this.visitChildren(ctx);
   }
 
-  // Visit a parse tree produced by processParser#scenario.
-  visitScenario(ctx) {
+  // Visit a parse tree produced by processParser#scenariods.
+  visitScenariods(ctx) {
     return this.visitChildren(ctx);
   }
 
@@ -400,11 +445,6 @@ export default class processVisitor extends antlr4.tree.ParseTreeVisitor {
     return this.visitChildren(ctx);
   }
 
-  // Visit a parse tree produced by processParser#nameDescr.
-  visitNameDescr(ctx) {
-    return this.visitChildren(ctx);
-  }
-
   // Visit a parse tree produced by processParser#nameDescrPredict.
   visitNameDescrPredict(ctx) {
     return this.visitChildren(ctx);
@@ -447,6 +487,11 @@ export default class processVisitor extends antlr4.tree.ParseTreeVisitor {
 
   // Visit a parse tree produced by processParser#quoteString.
   visitQuoteString(ctx) {
+    return this.visitChildren(ctx);
+  }
+
+  // Visit a parse tree produced by processParser#connectionPath.
+  visitConnectionPath(ctx) {
     return this.visitChildren(ctx);
   }
 
