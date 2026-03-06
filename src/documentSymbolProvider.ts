@@ -59,7 +59,7 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
         }
 
         // subprocess <name>(...)(...)  {
-        const subprocMatch = text.match(/^\s*subprocess\s+(\w+)/i);
+        const subprocMatch = text.match(/^\s*(?:subprocess|process)\s+(\w+)/i);
         if (subprocMatch) {
           const sym = new vscode.DocumentSymbol(
             subprocMatch[1],
@@ -112,7 +112,7 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
         }
 
         // in <source> -> <queue>
-        const inMatch = text.match(/^\s*in\s+(\S+)\s*->\s*(\S+)/i);
+        const inMatch = text.match(/^\s*in(?:put)?\s+(\S+)\s*->\s*(\S+)/i);
         if (inMatch) {
           symbols.push(
             new vscode.DocumentSymbol(
@@ -127,7 +127,7 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
         }
 
         // out <queue> -> <dest>
-        const outMatch = text.match(/^\s*out\s+(\S+)\s*->\s*(\S+)/i);
+        const outMatch = text.match(/^\s*out(?:put)?\s+(\S+)\s*->\s*(\S+)/i);
         if (outMatch) {
           symbols.push(
             new vscode.DocumentSymbol(
