@@ -25,6 +25,7 @@ export function getTokensForCompletion(inputText: string): string[] {
 export interface ParseError {
   line: number; // 1-based
   column: number; // 0-based
+  length: number; // character count, minimum 1
   message: string;
 }
 
@@ -34,12 +35,22 @@ class SyntaxErrorCollector extends (antlr4 as any).error.ErrorListener {
 
   syntaxError(
     _recognizer: unknown,
-    _offendingSymbol: unknown,
+    offendingSymbol: unknown,
     line: number,
     column: number,
     msg: string,
   ): void {
-    this.errors.push({ line, column, message: msg });
+    let length = 1;
+    if (
+      offendingSymbol &&
+      typeof offendingSymbol === "object" &&
+      "start" in offendingSymbol &&
+      "stop" in offendingSymbol
+    ) {
+      const sym = offendingSymbol as { start: number; stop: number };
+      length = Math.max(1, sym.stop - sym.start + 1);
+    }
+    this.errors.push({ line, column, length, message: msg });
   }
 }
 

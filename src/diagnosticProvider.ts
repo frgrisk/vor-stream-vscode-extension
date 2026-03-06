@@ -22,10 +22,11 @@ export function registerDiagnosticProvider(
     const errors = getParseErrors(document.getText());
     diagnostics.set(
       document.uri,
-      errors.map(({ line, column, message }) => {
-        const pos = new vscode.Position(line - 1, column);
+      errors.map(({ line, column, length, message }) => {
+        const start = new vscode.Position(line - 1, column);
+        const end = new vscode.Position(line - 1, column + length);
         return new vscode.Diagnostic(
-          new vscode.Range(pos, pos),
+          new vscode.Range(start, end),
           message,
           vscode.DiagnosticSeverity.Error,
         );
@@ -34,6 +35,9 @@ export function registerDiagnosticProvider(
   }
 
   function scheduleUpdate(document: vscode.TextDocument): void {
+    if (document.languageId !== "strm") {
+      return;
+    }
     const key = document.uri.toString();
     const existing = timers.get(key);
     if (existing !== undefined) {
@@ -49,7 +53,7 @@ export function registerDiagnosticProvider(
   }
 
   context.subscriptions.push(
-    vscode.workspace.onDidOpenTextDocument(updateDiagnostics),
+    vscode.workspace.onDidOpenTextDocument(scheduleUpdate),
     vscode.workspace.onDidChangeTextDocument((e) => scheduleUpdate(e.document)),
     vscode.workspace.onDidCloseTextDocument((doc) => {
       diagnostics.delete(doc.uri);
@@ -62,8 +66,6 @@ export function registerDiagnosticProvider(
     }),
   );
 
-  // Catch documents already open when the extension activates.
-  // onDidOpenTextDocument replays them, but scheduling here ensures they
-  // are debounced and not parsed twice if VS Code fires both.
+  // Parse documents already open when the extension activates.
   vscode.workspace.textDocuments.forEach(scheduleUpdate);
 }
