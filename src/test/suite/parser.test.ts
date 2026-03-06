@@ -4,7 +4,7 @@ import * as fs from "fs";
 import { getParseErrors, getTokensForCompletion } from "../../parser";
 
 const VALID_STRM = fs.readFileSync(
-  path.resolve(__dirname, "../fixtures/sample.strm"),
+  path.resolve(__dirname, "../../../src/test/fixtures/sample.strm"),
   "utf8",
 );
 
