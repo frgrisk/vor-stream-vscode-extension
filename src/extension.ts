@@ -261,7 +261,7 @@ export function activate(context: vscode.ExtensionContext) {
       const document = editor.document;
       const lineText = document.lineAt(editor.selection.active.line).text;
 
-      const inMatch = lineText.match(/^\s*IN\s+(\S+)\s*->/i);
+      const inMatch = lineText.match(/^\s*(?:IN|INPUT)\s+(\S+)\s*->/i);
       if (!inMatch) {
         vscode.window.showInformationMessage(
           "No input source found on the current line.",
@@ -269,8 +269,22 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
 
+      const source = inMatch[1];
+      if (source.startsWith("s3://")) {
+        vscode.window.showInformationMessage(
+          "S3 inputs cannot be opened locally.",
+        );
+        return;
+      }
+      if (/^db=/i.test(source) || /^DB$/i.test(source)) {
+        vscode.window.showInformationMessage(
+          "DB inputs cannot be opened locally.",
+        );
+        return;
+      }
+
       const currentFileDir = path.dirname(document.uri.fsPath);
-      const baseName = path.basename(inMatch[1]).replace(/\.csv$/i, "");
+      const baseName = path.basename(source).replace(/\.csv$/i, "");
       await openFirstExisting([
         path.join(currentFileDir, "input", `${baseName}.csv`),
         path.join(path.dirname(currentFileDir), "input", `${baseName}.csv`),
@@ -292,8 +306,8 @@ export function activate(context: vscode.ExtensionContext) {
       const lineText = document.lineAt(editor.selection.active.line).text;
       const currentFileDir = path.dirname(document.uri.fsPath);
 
-      // Route based on line type: "in" → input file, "node"/"model" → implementation file
-      const inMatch = lineText.match(/^\s*IN\s+(\S+)\s*->/i);
+      // Route based on line type: "in"/"input" → input file, "node"/"model" → implementation file
+      const inMatch = lineText.match(/^\s*(?:IN|INPUT)\s+(\S+)\s*->/i);
       if (inMatch) {
         const source = inMatch[1];
         const isS3 = source.startsWith("s3://");

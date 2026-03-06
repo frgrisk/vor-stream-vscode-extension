@@ -12,8 +12,8 @@ export function getTokensForCompletion(inputText: string): string[] {
   // Excludes: punctuation/operators (T__0–T__24 = 1–25), SQLSTMTSEMICOLON (26),
   // NUMBER (27), STRING (28), SCOL (29), comments (95–96), whitespace (97–98),
   // and error tokens (99).
-  const KEYWORD_MIN = 30;
-  const IDENTIFIER = 94;
+  const KEYWORD_MIN = processLexer.CHECK_CONSTRAINTS; // first keyword token (30)
+  const IDENTIFIER = processLexer.IDENTIFIER; // identifier token (94)
 
   const tokenSet = new Set<string>();
   tokens.tokens.forEach((token) => {
