@@ -8,19 +8,25 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
       const symbols: vscode.DocumentSymbol[] = [];
       // Stack of open subprocess blocks
       const subprocessStack: vscode.DocumentSymbol[] = [];
+      let insideBlockComment = false;
 
       for (let i = 0; i < document.lineCount; i++) {
         const line = document.lineAt(i);
         const text = line.text;
         const trimmed = text.trim();
 
-        // Skip blank lines and comment lines
-        if (
-          !trimmed ||
-          trimmed.startsWith("//") ||
-          trimmed.startsWith("/*") ||
-          trimmed.startsWith("*")
-        ) {
+        // Track block comment state
+        if (insideBlockComment) {
+          if (trimmed.includes("*/")) insideBlockComment = false;
+          continue;
+        }
+        if (trimmed.startsWith("/*")) {
+          if (!trimmed.includes("*/")) insideBlockComment = true;
+          continue;
+        }
+
+        // Skip blank lines and single-line comment lines
+        if (!trimmed || trimmed.startsWith("//")) {
           continue;
         }
 
@@ -90,15 +96,18 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
         // model <name>
         const modelMatch = text.match(/^\s*model\s+(\w+)/i);
         if (modelMatch) {
-          symbols.push(
-            new vscode.DocumentSymbol(
-              modelMatch[1],
-              "model",
-              vscode.SymbolKind.Class,
-              range,
-              range,
-            ),
+          const sym = new vscode.DocumentSymbol(
+            modelMatch[1],
+            "model",
+            vscode.SymbolKind.Class,
+            range,
+            range,
           );
+          if (subprocessStack.length > 0) {
+            subprocessStack[subprocessStack.length - 1].children.push(sym);
+          } else {
+            symbols.push(sym);
+          }
           continue;
         }
 
