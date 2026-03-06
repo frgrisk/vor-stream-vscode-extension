@@ -1,4 +1,3 @@
-import { Token } from "antlr4";
 import antlr4 from "antlr4";
 import processLexer from "./_js_parser/processLexer";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -11,10 +10,20 @@ export function getTokensForCompletion(inputText: string): string[] {
 
   tokens.fill();
 
-  const tokenSet = new Set<string>(); // Use a Set for uniqueness
+  // Only include keywords (types 30–93) and identifiers (type 94).
+  // Excludes: punctuation/operators (T__0–T__24 = 1–25), SQLSTMTSEMICOLON (26),
+  // NUMBER (27), STRING (28), SCOL (29), comments (95–96), whitespace (97–98),
+  // and error tokens (99).
+  const KEYWORD_MIN = processLexer.CHECK_CONSTRAINTS; // first keyword token (30)
+  const IDENTIFIER = processLexer.IDENTIFIER; // identifier token (94)
+
+  const tokenSet = new Set<string>();
   tokens.tokens.forEach((token) => {
-    if (token.type !== Token.EOF && token.text.trim()) {
-      // Ignore EOF and empty tokens
+    if (
+      token.type >= KEYWORD_MIN &&
+      token.type <= IDENTIFIER &&
+      token.text.trim()
+    ) {
       tokenSet.add(token.text);
     }
   });
