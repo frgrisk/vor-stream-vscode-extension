@@ -44,6 +44,13 @@ export function activate(context: vscode.ExtensionContext) {
 
   registerDiagnosticProvider(context);
 
+  context.subscriptions.push(
+    vscode.languages.registerDocumentSymbolProvider(
+      "strm",
+      createDocumentSymbolProvider(),
+    ),
+  );
+
   const provider = vscode.languages.registerCompletionItemProvider("strm", {
     async provideCompletionItems(
       document: vscode.TextDocument,
