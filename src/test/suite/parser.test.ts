@@ -34,8 +34,10 @@ suite("Parser: getParseErrors", () => {
     const err = errors[0];
     assert.ok(typeof err.line === "number", "line should be a number");
     assert.ok(typeof err.column === "number", "column should be a number");
+    assert.ok(typeof err.length === "number", "length should be a number");
     assert.ok(typeof err.message === "string", "message should be a string");
     assert.ok(err.line >= 1, "line should be 1-based");
+    assert.ok(err.length >= 1, "length should be at least 1");
   });
 });
 

@@ -2,6 +2,8 @@ import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
 import { getTokensForCompletion } from "./parser";
+import { createDocumentSymbolProvider } from "./documentSymbolProvider";
+import { registerDiagnosticProvider } from "./diagnosticProvider";
 
 const templates = {
   Go: `// Stream Go Template
@@ -39,6 +41,15 @@ const descriptions = {
 export function activate(context: vscode.ExtensionContext) {
   // Register commands dynamically for inserting templates
   registerCommands(context);
+
+  registerDiagnosticProvider(context);
+
+  context.subscriptions.push(
+    vscode.languages.registerDocumentSymbolProvider(
+      "strm",
+      createDocumentSymbolProvider(),
+    ),
+  );
 
   const provider = vscode.languages.registerCompletionItemProvider("strm", {
     async provideCompletionItems(
@@ -259,22 +270,35 @@ export function activate(context: vscode.ExtensionContext) {
       }
 
       const document = editor.document;
-      const position = editor.selection.active;
+      const lineText = document.lineAt(editor.selection.active.line).text;
 
-      // Get the current line text
-      const lineText = document.lineAt(position.line).text;
-
-      // Find "IN " in the line and extract the queue name after it
-      const match = lineText.match(/\b(?:INPUT|IN)\s+(\w+)/i);
-      if (!match) {
+      const inMatch = lineText.match(/^\s*(?:IN|INPUT)\s+(\S+)\s*->/i);
+      if (!inMatch) {
+        vscode.window.showInformationMessage(
+          "No input source found on the current line.",
+        );
         return;
       }
 
-      const inputName = match[1];
+      const source = inMatch[1];
+      if (source.startsWith("s3://")) {
+        vscode.window.showInformationMessage(
+          "S3 inputs cannot be opened locally.",
+        );
+        return;
+      }
+      if (/^db=/i.test(source) || /^DB$/i.test(source)) {
+        vscode.window.showInformationMessage(
+          "DB inputs cannot be opened locally.",
+        );
+        return;
+      }
+
       const currentFileDir = path.dirname(document.uri.fsPath);
+      const baseName = path.basename(source).replace(/\.csv$/i, "");
       await openFirstExisting([
-        path.join(currentFileDir, "input", `${inputName}.csv`),
-        path.join(path.dirname(currentFileDir), "input", `${inputName}.csv`),
+        path.join(currentFileDir, "input", `${baseName}.csv`),
+        path.join(path.dirname(currentFileDir), "input", `${baseName}.csv`),
       ]);
     },
   );
@@ -293,8 +317,8 @@ export function activate(context: vscode.ExtensionContext) {
       const lineText = document.lineAt(editor.selection.active.line).text;
       const currentFileDir = path.dirname(document.uri.fsPath);
 
-      // Route based on line type: "in" → input file, "node"/"model" → implementation file
-      const inMatch = lineText.match(/^\s*IN\s+(\S+)\s*->/i);
+      // Route based on line type: "in"/"input" → input file, "node"/"model" → implementation file
+      const inMatch = lineText.match(/^\s*(?:IN|INPUT)\s+(\S+)\s*->/i);
       if (inMatch) {
         const source = inMatch[1];
         const isS3 = source.startsWith("s3://");
@@ -471,8 +495,8 @@ async function openFirstExisting(possiblePaths: string[]): Promise<void> {
       console.log(`File not found: ${filePath}`);
     }
   }
-  vscode.window.showErrorMessage(
-    `File not found in expected locations:\n- ${possiblePaths.join("\n- ")}`,
+  vscode.window.showInformationMessage(
+    `File not found in expected locations: ${possiblePaths.join(", ")}`,
   );
 }
 

@@ -1,4 +1,3 @@
-import { Token } from "antlr4";
 import antlr4 from "antlr4";
 import processLexer from "./_js_parser/processLexer";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -11,10 +10,20 @@ export function getTokensForCompletion(inputText: string): string[] {
 
   tokens.fill();
 
-  const tokenSet = new Set<string>(); // Use a Set for uniqueness
+  // Only include keywords (types 30–93) and identifiers (type 94).
+  // Excludes: punctuation/operators (T__0–T__24 = 1–25), SQLSTMTSEMICOLON (26),
+  // NUMBER (27), STRING (28), SCOL (29), comments (95–96), whitespace (97–98),
+  // and error tokens (99).
+  const KEYWORD_MIN = processLexer.CHECK_CONSTRAINTS; // first keyword token (30)
+  const IDENTIFIER = processLexer.IDENTIFIER; // identifier token (94)
+
+  const tokenSet = new Set<string>();
   tokens.tokens.forEach((token) => {
-    if (token.type !== Token.EOF && token.text.trim()) {
-      // Ignore EOF and empty tokens
+    if (
+      token.type >= KEYWORD_MIN &&
+      token.type <= IDENTIFIER &&
+      token.text.trim()
+    ) {
       tokenSet.add(token.text);
     }
   });
@@ -25,6 +34,7 @@ export function getTokensForCompletion(inputText: string): string[] {
 export interface ParseError {
   line: number; // 1-based
   column: number; // 0-based
+  length: number; // character count, minimum 1
   message: string;
 }
 
@@ -34,12 +44,22 @@ class SyntaxErrorCollector extends (antlr4 as any).error.ErrorListener {
 
   syntaxError(
     _recognizer: unknown,
-    _offendingSymbol: unknown,
+    offendingSymbol: unknown,
     line: number,
     column: number,
     msg: string,
   ): void {
-    this.errors.push({ line, column, message: msg });
+    let length = 1;
+    if (
+      offendingSymbol &&
+      typeof offendingSymbol === "object" &&
+      "start" in offendingSymbol &&
+      "stop" in offendingSymbol
+    ) {
+      const sym = offendingSymbol as { start: number; stop: number };
+      length = Math.max(1, sym.stop - sym.start + 1);
+    }
+    this.errors.push({ line, column, length, message: msg });
   }
 }
 

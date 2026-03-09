@@ -26,7 +26,7 @@ module.exports = {
         use: [
           {
             loader: "ts-loader",
-            options: { transpileOnly: true },
+            options: { configFile: "tsconfig.build.json" },
           },
         ],
       },
