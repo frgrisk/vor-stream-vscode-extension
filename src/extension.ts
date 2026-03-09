@@ -39,29 +39,19 @@ const descriptions = {
                         `,
 };
 
-export function activate(context: vscode.ExtensionContext) {
-  // Register commands dynamically for inserting templates
-  registerCommands(context);
+export interface ICsvFileCache {
+  getFiles(directories: string[]): Promise<string[]>;
+}
 
-  const csvCache = new CsvFileCache(context);
-
-  registerDiagnosticProvider(context);
-
-  context.subscriptions.push(
-    vscode.languages.registerDocumentSymbolProvider(
-      "strm",
-      createDocumentSymbolProvider(),
-    ),
-  );
-
-  context.subscriptions.push(
-    vscode.languages.registerHoverProvider("strm", createHoverProvider()),
-  );
-
-  const provider = vscode.languages.registerCompletionItemProvider("strm", {
+export function createCompletionProvider(
+  csvCache: ICsvFileCache,
+): vscode.CompletionItemProvider {
+  return {
     async provideCompletionItems(
       document: vscode.TextDocument,
       position: vscode.Position,
+      _token: vscode.CancellationToken,
+      context: vscode.CompletionContext,
     ) {
       const suggestions: vscode.CompletionItem[] = [];
       const seenKeywords = new Set<string>();
@@ -149,6 +139,16 @@ export function activate(context: vscode.ExtensionContext) {
           suggestions.push(createSnippet("out", label, snippet, description));
           seenKeywords.add("out");
         });
+        return suggestions;
+      }
+
+      // When triggered by space and not in an in/out context, suppress completions
+      // to avoid noisy suggestions on every space keystroke
+      if (
+        context.triggerKind ===
+          vscode.CompletionTriggerKind.TriggerCharacter &&
+        context.triggerCharacter === " "
+      ) {
         return suggestions;
       }
 
@@ -317,7 +317,33 @@ export function activate(context: vscode.ExtensionContext) {
       addAntlrTokens();
       return suggestions;
     },
-  });
+  };
+}
+
+export function activate(context: vscode.ExtensionContext) {
+  // Register commands dynamically for inserting templates
+  registerCommands(context);
+
+  const csvCache = new CsvFileCache(context);
+
+  registerDiagnosticProvider(context);
+
+  context.subscriptions.push(
+    vscode.languages.registerDocumentSymbolProvider(
+      "strm",
+      createDocumentSymbolProvider(),
+    ),
+  );
+
+  context.subscriptions.push(
+    vscode.languages.registerHoverProvider("strm", createHoverProvider()),
+  );
+
+  const provider = vscode.languages.registerCompletionItemProvider(
+    "strm",
+    createCompletionProvider(csvCache),
+    " ", // trigger on space so "in " and "out " auto-show snippets
+  );
 
   context.subscriptions.push(provider);
 
