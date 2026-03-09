@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import * as fs from "fs";
 import { getTokensForCompletion } from "./parser";
+import { CsvFileCache } from "./utils/csvFileCache";
 import { createDocumentSymbolProvider } from "./documentSymbolProvider";
 import { registerDiagnosticProvider } from "./diagnosticProvider";
 import { createHoverProvider } from "./hoverProvider";
@@ -42,6 +42,8 @@ const descriptions = {
 export function activate(context: vscode.ExtensionContext) {
   // Register commands dynamically for inserting templates
   registerCommands(context);
+
+  const csvCache = new CsvFileCache(context);
 
   registerDiagnosticProvider(context);
 
@@ -159,7 +161,7 @@ export function activate(context: vscode.ExtensionContext) {
         "input",
       );
       const directoriesToCheck = [inputDirectory, parentDirectory];
-      const csvFiles: string[] = await getCSVFiles(directoriesToCheck);
+      const csvFiles: string[] = await csvCache.getFiles(directoriesToCheck);
       const csvFilesString =
         csvFiles.length > 0 ? csvFiles.join(",") : "first.csv";
 
@@ -503,22 +505,6 @@ async function openFirstExisting(possiblePaths: string[]): Promise<void> {
   vscode.window.showInformationMessage(
     `File not found in expected locations: ${possiblePaths.join(", ")}`,
   );
-}
-
-async function getCSVFiles(directories: string[]): Promise<string[]> {
-  const csvFiles = await Promise.all(
-    directories.map(async (dir) => {
-      try {
-        const files = await fs.promises.readdir(dir);
-        return files.filter((file) => file.endsWith(".csv"));
-      } catch (_err) {
-        console.error(`Error reading directory ${dir}: ${_err}`);
-        return [];
-      }
-    }),
-  );
-
-  return csvFiles.flat();
 }
 
 function registerCommands(context: vscode.ExtensionContext) {
