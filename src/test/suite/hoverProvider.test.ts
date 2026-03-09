@@ -195,7 +195,10 @@ suite("HoverProvider", () => {
       md.value.includes("Subprocess"),
       "Expected 'Subprocess' label in hover",
     );
-    assert.ok(md.value.includes("mySubProc"), "Expected subprocess name in hover");
+    assert.ok(
+      md.value.includes("mySubProc"),
+      "Expected subprocess name in hover",
+    );
     assert.ok(md.value.includes("a"), "Expected inputs in hover");
     assert.ok(md.value.includes("b"), "Expected outputs in hover");
   });
@@ -248,10 +251,7 @@ suite("HoverProvider", () => {
     assert.ok(hover, "Expected a hover for 'model' keyword");
     const md = hover.contents[0] as vscode.MarkdownString;
     // Keyword doc summary mentions 'model' but not the detail "Model\nInputs:"
-    assert.ok(
-      md.value.includes("`model`"),
-      "Expected keyword doc for 'model'",
-    );
+    assert.ok(md.value.includes("`model`"), "Expected keyword doc for 'model'");
     assert.ok(
       !md.value.startsWith("Model\n"),
       "Keyword hover should not show model detail card",
