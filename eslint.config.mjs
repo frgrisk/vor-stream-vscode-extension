@@ -24,6 +24,7 @@ export default tseslint.config(
   {
     ignores: [
       ".claude/**",
+      ".vscode-test/**",
       "src/_js_parser/**",
       "dist/**",
       "out/**",
