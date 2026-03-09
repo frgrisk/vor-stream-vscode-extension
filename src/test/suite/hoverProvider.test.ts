@@ -220,13 +220,13 @@ suite("HoverProvider", () => {
   });
 
   test("hovering on a queue name on a node line returns no detail hover", async () => {
-    // "node filternode(input)(output)" — 'input' starts at char 16
-    // Input queues are not keywords and not the node name → should be undefined
-    const hover = await getHover("node filternode(input)(output)\n", 0, 17);
+    // "node mynode(rawdata)(result)" — 'rawdata' starts at char 12
+    // rawdata is not a keyword or alias so hover should be undefined
+    const hover = await getHover("node mynode(rawdata)(result)\n", 0, 13);
     assert.strictEqual(
       hover,
       undefined,
-      "Expected no hover for queue name on a node line",
+      "Expected no hover for non-keyword queue name on a node line",
     );
   });
 
@@ -258,13 +258,14 @@ suite("HoverProvider", () => {
     );
   });
 
-  test("hovering on whitespace returns undefined", async () => {
-    // "name  myprocess" — char 4 is the extra space between 'name' and 'myprocess'
-    const hover = await getHover("name  myprocess\n", 0, 4);
+  test("hovering on a non-word character returns undefined", async () => {
+    // "node mynode(rawdata)(result)" — char 11 is '(' which is not a word character
+    // getWordRangeAtPosition returns undefined → hover returns undefined
+    const hover = await getHover("node mynode(rawdata)(result)\n", 0, 11);
     assert.strictEqual(
       hover,
       undefined,
-      "Expected undefined hover on whitespace",
+      "Expected undefined hover on a non-word character",
     );
   });
 });
