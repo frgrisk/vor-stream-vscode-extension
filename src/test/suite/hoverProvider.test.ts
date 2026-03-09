@@ -160,11 +160,21 @@ suite("HoverProvider", () => {
       "model",
       "db",
       "mode",
+      "compress",
       "exceptq",
       "scenario",
       "unittest",
       "modelname",
+      "descr",
       "subprocess",
+      "getfact",
+      "setfact",
+      "getsig",
+      "setsig",
+      "getdyn",
+      "setdyn",
+      "where",
+      "exec_when",
     ];
     for (const kw of keywords) {
       const hover = await getHover(`${kw} foo\n`, 0, 1);
@@ -174,5 +184,87 @@ suite("HoverProvider", () => {
         `Expected non-empty hover for '${kw}'`,
       );
     }
+  });
+
+  test("hovering on a subprocess name shows subprocess detail with inputs and outputs", async () => {
+    // "subprocess mySubProc(a)(b)" — mySubProc starts at char 11
+    const hover = await getHover("subprocess mySubProc(a)(b)\n", 0, 12);
+    assert.ok(hover, "Expected a hover result for subprocess name 'mySubProc'");
+    const md = hover.contents[0] as vscode.MarkdownString;
+    assert.ok(
+      md.value.includes("Subprocess"),
+      "Expected 'Subprocess' label in hover",
+    );
+    assert.ok(md.value.includes("mySubProc"), "Expected subprocess name in hover");
+    assert.ok(md.value.includes("a"), "Expected inputs in hover");
+    assert.ok(md.value.includes("b"), "Expected outputs in hover");
+  });
+
+  test("hovering on 'subprocess' keyword returns keyword doc, not subprocess detail", async () => {
+    // char 1 is on the 'subprocess' keyword itself (before the name)
+    const hover = await getHover("subprocess mySubProc(a)(b)\n", 0, 1);
+    assert.ok(hover, "Expected a hover for 'subprocess' keyword");
+    const md = hover.contents[0] as vscode.MarkdownString;
+    assert.ok(
+      md.value.includes("subprocess"),
+      "Expected keyword doc for 'subprocess'",
+    );
+    // Should NOT include the detail label
+    assert.ok(
+      !md.value.includes("Subprocess:"),
+      "Keyword hover should not show detail card",
+    );
+  });
+
+  test("hovering on a queue name on a node line returns no detail hover", async () => {
+    // "node filternode(input)(output)" — 'input' starts at char 16
+    // Input queues are not keywords and not the node name → should be undefined
+    const hover = await getHover("node filternode(input)(output)\n", 0, 17);
+    assert.strictEqual(
+      hover,
+      undefined,
+      "Expected no hover for queue name on a node line",
+    );
+  });
+
+  test("hovering on a node line with multiple comma-separated inputs captures all", async () => {
+    // "node enrichnode(filtered, db_input)(enriched)" — 'enrichnode' starts at char 5
+    const hover = await getHover(
+      "node enrichnode(filtered, db_input)(enriched)\n",
+      0,
+      6,
+    );
+    assert.ok(hover, "Expected a hover for node name with multiple inputs");
+    const md = hover.contents[0] as vscode.MarkdownString;
+    assert.ok(md.value.includes("enrichnode"), "Expected node name in hover");
+    assert.ok(md.value.includes("filtered"), "Expected first input in hover");
+    assert.ok(md.value.includes("db_input"), "Expected second input in hover");
+    assert.ok(md.value.includes("enriched"), "Expected output in hover");
+  });
+
+  test("hovering on 'model' keyword gives keyword doc, not model detail", async () => {
+    // char 1 = on 'model' keyword; model detail fires for word !== 'model'
+    const hover = await getHover("model (enriched)(scored)\n", 0, 1);
+    assert.ok(hover, "Expected a hover for 'model' keyword");
+    const md = hover.contents[0] as vscode.MarkdownString;
+    // Keyword doc summary mentions 'model' but not the detail "Model\nInputs:"
+    assert.ok(
+      md.value.includes("`model`"),
+      "Expected keyword doc for 'model'",
+    );
+    assert.ok(
+      !md.value.startsWith("Model\n"),
+      "Keyword hover should not show model detail card",
+    );
+  });
+
+  test("hovering on whitespace returns undefined", async () => {
+    // "name  myprocess" — char 4 is the extra space between 'name' and 'myprocess'
+    const hover = await getHover("name  myprocess\n", 0, 4);
+    assert.strictEqual(
+      hover,
+      undefined,
+      "Expected undefined hover on whitespace",
+    );
   });
 });
