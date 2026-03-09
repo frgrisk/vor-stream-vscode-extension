@@ -12,11 +12,16 @@ async function getHover(
     language: "strm",
   });
   const provider = createHoverProvider();
-  return provider.provideHover(
-    doc,
-    new vscode.Position(line, character),
-    new vscode.CancellationTokenSource().token,
-  );
+  const cts = new vscode.CancellationTokenSource();
+  try {
+    return provider.provideHover(
+      doc,
+      new vscode.Position(line, character),
+      cts.token,
+    );
+  } finally {
+    cts.dispose();
+  }
 }
 
 suite("HoverProvider", () => {
@@ -84,6 +89,41 @@ suite("HoverProvider", () => {
   test("hovering on an unknown word returns undefined", async () => {
     const hover = await getHover("name myprocess\n", 0, 6);
     assert.strictEqual(hover, undefined, "Expected undefined for non-keyword");
+  });
+
+  test("hovering on 'input' alias returns same hover as 'in'", async () => {
+    const hoverAlias = await getHover("input source.csv -> raw\n", 0, 1);
+    const hoverCanon = await getHover("in source.csv -> raw\n", 0, 1);
+    assert.ok(hoverAlias, "Expected hover for alias 'input'");
+    assert.ok(hoverCanon, "Expected hover for canonical 'in'");
+    const aliasValue = (hoverAlias.contents[0] as vscode.MarkdownString).value;
+    const canonValue = (hoverCanon.contents[0] as vscode.MarkdownString).value;
+    assert.strictEqual(aliasValue, canonValue, "Alias hover should match canonical hover");
+  });
+
+  test("hovering on 'output' alias returns same hover as 'out'", async () => {
+    const hoverAlias = await getHover("output queue_name -> dest\n", 0, 1);
+    const hoverCanon = await getHover("out queue_name -> dest\n", 0, 1);
+    assert.ok(hoverAlias, "Expected hover for alias 'output'");
+    assert.ok(hoverCanon, "Expected hover for canonical 'out'");
+    const aliasValue = (hoverAlias.contents[0] as vscode.MarkdownString).value;
+    const canonValue = (hoverCanon.contents[0] as vscode.MarkdownString).value;
+    assert.strictEqual(aliasValue, canonValue, "Alias hover should match canonical hover");
+  });
+
+  test("hovering on 'process' alias returns same hover as 'subprocess'", async () => {
+    const hoverAlias = await getHover("process myProc(a)(b) {}\n", 0, 1);
+    const hoverCanon = await getHover("subprocess myProc(a)(b) {}\n", 0, 1);
+    assert.ok(hoverAlias, "Expected hover for alias 'process'");
+    assert.ok(hoverCanon, "Expected hover for canonical 'subprocess'");
+    const aliasValue = (hoverAlias.contents[0] as vscode.MarkdownString).value;
+    const canonValue = (hoverCanon.contents[0] as vscode.MarkdownString).value;
+    assert.strictEqual(aliasValue, canonValue, "Alias hover should match canonical hover");
+  });
+
+  test("hovering on a comment line returns undefined", async () => {
+    const hover = await getHover("// name myprocess\n", 0, 4);
+    assert.strictEqual(hover, undefined, "Expected undefined hover inside comment");
   });
 
   test("hovering on all documented keywords returns a hover", async () => {

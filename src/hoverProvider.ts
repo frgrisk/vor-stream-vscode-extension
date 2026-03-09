@@ -103,13 +103,17 @@ export function createHoverProvider(): vscode.HoverProvider {
     provideHover(
       document: vscode.TextDocument,
       position: vscode.Position,
+      _token: vscode.CancellationToken,
     ): vscode.Hover | undefined {
+      const lineText = document.lineAt(position.line).text;
+      if (/^\s*\/\//.test(lineText)) {
+        return undefined;
+      }
       const wordRange = document.getWordRangeAtPosition(position);
       if (!wordRange) {
         return undefined;
       }
       const word = document.getText(wordRange).toLowerCase();
-      const lineText = document.lineAt(position.line).text;
 
       // Check if we're hovering on a node/model identifier (not the keyword itself)
       const nodeLineMatch = lineText.match(
@@ -129,7 +133,12 @@ export function createHoverProvider(): vscode.HoverProvider {
         }
       }
 
-      const keywordDoc = KEYWORD_DOCS[word];
+      const normalized =
+        ({ input: "in", output: "out", process: "subprocess" } as Record<
+          string,
+          string
+        >)[word] ?? word;
+      const keywordDoc = KEYWORD_DOCS[normalized];
       if (keywordDoc) {
         return new vscode.Hover(buildKeywordHover(keywordDoc), wordRange);
       }
