@@ -134,9 +134,10 @@ function buildNodeHover(
   nodeName: string,
   inputs: string,
   outputs: string,
+  kind: "Node" | "Subprocess" = "Node",
 ): vscode.MarkdownString {
   const md = new vscode.MarkdownString();
-  md.appendMarkdown(`Node: **${nodeName}**`);
+  md.appendMarkdown(`${kind}: **${nodeName}**`);
   if (inputs) {
     md.appendText("\n");
     md.appendMarkdown(`Inputs: \`${inputs}\``);
@@ -193,6 +194,22 @@ export function createHoverProvider(): vscode.HoverProvider {
         if (word === nodeName.toLowerCase()) {
           return new vscode.Hover(
             buildNodeHover(nodeName, inputs, outputs),
+            wordRange,
+          );
+        }
+      }
+
+      // subprocess has an explicit name: subprocess name(inputs)(outputs) [{ ... }]
+      const subprocessLineMatch = lineText.match(
+        /^\s*subprocess\s+(\w+)\s*\(([^)]*)\)\s*\(([^)]*)\)/i,
+      );
+      if (subprocessLineMatch) {
+        const subName = subprocessLineMatch[1];
+        const inputs = subprocessLineMatch[2];
+        const outputs = subprocessLineMatch[3];
+        if (word === subName.toLowerCase()) {
+          return new vscode.Hover(
+            buildNodeHover(subName, inputs, outputs, "Subprocess"),
             wordRange,
           );
         }
