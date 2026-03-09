@@ -145,8 +145,7 @@ export function createCompletionProvider(
       // When triggered by space and not in an in/out context, suppress completions
       // to avoid noisy suggestions on every space keystroke
       if (
-        context.triggerKind ===
-          vscode.CompletionTriggerKind.TriggerCharacter &&
+        context.triggerKind === vscode.CompletionTriggerKind.TriggerCharacter &&
         context.triggerCharacter === " "
       ) {
         return suggestions;

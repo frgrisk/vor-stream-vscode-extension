@@ -17,11 +17,7 @@ const spaceContext: vscode.CompletionContext = {
 };
 
 function toItems(
-  result:
-    | vscode.CompletionItem[]
-    | vscode.CompletionList
-    | null
-    | undefined,
+  result: vscode.CompletionItem[] | vscode.CompletionList | null | undefined,
 ): vscode.CompletionItem[] {
   if (!result) return [];
   if (result instanceof vscode.CompletionList) return result.items;
@@ -84,9 +80,7 @@ suite("CompletionProvider", () => {
     test("CSV snippet insertText uses csv files from cache", async () => {
       const items = await getCompletions("in ", 3);
       const csvItem = items.find((i) =>
-        (typeof i.label === "string" ? i.label : i.label.label).includes(
-          "CSV",
-        ),
+        (typeof i.label === "string" ? i.label : i.label.label).includes("CSV"),
       );
       assert.ok(csvItem, "Expected CSV item");
       const insertText = csvItem.insertText;
@@ -103,9 +97,7 @@ suite("CompletionProvider", () => {
     test("CSV snippet insertText does NOT start with 'in '", async () => {
       const items = await getCompletions("in ", 3);
       const csvItem = items.find((i) =>
-        (typeof i.label === "string" ? i.label : i.label.label).includes(
-          "CSV",
-        ),
+        (typeof i.label === "string" ? i.label : i.label.label).includes("CSV"),
       );
       assert.ok(csvItem, "Expected CSV item");
       const insertText = csvItem.insertText;
@@ -153,9 +145,7 @@ suite("CompletionProvider", () => {
     test("CSV snippet insertText does NOT start with 'out '", async () => {
       const items = await getCompletions("out ", 4);
       const csvItem = items.find((i) =>
-        (typeof i.label === "string" ? i.label : i.label.label).includes(
-          "CSV",
-        ),
+        (typeof i.label === "string" ? i.label : i.label.label).includes("CSV"),
       );
       assert.ok(csvItem, "Expected CSV item");
       const insertText = csvItem.insertText;
