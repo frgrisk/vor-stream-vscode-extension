@@ -49,7 +49,12 @@ suite("HoverProvider", () => {
   });
 
   test("hovering on 'model' keyword returns Hover with markdown content", async () => {
-    const hover = await getHover("model mymodel(input)(output)\n", 0, 1);
+    // Real grammar: model has no node name — model (inputs)(outputs)
+    const hover = await getHover(
+      'model (enriched)(scored) type="Default"\n',
+      0,
+      1,
+    );
     assert.ok(hover, "Expected a hover result for 'model'");
     assert.ok(hover.contents.length > 0, "Expected hover to have contents");
   });
@@ -77,11 +82,11 @@ suite("HoverProvider", () => {
     assert.ok(md.value.includes("output"), "Expected outputs in hover");
   });
 
-  test("hovering on a model name shows model detail with inputs and outputs", async () => {
-    const hover = await getHover("model mymodel(queueA)(queueB)\n", 0, 7);
-    assert.ok(hover, "Expected a hover result for model name 'mymodel'");
+  test("hovering on a model queue shows model detail with inputs and outputs", async () => {
+    // Real grammar: model (inputs)(outputs) — no node name token
+    const hover = await getHover("model (queueA)(queueB)\n", 0, 8);
+    assert.ok(hover, "Expected a hover result when hovering on model queues");
     const md = hover.contents[0] as vscode.MarkdownString;
-    assert.ok(md.value.includes("mymodel"), "Expected model name in hover");
     assert.ok(md.value.includes("queueA"), "Expected inputs in hover");
     assert.ok(md.value.includes("queueB"), "Expected outputs in hover");
   });
