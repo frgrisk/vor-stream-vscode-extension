@@ -34,7 +34,7 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
 
         // Closing brace: ends the current subprocess block
         if (trimmed === "}" && subprocessStack.length > 0) {
-          const entry = subprocessStack[subprocessStack.length - 1];
+          const entry = subprocessStack.at(-1)!;
           entry.range = new vscode.Range(
             entry.range.start,
             new vscode.Position(i, text.length),
@@ -48,7 +48,7 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
         if (nameMatch) {
           symbols.push(
             new vscode.DocumentSymbol(
-              nameMatch[1],
+              nameMatch[1]!,
               "name",
               vscode.SymbolKind.Module,
               range,
@@ -62,7 +62,7 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
         const subprocMatch = text.match(/^\s*(?:subprocess|process)\s+(\w+)/i);
         if (subprocMatch) {
           const sym = new vscode.DocumentSymbol(
-            subprocMatch[1],
+            subprocMatch[1]!,
             "subprocess",
             vscode.SymbolKind.Namespace,
             range,
@@ -79,35 +79,65 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
         const nodeMatch = text.match(/^\s*node\s+(\w+)/i);
         if (nodeMatch) {
           const sym = new vscode.DocumentSymbol(
-            nodeMatch[1],
+            nodeMatch[1]!,
             "node",
             vscode.SymbolKind.Function,
             range,
             range,
           );
           if (subprocessStack.length > 0) {
-            subprocessStack[subprocessStack.length - 1].children.push(sym);
+            subprocessStack[subprocessStack.length - 1]!.children.push(sym);
           } else {
             symbols.push(sym);
           }
           continue;
         }
 
-        // model <name>
-        const modelMatch = text.match(/^\s*model\s+(\w+)/i);
+        // model [name](inputs)(outputs) [opts]
+        // The node name is optional in newer grammar; fall back to modelname= or inputs.
+        const modelMatch = text.match(/^\s*model\b/i);
         if (modelMatch) {
+          let endLine = i;
+          let j = i + 1;
+          while (j < document.lineCount) {
+            const nextText = document.lineAt(j).text;
+            if (
+              /^\s+(exceptq|scenario|unittest|modelname)\s*=/i.test(nextText)
+            ) {
+              endLine = j;
+              j++;
+            } else {
+              break;
+            }
+          }
+          // Derive display name: explicit node name > modelname= on this line > inputs > "model"
+          const nodeNameMatch = text.match(/^\s*model\s+(\w+)\s*\(/i);
+          const modelnameMatch =
+            text.match(/\bmodelname\s*=\s*"([^"]+)"/i) ??
+            text.match(/\bmodelname\s*=\s*(\S+)/i);
+          const inputsMatch = text.match(/^\s*model\s*\(([^)]*)\)/i);
+          const displayName =
+            nodeNameMatch?.[1] ??
+            modelnameMatch?.[1] ??
+            (inputsMatch ? `(${inputsMatch[1]})` : "model");
           const sym = new vscode.DocumentSymbol(
-            modelMatch[1],
+            displayName,
             "model",
             vscode.SymbolKind.Class,
-            range,
-            range,
+            new vscode.Range(
+              i,
+              0,
+              endLine,
+              document.lineAt(endLine).text.length,
+            ),
+            range, // selectionRange stays on first line
           );
           if (subprocessStack.length > 0) {
-            subprocessStack[subprocessStack.length - 1].children.push(sym);
+            subprocessStack[subprocessStack.length - 1]!.children.push(sym);
           } else {
             symbols.push(sym);
           }
+          i = endLine; // skip already-consumed continuation lines
           continue;
         }
 
@@ -146,7 +176,7 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
         if (sqlMatch) {
           symbols.push(
             new vscode.DocumentSymbol(
-              sqlMatch[1],
+              sqlMatch[1]!,
               "sql",
               vscode.SymbolKind.Constant,
               range,

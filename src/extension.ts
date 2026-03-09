@@ -1,9 +1,10 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import * as fs from "fs";
 import { getTokensForCompletion } from "./parser";
+import { CsvFileCache } from "./utils/csvFileCache";
 import { createDocumentSymbolProvider } from "./documentSymbolProvider";
 import { registerDiagnosticProvider } from "./diagnosticProvider";
+import { createHoverProvider } from "./hoverProvider";
 
 const templates = {
   Go: `// Stream Go Template
@@ -42,6 +43,8 @@ export function activate(context: vscode.ExtensionContext) {
   // Register commands dynamically for inserting templates
   registerCommands(context);
 
+  const csvCache = new CsvFileCache(context);
+
   registerDiagnosticProvider(context);
 
   context.subscriptions.push(
@@ -49,6 +52,10 @@ export function activate(context: vscode.ExtensionContext) {
       "strm",
       createDocumentSymbolProvider(),
     ),
+  );
+
+  context.subscriptions.push(
+    vscode.languages.registerHoverProvider("strm", createHoverProvider()),
   );
 
   const provider = vscode.languages.registerCompletionItemProvider("strm", {
@@ -94,7 +101,7 @@ export function activate(context: vscode.ExtensionContext) {
           "input",
         );
         const directoriesToCheck = [inputDirectory, parentDirectory];
-        const csvFiles: string[] = await getCSVFiles(directoriesToCheck);
+        const csvFiles: string[] = await csvCache.getFiles(directoriesToCheck);
         const csvFilesString =
           csvFiles.length > 0 ? csvFiles.join(",") : "first.csv";
         [
@@ -267,7 +274,7 @@ export function activate(context: vscode.ExtensionContext) {
           suggestions.push(
             createCompletionItem(label, insertText, detail, kind),
           );
-          seenKeywords.add(label.split(" ")[0]);
+          seenKeywords.add(label.split(" ")[0]!);
         });
 
         // in and out as basic keyword completions at top level
@@ -335,7 +342,7 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      const source = inMatch[1];
+      const source = inMatch[1]!;
       if (source.startsWith("s3://")) {
         vscode.window.showInformationMessage(
           "S3 inputs cannot be opened locally.",
@@ -375,7 +382,7 @@ export function activate(context: vscode.ExtensionContext) {
       // Route based on line type: "in"/"input" → input file, "node"/"model" → implementation file
       const inMatch = lineText.match(/^\s*(?:IN|INPUT)\s+(\S+)\s*->/i);
       if (inMatch) {
-        const source = inMatch[1];
+        const source = inMatch[1]!;
         const isS3 = source.startsWith("s3://");
         const isDb = /\bdb\s*=/i.test(lineText);
         if (!isS3 && !isDb) {
@@ -393,7 +400,7 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      const nodeNameLower = nodeMatch[1].toLowerCase();
+      const nodeNameLower = nodeMatch[1]!.toLowerCase();
       const isPython = /lang\s*=\s*(python|py)/i.test(lineText);
       const possiblePaths = isPython
         ? [
@@ -553,22 +560,6 @@ async function openFirstExisting(possiblePaths: string[]): Promise<void> {
   vscode.window.showInformationMessage(
     `File not found in expected locations: ${possiblePaths.join(", ")}`,
   );
-}
-
-async function getCSVFiles(directories: string[]): Promise<string[]> {
-  const csvFiles = await Promise.all(
-    directories.map(async (dir) => {
-      try {
-        const files = await fs.promises.readdir(dir);
-        return files.filter((file) => file.endsWith(".csv"));
-      } catch (_err) {
-        console.error(`Error reading directory ${dir}: ${_err}`);
-        return [];
-      }
-    }),
-  );
-
-  return csvFiles.flat();
 }
 
 function registerCommands(context: vscode.ExtensionContext) {

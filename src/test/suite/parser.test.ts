@@ -32,6 +32,7 @@ suite("Parser: getParseErrors", () => {
     const errors = getParseErrors("@@@invalid@@@");
     assert.ok(errors.length > 0);
     const err = errors[0];
+    assert.ok(err, "Expected at least one parse error");
     assert.ok(typeof err.line === "number", "line should be a number");
     assert.ok(typeof err.column === "number", "column should be a number");
     assert.ok(typeof err.length === "number", "length should be a number");
@@ -45,6 +46,7 @@ suite("Parser: getParseErrors", () => {
     const errors = getParseErrors(input);
     assert.ok(errors.length > 0, "Expected at least one parse error");
     const err = errors[0];
+    assert.ok(err, "Expected at least one parse error");
     assert.strictEqual(err.line, 3, "Error should be reported on line 3");
   });
 
