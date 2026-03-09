@@ -259,9 +259,9 @@ suite("HoverProvider", () => {
   });
 
   test("hovering on a non-word character returns undefined", async () => {
-    // "node mynode(rawdata)(result)" — char 11 is '(' which is not a word character
+    // "name = myprocess" — char 5 is '=' surrounded by spaces on both sides
     // getWordRangeAtPosition returns undefined → hover returns undefined
-    const hover = await getHover("node mynode(rawdata)(result)\n", 0, 11);
+    const hover = await getHover("name = myprocess\n", 0, 5);
     assert.strictEqual(
       hover,
       undefined,
