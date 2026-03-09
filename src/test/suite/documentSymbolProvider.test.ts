@@ -89,7 +89,7 @@ suite("DocumentSymbolProvider", () => {
     assert.ok(subproc, "Expected a subprocess symbol");
     assert.strictEqual(subproc.children.length, 1, "Expected 1 child node");
     const firstChild = subproc.children[0];
-    assert.ok(firstChild !== undefined, "Expected a child node");
+    assert.ok(firstChild, "Expected a child node");
     assert.strictEqual(firstChild.name, "innernode");
   });
 });
