@@ -14,11 +14,12 @@ async function getHover(
   const provider = createHoverProvider();
   const cts = new vscode.CancellationTokenSource();
   try {
-    return provider.provideHover(
+    const result = await provider.provideHover(
       doc,
       new vscode.Position(line, character),
       cts.token,
     );
+    return result ?? undefined;
   } finally {
     cts.dispose();
   }
