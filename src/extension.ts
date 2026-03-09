@@ -139,7 +139,7 @@ export function activate(context: vscode.ExtensionContext) {
 
       predefinedCompletions.forEach(({ label, insertText, detail, kind }) => {
         suggestions.push(createCompletionItem(label, insertText, detail, kind));
-        seenKeywords.add(label.split(" ")[0]);
+        seenKeywords.add(label.split(" ")[0]!);
       });
       seenKeywords.add("label");
 
@@ -280,7 +280,7 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      const source = inMatch[1];
+      const source = inMatch[1]!;
       if (source.startsWith("s3://")) {
         vscode.window.showInformationMessage(
           "S3 inputs cannot be opened locally.",
@@ -320,7 +320,7 @@ export function activate(context: vscode.ExtensionContext) {
       // Route based on line type: "in"/"input" → input file, "node"/"model" → implementation file
       const inMatch = lineText.match(/^\s*(?:IN|INPUT)\s+(\S+)\s*->/i);
       if (inMatch) {
-        const source = inMatch[1];
+        const source = inMatch[1]!;
         const isS3 = source.startsWith("s3://");
         const isDb = /\bdb\s*=/i.test(lineText);
         if (!isS3 && !isDb) {
@@ -338,7 +338,7 @@ export function activate(context: vscode.ExtensionContext) {
         return;
       }
 
-      const nodeNameLower = nodeMatch[1].toLowerCase();
+      const nodeNameLower = nodeMatch[1]!.toLowerCase();
       const isPython = /lang\s*=\s*(python|py)/i.test(lineText);
       const possiblePaths = isPython
         ? [
