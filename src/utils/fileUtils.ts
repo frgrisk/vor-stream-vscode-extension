@@ -8,10 +8,10 @@ export async function openFirstExisting(
     const uri = vscode.Uri.file(filePath);
     try {
       await vscode.workspace.fs.stat(uri);
-      vscode.window.showTextDocument(uri);
+      await vscode.window.showTextDocument(uri);
       return;
-    } catch (_err) {
-      console.log(`File not found: ${filePath}`);
+    } catch (err) {
+      console.debug(`File not found: ${filePath}`, err);
     }
   }
   vscode.window.showInformationMessage(
@@ -25,8 +25,11 @@ export async function getCSVFiles(directories: string[]): Promise<string[]> {
       try {
         const files = await fs.promises.readdir(dir);
         return files.filter((file) => file.endsWith(".csv"));
-      } catch (_err) {
-        console.error(`Error reading directory ${dir}: ${_err}`);
+      } catch (err) {
+        const e = err as NodeJS.ErrnoException;
+        if (e.code !== "ENOENT") {
+          console.warn(`fileUtils: could not read ${dir}:`, err);
+        }
         return [];
       }
     }),

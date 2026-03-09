@@ -31,7 +31,7 @@ export function registerOpenInputFileCommand(
         );
         return;
       }
-      if (/^db=/i.test(source) || /^DB$/i.test(source)) {
+      if (/\bdb\s*=/i.test(lineText)) {
         vscode.window.showInformationMessage(
           "DB inputs cannot be opened locally.",
         );
