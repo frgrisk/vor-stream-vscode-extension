@@ -80,8 +80,12 @@ export function createCompletionProvider(
         });
       };
 
-      // in-line context: offer only in snippet variants
-      if (/^in(?:put)?\s/i.test(lineTrimmed)) {
+      // Helper: check if an option keyword already appears on this line
+      const hasOpt = (opt: string) =>
+        new RegExp(`\\b${opt}\\b`, "i").test(lineTrimmed);
+
+      // in-line context: offer snippet variants only when nothing follows yet
+      if (/^in(?:put)?\s+$/i.test(lineTrimmed)) {
         const inputDirectory = path.join(
           path.dirname(document.fileName),
           "input",
@@ -117,8 +121,46 @@ export function createCompletionProvider(
         return suggestions;
       }
 
-      // out-line context: offer only out snippet variants
-      if (/^out(?:put)?\s/i.test(lineTrimmed)) {
+      // in-line with -> present: offer optional per-input flags (exclude already-used)
+      if (/^in(?:put)?\s+\S.*->/i.test(lineTrimmed)) {
+        [
+          {
+            label: "db",
+            insertText: "db=${1|PG,MSSQL|}",
+            detail: "Database type",
+            kind: vscode.CompletionItemKind.Enum,
+          },
+          {
+            label: "where",
+            insertText: 'where="${1:condition}"',
+            detail: "Filter condition",
+            kind: vscode.CompletionItemKind.Property,
+          },
+          {
+            label: "compress",
+            insertText: "compress",
+            detail: "Enable compression",
+            kind: vscode.CompletionItemKind.Keyword,
+          },
+          {
+            label: "name",
+            insertText: "name=${1:queue_alias}",
+            detail: "Queue alias name",
+            kind: vscode.CompletionItemKind.Property,
+          },
+        ]
+          .filter(({ label }) => !hasOpt(label))
+          .forEach(({ label, insertText, detail, kind }) => {
+            suggestions.push(
+              createCompletionItem(label, insertText, detail, kind),
+            );
+            seenKeywords.add(label);
+          });
+        return suggestions;
+      }
+
+      // out-line context: offer snippet variants only when nothing follows yet
+      if (/^out(?:put)?\s+$/i.test(lineTrimmed)) {
         [
           {
             label: "CSV",
@@ -142,8 +184,46 @@ export function createCompletionProvider(
         return suggestions;
       }
 
-      // When triggered by space and not in an in/out context, suppress completions
-      // to avoid noisy suggestions on every space keystroke
+      // out-line with -> present: offer optional per-output flags (exclude already-used)
+      if (/^out(?:put)?\s+\S.*->/i.test(lineTrimmed)) {
+        [
+          {
+            label: "db",
+            insertText: "db=${1|PG,MSSQL|}",
+            detail: "Database type",
+            kind: vscode.CompletionItemKind.Enum,
+          },
+          {
+            label: "mode",
+            insertText: "mode=${1|Append,Replace|}",
+            detail: "Write mode for S3 outputs",
+            kind: vscode.CompletionItemKind.Enum,
+          },
+          {
+            label: "compress",
+            insertText: "compress",
+            detail: "Enable compression",
+            kind: vscode.CompletionItemKind.Keyword,
+          },
+          {
+            label: "exec_when",
+            insertText: "exec_when=${1:tag}",
+            detail: "Execution condition tag",
+            kind: vscode.CompletionItemKind.Property,
+          },
+        ]
+          .filter(({ label }) => !hasOpt(label))
+          .forEach(({ label, insertText, detail, kind }) => {
+            suggestions.push(
+              createCompletionItem(label, insertText, detail, kind),
+            );
+            seenKeywords.add(label);
+          });
+        return suggestions;
+      }
+
+      // When triggered by space and not in a recognised context, suppress
+      // completions to avoid noisy suggestions on every space keystroke
       if (
         context.triggerKind === vscode.CompletionTriggerKind.TriggerCharacter &&
         context.triggerCharacter === " "
@@ -151,26 +231,83 @@ export function createCompletionProvider(
         return suggestions;
       }
 
-      // node-after-parens context: offer lang= option
+      // node-after-parens context: offer node-level options (exclude already-used)
       if (/^node\s+\w+\([^)]*\)\([^)]*\)/i.test(lineTrimmed)) {
-        suggestions.push(
-          createCompletionItem(
-            "lang",
-            "lang=${1|go,python|}",
-            "Select a language",
-            vscode.CompletionItemKind.Enum,
-          ),
-        );
-        seenKeywords.add("lang");
+        [
+          {
+            label: "lang",
+            insertText: "lang=${1|go,python|}",
+            detail: "Implementation language",
+            kind: vscode.CompletionItemKind.Enum,
+          },
+          {
+            label: "exec_when",
+            insertText: "exec_when=${1:tag}",
+            detail: "Execution condition tag",
+            kind: vscode.CompletionItemKind.Property,
+          },
+          {
+            label: "where",
+            insertText: 'where="${1:condition}"',
+            detail: "Filter condition",
+            kind: vscode.CompletionItemKind.Property,
+          },
+          {
+            label: "getfact",
+            insertText: "getfact=${1:fact_name}",
+            detail: "Read a named fact",
+            kind: vscode.CompletionItemKind.Property,
+          },
+          {
+            label: "setfact",
+            insertText: "setfact=${1:fact_name}",
+            detail: "Write a named fact",
+            kind: vscode.CompletionItemKind.Property,
+          },
+          {
+            label: "getsig",
+            insertText: "getsig=${1:signal_name}",
+            detail: "Wait for a named signal",
+            kind: vscode.CompletionItemKind.Property,
+          },
+          {
+            label: "setsig",
+            insertText: "setsig=${1:signal_name}",
+            detail: "Emit a named signal",
+            kind: vscode.CompletionItemKind.Property,
+          },
+          {
+            label: "getdyn",
+            insertText: "getdyn=${1:dyn_fact}",
+            detail: "Read a dynamic fact",
+            kind: vscode.CompletionItemKind.Property,
+          },
+          {
+            label: "setdyn",
+            insertText: "setdyn=${1:dyn_fact}",
+            detail: "Write a dynamic fact",
+            kind: vscode.CompletionItemKind.Property,
+          },
+        ].forEach(({ label, insertText, detail, kind }) => {
+          // Always mark as seen so addAntlrTokens() won't re-add these option keywords
+          seenKeywords.add(label);
+          if (!hasOpt(label)) {
+            suggestions.push(
+              createCompletionItem(label, insertText, detail, kind),
+            );
+          }
+        });
         addAntlrTokens();
         return suggestions;
       }
 
       // Model continuation: on the model line itself, or on an indented line
-      // within 5 lines of a model statement
+      // within 10 lines of a model statement. Collect already-defined options
+      // so we don't suggest duplicates.
       const isModelLine = /^model\s/i.test(lineTrimmed);
       const isIndented = linePrefix.length > lineTrimmed.length;
       let isModelContinuation = isModelLine;
+      let modelStartLine = isModelLine ? position.line : -1;
       if (!isModelContinuation && isIndented) {
         for (
           let i = position.line - 1;
@@ -181,6 +318,7 @@ export function createCompletionProvider(
           const prevTrimmed = prevLine.trim();
           if (/^model\s/i.test(prevTrimmed)) {
             isModelContinuation = true;
+            modelStartLine = i;
             break;
           }
           // Stop if we hit a non-indented, non-empty line (top-level statement)
@@ -191,6 +329,23 @@ export function createCompletionProvider(
       }
 
       if (isModelContinuation) {
+        // Collect options already defined between model start and current line
+        const definedModelOpts = new Set<string>();
+        if (modelStartLine >= 0) {
+          for (let i = modelStartLine; i < position.line; i++) {
+            const lineText = document.lineAt(i).text;
+            for (const opt of [
+              "exceptq",
+              "scenario",
+              "unittest",
+              "modelname",
+            ]) {
+              if (new RegExp(`\\b${opt}\\b`, "i").test(lineText)) {
+                definedModelOpts.add(opt);
+              }
+            }
+          }
+        }
         [
           {
             label: "exceptq",
@@ -216,12 +371,14 @@ export function createCompletionProvider(
             detail: "Model name for model nodes",
             kind: vscode.CompletionItemKind.Property,
           },
-        ].forEach(({ label, insertText, detail, kind }) => {
-          suggestions.push(
-            createCompletionItem(label, insertText, detail, kind),
-          );
-          seenKeywords.add(label);
-        });
+        ]
+          .filter(({ label }) => !definedModelOpts.has(label))
+          .forEach(({ label, insertText, detail, kind }) => {
+            suggestions.push(
+              createCompletionItem(label, insertText, detail, kind),
+            );
+            seenKeywords.add(label);
+          });
         return suggestions;
       }
 
