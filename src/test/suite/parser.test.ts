@@ -39,6 +39,26 @@ suite("Parser: getParseErrors", () => {
     assert.ok(err.line >= 1, "line should be 1-based");
     assert.ok(err.length >= 1, "length should be at least 1");
   });
+
+  test("error line number is accurate for multi-line input", () => {
+    const input = "name myprocess\ntype Default\n@@@ bad token\n";
+    const errors = getParseErrors(input);
+    assert.ok(errors.length > 0, "Expected at least one parse error");
+    const err = errors[0];
+    assert.strictEqual(err.line, 3, "Error should be reported on line 3");
+    assert.strictEqual(err.column, 0, "Error should start at column 0");
+  });
+
+  test("error length matches token width", () => {
+    // 'badkeyword' is a 10-character token that the parser will not recognise
+    const errors = getParseErrors("badkeyword");
+    assert.ok(errors.length > 0);
+    const tokenErr = errors.find((e) => e.length === 10);
+    assert.ok(
+      tokenErr !== undefined,
+      `Expected an error with length 10; got ${JSON.stringify(errors)}`,
+    );
+  });
 });
 
 suite("Parser: getTokensForCompletion", () => {
@@ -60,5 +80,28 @@ suite("Parser: getTokensForCompletion", () => {
   test("returns empty array for empty input", () => {
     const tokens = getTokensForCompletion("");
     assert.deepStrictEqual(tokens, []);
+  });
+
+  test("includes expected keyword and identifier tokens", () => {
+    const tokens = getTokensForCompletion(VALID_STRM);
+    for (const expected of [
+      "name",
+      "type",
+      "node",
+      "in",
+      "out",
+      "testprocess",
+      "filternode",
+      "enrichnode",
+    ]) {
+      assert.ok(tokens.includes(expected), `Expected token '${expected}'`);
+    }
+  });
+
+  test("does not include punctuation or noise tokens", () => {
+    const tokens = getTokensForCompletion(VALID_STRM);
+    for (const noise of ["->", "(", ")", ";", "<EOF>"]) {
+      assert.ok(!tokens.includes(noise), `Unexpected noise token '${noise}'`);
+    }
   });
 });
