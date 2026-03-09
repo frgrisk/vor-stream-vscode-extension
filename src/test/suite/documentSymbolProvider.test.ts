@@ -3,9 +3,15 @@ import * as vscode from "vscode";
 import { createDocumentSymbolProvider } from "../../documentSymbolProvider";
 
 async function getSymbols(content: string): Promise<vscode.DocumentSymbol[]> {
-  const doc = await vscode.workspace.openTextDocument({ content, language: "strm" });
+  const doc = await vscode.workspace.openTextDocument({
+    content,
+    language: "strm",
+  });
   const provider = createDocumentSymbolProvider();
-  return provider.provideDocumentSymbols(doc, new vscode.CancellationTokenSource().token) as vscode.DocumentSymbol[];
+  return provider.provideDocumentSymbols(
+    doc,
+    new vscode.CancellationTokenSource().token,
+  ) as vscode.DocumentSymbol[];
 }
 
 suite("DocumentSymbolProvider", () => {
@@ -50,9 +56,7 @@ suite("DocumentSymbolProvider", () => {
   });
 
   test("blank lines and comments produce no symbols", async () => {
-    const symbols = await getSymbols(
-      "\n// a comment\n/* block comment */\n\n",
-    );
+    const symbols = await getSymbols("\n// a comment\n/* block comment */\n\n");
     assert.strictEqual(symbols.length, 0, "Expected no symbols");
   });
 
