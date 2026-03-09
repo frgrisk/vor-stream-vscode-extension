@@ -107,17 +107,17 @@ export function activate(context: vscode.ExtensionContext) {
         [
           {
             label: "CSV",
-            snippet: `in \${1|${csvFilesString}|} -> \${2:input_queue}`,
+            snippet: `\${1|${csvFilesString}|} -> \${2:input_queue}`,
             description: `CSV Input Template\n> INPUT \${1|${csvFilesString}|} -> \${2:input_queue}\n`,
           },
           {
             label: "DB",
-            snippet: "in ${1:schema_name}.${2:table_name} -> ${3:input_queue}",
+            snippet: "${1:schema_name}.${2:table_name} -> ${3:input_queue}",
             description: descriptions["INPUT_DB"],
           },
           {
             label: "S3",
-            snippet: "in s3://${1:bucket_name}/${2:path} -> ${3:input_queue}",
+            snippet: "s3://${1:bucket_name}/${2:path} -> ${3:input_queue}",
             description: descriptions["INPUT_S3"],
           },
         ].forEach(({ label, snippet, description }) => {
@@ -132,18 +132,17 @@ export function activate(context: vscode.ExtensionContext) {
         [
           {
             label: "CSV",
-            snippet: "out ${1:output_queue} -> ${2:output.csv}",
+            snippet: "${1:output_queue} -> ${2:output.csv}",
             description: descriptions["OUTPUT_CSV"],
           },
           {
             label: "DB",
-            snippet:
-              "out ${1:output_queue} -> ${2:schema_name}.${3:table_name}",
+            snippet: "${1:output_queue} -> ${2:schema_name}.${3:table_name}",
             description: descriptions["OUTPUT_DB"],
           },
           {
             label: "S3",
-            snippet: "out ${1:output_queue} -> s3://${2:bucket_name}/${3:path}",
+            snippet: "${1:output_queue} -> s3://${2:bucket_name}/${3:path}",
             description: descriptions["OUTPUT_S3"],
           },
         ].forEach(({ label, snippet, description }) => {
@@ -224,7 +223,6 @@ export function activate(context: vscode.ExtensionContext) {
           );
           seenKeywords.add(label);
         });
-        addAntlrTokens();
         return suggestions;
       }
 
