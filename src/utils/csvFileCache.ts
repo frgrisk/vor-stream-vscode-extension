@@ -38,7 +38,10 @@ export class CsvFileCache {
           const entries = await fs.promises.readdir(dir);
           return entries.filter((f) => f.endsWith(".csv"));
         } catch (err) {
-          console.warn(`csvFileCache: could not read ${dir}:`, err);
+          const e = err as NodeJS.ErrnoException;
+          if (e.code !== "ENOENT") {
+            console.warn(`csvFileCache: could not read ${dir}:`, err);
+          }
           return [];
         }
       }),

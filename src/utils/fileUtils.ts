@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import * as fs from "fs";
 
 export async function openFirstExisting(
   possiblePaths: string[],
@@ -17,23 +16,4 @@ export async function openFirstExisting(
   vscode.window.showInformationMessage(
     `File not found in expected locations: ${possiblePaths.join(", ")}`,
   );
-}
-
-export async function getCSVFiles(directories: string[]): Promise<string[]> {
-  const csvFiles = await Promise.all(
-    directories.map(async (dir) => {
-      try {
-        const files = await fs.promises.readdir(dir);
-        return files.filter((file) => file.endsWith(".csv"));
-      } catch (err) {
-        const e = err as NodeJS.ErrnoException;
-        if (e.code !== "ENOENT") {
-          console.warn(`fileUtils: could not read ${dir}:`, err);
-        }
-        return [];
-      }
-    }),
-  );
-
-  return csvFiles.flat();
 }

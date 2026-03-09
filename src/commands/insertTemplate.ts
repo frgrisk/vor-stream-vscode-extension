@@ -15,7 +15,7 @@ out output -> output.csv
 `,
 };
 
-function insertTemplate(template: string) {
+async function insertTemplate(template: string) {
   const editor = vscode.window.activeTextEditor;
   if (!editor) {
     vscode.window.showErrorMessage("No active editor found.");
@@ -27,17 +27,14 @@ function insertTemplate(template: string) {
     return;
   }
 
-  editor
-    .edit((editBuilder) => {
-      editBuilder.insert(new vscode.Position(0, 0), template);
-    })
-    .then((success) => {
-      if (success) {
-        vscode.window.showInformationMessage("Inserted .strm template.");
-      } else {
-        vscode.window.showErrorMessage("Failed to insert template.");
-      }
-    });
+  const success = await editor.edit((editBuilder) => {
+    editBuilder.insert(new vscode.Position(0, 0), template);
+  });
+  if (success) {
+    vscode.window.showInformationMessage("Inserted .strm template.");
+  } else {
+    vscode.window.showErrorMessage("Failed to insert template.");
+  }
 }
 
 export function registerInsertTemplateCommands(
