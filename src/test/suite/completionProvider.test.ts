@@ -1,6 +1,9 @@
 import * as assert from "assert";
 import * as vscode from "vscode";
-import { createCompletionProvider, ICsvFileCache } from "../../extension";
+import {
+  createCompletionProvider,
+  ICsvFileCache,
+} from "../../providers/completionProvider";
 
 const mockCsvCache: ICsvFileCache = {
   getFiles: async () => ["input.csv", "transactions.csv"],
