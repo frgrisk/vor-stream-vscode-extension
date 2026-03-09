@@ -34,7 +34,7 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
 
         // Closing brace: ends the current subprocess block
         if (trimmed === "}" && subprocessStack.length > 0) {
-          const entry = subprocessStack[subprocessStack.length - 1];
+          const entry = subprocessStack.at(-1)!;
           entry.range = new vscode.Range(
             entry.range.start,
             new vscode.Position(i, text.length),
@@ -48,7 +48,7 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
         if (nameMatch) {
           symbols.push(
             new vscode.DocumentSymbol(
-              nameMatch[1],
+              nameMatch[1]!,
               "name",
               vscode.SymbolKind.Module,
               range,
@@ -62,7 +62,7 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
         const subprocMatch = text.match(/^\s*(?:subprocess|process)\s+(\w+)/i);
         if (subprocMatch) {
           const sym = new vscode.DocumentSymbol(
-            subprocMatch[1],
+            subprocMatch[1]!,
             "subprocess",
             vscode.SymbolKind.Namespace,
             range,
@@ -79,14 +79,14 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
         const nodeMatch = text.match(/^\s*node\s+(\w+)/i);
         if (nodeMatch) {
           const sym = new vscode.DocumentSymbol(
-            nodeMatch[1],
+            nodeMatch[1]!,
             "node",
             vscode.SymbolKind.Function,
             range,
             range,
           );
           if (subprocessStack.length > 0) {
-            subprocessStack[subprocessStack.length - 1].children.push(sym);
+            subprocessStack[subprocessStack.length - 1]!.children.push(sym);
           } else {
             symbols.push(sym);
           }
@@ -133,7 +133,7 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
             range, // selectionRange stays on first line
           );
           if (subprocessStack.length > 0) {
-            subprocessStack[subprocessStack.length - 1].children.push(sym);
+            subprocessStack[subprocessStack.length - 1]!.children.push(sym);
           } else {
             symbols.push(sym);
           }
@@ -176,7 +176,7 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
         if (sqlMatch) {
           symbols.push(
             new vscode.DocumentSymbol(
-              sqlMatch[1],
+              sqlMatch[1]!,
               "sql",
               vscode.SymbolKind.Constant,
               range,

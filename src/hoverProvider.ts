@@ -188,9 +188,9 @@ export function createHoverProvider(): vscode.HoverProvider {
         /^\s*node\s+(\w+)\s*\(([^)]*)\)\s*\(([^)]*)\)/i,
       );
       if (nodeLineMatch) {
-        const nodeName = nodeLineMatch[1];
-        const inputs = nodeLineMatch[2];
-        const outputs = nodeLineMatch[3];
+        const nodeName = nodeLineMatch[1]!;
+        const inputs = nodeLineMatch[2]!;
+        const outputs = nodeLineMatch[3]!;
         if (word === nodeName.toLowerCase()) {
           return new vscode.Hover(
             buildNodeHover(nodeName, inputs, outputs),
@@ -204,9 +204,9 @@ export function createHoverProvider(): vscode.HoverProvider {
         /^\s*subprocess\s+(\w+)\s*\(([^)]*)\)\s*\(([^)]*)\)/i,
       );
       if (subprocessLineMatch) {
-        const subName = subprocessLineMatch[1];
-        const inputs = subprocessLineMatch[2];
-        const outputs = subprocessLineMatch[3];
+        const subName = subprocessLineMatch[1]!;
+        const inputs = subprocessLineMatch[2]!;
+        const outputs = subprocessLineMatch[3]!;
         if (word === subName.toLowerCase()) {
           return new vscode.Hover(
             buildNodeHover(subName, inputs, outputs, "Subprocess"),
@@ -221,8 +221,8 @@ export function createHoverProvider(): vscode.HoverProvider {
         /^\s*model\s*\(([^)]*)\)\s*\(([^)]*)\)/i,
       );
       if (modelLineMatch && word !== "model") {
-        const inputs = modelLineMatch[1];
-        const outputs = modelLineMatch[2];
+        const inputs = modelLineMatch[1]!;
+        const outputs = modelLineMatch[2]!;
         return new vscode.Hover(buildModelHover(inputs, outputs), wordRange);
       }
 
