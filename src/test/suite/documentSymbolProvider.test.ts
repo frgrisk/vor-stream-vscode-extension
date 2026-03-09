@@ -97,7 +97,7 @@ suite("DocumentSymbolProvider", () => {
       "  exceptq=error_queue",
       "  scenario=true",
       "  unittest=false",
-      "  modelname=\"MyModel\"",
+      '  modelname="MyModel"',
       "node anothernode(input)(output)",
     ].join("\n");
     const symbols = await getSymbols(content);
@@ -118,6 +118,10 @@ suite("DocumentSymbolProvider", () => {
     const sym = symbols.find((s) => s.detail === "model");
     assert.ok(sym, "Expected a 'model' symbol");
     assert.strictEqual(sym.range.start.line, 0);
-    assert.strictEqual(sym.range.end.line, 0, "Single-line model range should not expand");
+    assert.strictEqual(
+      sym.range.end.line,
+      0,
+      "Single-line model range should not expand",
+    );
   });
 });
