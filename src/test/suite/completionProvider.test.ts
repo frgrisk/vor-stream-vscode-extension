@@ -208,7 +208,7 @@ suite("CompletionProvider", () => {
       );
     });
 
-    test("returns exactly 4 model options when none defined yet", async () => {
+    test("returns 6 model options (type,label,exceptq,scenario,unittest,modelname) when none defined", async () => {
       const content = "model mymodel(a)(b)\n  ";
       const doc = await vscode.workspace.openTextDocument({
         content,
@@ -224,21 +224,25 @@ suite("CompletionProvider", () => {
           invokeContext,
         ),
       );
+      const ls = labels(items);
+      assert.ok(ls.includes("type"), `Expected 'type' in ${ls}`);
+      assert.ok(ls.includes("label"), `Expected 'label' in ${ls}`);
+      assert.ok(ls.includes("exceptq"), `Expected 'exceptq' in ${ls}`);
       assert.strictEqual(
         items.length,
-        4,
-        `Expected exactly 4 model items, got ${items.length}: ${labels(items)}`,
+        6,
+        `Expected exactly 6 model items, got ${items.length}: ${ls}`,
       );
     });
 
-    test("excludes already-defined options from model continuation", async () => {
+    test("excludes options defined on previous continuation lines", async () => {
       const content = "model mymodel(a)(b)\n  exceptq=errq\n  ";
       const doc = await vscode.workspace.openTextDocument({
         content,
         language: "strm",
       });
       const provider = createCompletionProvider(mockCsvCache);
-      const position = new vscode.Position(2, 2); // third line, indented
+      const position = new vscode.Position(2, 2);
       const items = toItems(
         await provider.provideCompletionItems(
           doc,
@@ -258,20 +262,20 @@ suite("CompletionProvider", () => {
       );
       assert.strictEqual(
         items.length,
-        3,
-        `Expected 3 remaining options, got ${items.length}: ${ls}`,
+        5,
+        `Expected 5 remaining options, got ${items.length}: ${ls}`,
       );
     });
 
-    test("no options remain when all 4 model fields are defined", async () => {
+    test("excludes options already typed on the model line itself", async () => {
       const content =
-        'model mymodel(a)(b)\n  exceptq=errq\n  scenario=true\n  unittest=false\n  modelname="M"\n  ';
+        'model mymodel(a)(b) type="Default" exceptq=errq scenario=true unittest=false modelname="M" label="L" ';
       const doc = await vscode.workspace.openTextDocument({
         content,
         language: "strm",
       });
       const provider = createCompletionProvider(mockCsvCache);
-      const position = new vscode.Position(5, 2);
+      const position = new vscode.Position(0, content.length);
       const items = toItems(
         await provider.provideCompletionItems(
           doc,
@@ -283,45 +287,81 @@ suite("CompletionProvider", () => {
       assert.strictEqual(
         items.length,
         0,
-        `Expected 0 model options when all fields defined, got ${items.length}: ${labels(items)}`,
+        `Expected 0 items when all defined on same line, got ${items.length}: ${labels(items)}`,
       );
     });
 
-    test("in-line with -> present: no snippets, but shows in-line flags", async () => {
-      const items = await getCompletions(
-        "in input.csv -> raw_input ",
-        "in input.csv -> raw_input ".length,
-      );
+    test("in-line CSV source: shows where= and name= but NOT db=", async () => {
+      const line = "in input.csv -> raw_input ";
+      const items = await getCompletions(line, line.length);
       const ls = labels(items);
+      assert.ok(!ls.includes("in (CSV)"), `Snippets must not appear: ${ls}`);
       assert.ok(
-        !ls.includes("in (CSV)"),
-        `Snippets should NOT appear when -> is present: ${ls}`,
+        !ls.includes("db"),
+        `'db' must not appear for CSV source: ${ls}`,
       );
-      assert.ok(ls.includes("db"), `Expected 'db' flag for in-line: ${ls}`);
-      assert.ok(
-        ls.includes("where"),
-        `Expected 'where' flag for in-line: ${ls}`,
+      assert.ok(ls.includes("where"), `Expected 'where' for CSV: ${ls}`);
+      assert.ok(ls.includes("name"), `Expected 'name' for CSV: ${ls}`);
+    });
+
+    test("in-line DB source (schema.table): shows db=, where=, name=", async () => {
+      const line = "in public.transactions -> raw_input ";
+      const items = await getCompletions(line, line.length);
+      const ls = labels(items);
+      assert.ok(ls.includes("db"), `Expected 'db' for DB source: ${ls}`);
+      assert.ok(ls.includes("where"), `Expected 'where' for DB source: ${ls}`);
+    });
+
+    test("in-line S3 source: no options", async () => {
+      const line = "in s3://bucket/path -> raw_input ";
+      const items = await getCompletions(line, line.length);
+      assert.strictEqual(
+        items.length,
+        0,
+        `Expected no options for S3 source, got ${items.length}: ${labels(items)}`,
       );
     });
 
-    test("out-line with -> present: no snippets, but shows out-line flags", async () => {
-      const items = await getCompletions(
-        "out results -> output.csv ",
-        "out results -> output.csv ".length,
-      );
+    test("out-line CSV dest: shows compress,exec_when but NOT db= or mode=", async () => {
+      const line = "out results -> output.csv ";
+      const items = await getCompletions(line, line.length);
       const ls = labels(items);
+      assert.ok(!ls.includes("out (CSV)"), `Snippets must not appear: ${ls}`);
+      assert.ok(!ls.includes("db"), `'db' must not appear for CSV dest: ${ls}`);
       assert.ok(
-        !ls.includes("out (CSV)"),
-        `Snippets should NOT appear when -> is present: ${ls}`,
-      );
-      assert.ok(ls.includes("db"), `Expected 'db' flag for out-line: ${ls}`);
-      assert.ok(
-        ls.includes("mode"),
-        `Expected 'mode' flag for out-line: ${ls}`,
+        !ls.includes("mode"),
+        `'mode' must not appear for CSV dest: ${ls}`,
       );
       assert.ok(
         ls.includes("compress"),
-        `Expected 'compress' for out-line: ${ls}`,
+        `Expected 'compress' for CSV dest: ${ls}`,
+      );
+      assert.ok(
+        ls.includes("exec_when"),
+        `Expected 'exec_when' for CSV dest: ${ls}`,
+      );
+    });
+
+    test("out-line S3 dest: shows mode=, compress, exec_when= but NOT db=", async () => {
+      const line = "out results -> s3://bucket/path ";
+      const items = await getCompletions(line, line.length);
+      const ls = labels(items);
+      assert.ok(ls.includes("mode"), `Expected 'mode' for S3 dest: ${ls}`);
+      assert.ok(
+        ls.includes("compress"),
+        `Expected 'compress' for S3 dest: ${ls}`,
+      );
+      assert.ok(!ls.includes("db"), `'db' must not appear for S3 dest: ${ls}`);
+    });
+
+    test("out-line DB dest: shows db=, compress, exec_when= but NOT mode=", async () => {
+      const line = "out results -> analytics.results ";
+      const items = await getCompletions(line, line.length);
+      const ls = labels(items);
+      assert.ok(ls.includes("db"), `Expected 'db' for DB dest: ${ls}`);
+      assert.ok(
+        !ls.includes("mode"),
+        `'mode' must not appear for DB dest: ${ls}`,
       );
     });
 
@@ -372,7 +412,7 @@ suite("CompletionProvider", () => {
   });
 
   suite("top-level context", () => {
-    test("empty line returns top-level keywords including name, type, node", async () => {
+    test("empty line returns core top-level keywords", async () => {
       const items = await getCompletions("", 0);
       const ls = labels(items);
       assert.ok(
@@ -380,24 +420,54 @@ suite("CompletionProvider", () => {
         `Expected 'name' in ${ls}`,
       );
       assert.ok(ls.includes("type"), `Expected 'type' in ${ls}`);
+      assert.ok(ls.includes("label"), `Expected 'label' in ${ls}`);
+      assert.ok(ls.includes("descr"), `Expected 'descr' in ${ls}`);
       assert.ok(ls.includes("node"), `Expected 'node' in ${ls}`);
       assert.ok(ls.includes("model"), `Expected 'model' in ${ls}`);
+      assert.ok(ls.includes("subprocess"), `Expected 'subprocess' in ${ls}`);
       assert.ok(ls.includes("in"), `Expected 'in' in ${ls}`);
       assert.ok(ls.includes("out"), `Expected 'out' in ${ls}`);
     });
 
-    test("top-level does NOT include exceptq=", async () => {
+    test("top-level does NOT include line-option keywords", async () => {
       const items = await getCompletions("", 0);
       const ls = labels(items);
       assert.ok(
         !ls.includes("exceptq"),
-        `'exceptq' should NOT appear at top level: ${ls}`,
+        `'exceptq' must not appear at top level: ${ls}`,
+      );
+      assert.ok(
+        !ls.includes("lang"),
+        `'lang' must not appear at top level: ${ls}`,
+      );
+      assert.ok(!ls.includes("db"), `'db' must not appear at top level: ${ls}`);
+      assert.ok(
+        !ls.includes("mode"),
+        `'mode' must not appear at top level: ${ls}`,
+      );
+    });
+
+    test("model snippet has no node name (grammar: model (inputs)(outputs))", async () => {
+      const items = await getCompletions("", 0);
+      const modelItem = items.find(
+        (i) =>
+          (typeof i.label === "string" ? i.label : i.label.label) === "model",
+      );
+      assert.ok(modelItem, "Expected 'model' item");
+      const insertText = modelItem.insertText;
+      assert.ok(insertText instanceof vscode.SnippetString);
+      assert.ok(
+        !insertText.value.includes("nodeName"),
+        `Model snippet must not include a node name: ${insertText.value}`,
+      );
+      assert.ok(
+        insertText.value.startsWith("model ("),
+        `Model snippet should start with 'model (': ${insertText.value}`,
       );
     });
 
     test("space trigger on empty line returns no completions", async () => {
       const items = await getCompletions(" ", 1, spaceContext);
-      // space-triggered on non-in/out context should be suppressed
       assert.strictEqual(
         items.length,
         0,

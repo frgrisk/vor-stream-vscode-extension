@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import { getTokensForCompletion } from "./parser";
+import "./parser"; // keep parser module in bundle (used by diagnosticProvider)
 import { CsvFileCache } from "./utils/csvFileCache";
 import { createDocumentSymbolProvider } from "./documentSymbolProvider";
 import { registerDiagnosticProvider } from "./diagnosticProvider";
@@ -64,38 +64,16 @@ export function createCompletionProvider(
         .text.slice(0, position.character);
       const lineTrimmed = linePrefix.trimStart();
 
-      // Appends ANTLR token completions, skipping already-seen keywords
-      const addAntlrTokens = () => {
-        const keywords = getTokensForCompletion(document.getText());
-        keywords.forEach((keyword) => {
-          if (!seenKeywords.has(keyword)) {
-            suggestions.push(
-              new vscode.CompletionItem(
-                keyword,
-                vscode.CompletionItemKind.Keyword,
-              ),
-            );
-            seenKeywords.add(keyword);
-          }
-        });
-      };
+      // Helper: check if an option keyword already appears in a given text
+      const hasOpt = (opt: string, text: string) =>
+        new RegExp(`\\b${opt}\\b`, "i").test(text);
 
-      // Helper: check if an option keyword already appears on this line
-      const hasOpt = (opt: string) =>
-        new RegExp(`\\b${opt}\\b`, "i").test(lineTrimmed);
-
-      // in-line context: offer snippet variants only when nothing follows yet
+      // ── in-line: snippet variants (nothing typed after keyword yet) ──────────
       if (/^in(?:put)?\s+$/i.test(lineTrimmed)) {
-        const inputDirectory = path.join(
-          path.dirname(document.fileName),
-          "input",
-        );
-        const parentDirectory = path.join(
-          path.dirname(path.dirname(document.fileName)),
-          "input",
-        );
-        const directoriesToCheck = [inputDirectory, parentDirectory];
-        const csvFiles: string[] = await csvCache.getFiles(directoriesToCheck);
+        const csvFiles = await csvCache.getFiles([
+          path.join(path.dirname(document.fileName), "input"),
+          path.join(path.dirname(path.dirname(document.fileName)), "input"),
+        ]);
         const csvFilesString =
           csvFiles.length > 0 ? csvFiles.join(",") : "first.csv";
         [
@@ -116,50 +94,67 @@ export function createCompletionProvider(
           },
         ].forEach(({ label, snippet, description }) => {
           suggestions.push(createSnippet("in", label, snippet, description));
-          seenKeywords.add("in");
         });
         return suggestions;
       }
 
-      // in-line with -> present: offer optional per-input flags (exclude already-used)
-      if (/^in(?:put)?\s+\S.*->/i.test(lineTrimmed)) {
-        [
-          {
-            label: "db",
-            insertText: "db=${1|PG,MSSQL|}",
-            detail: "Database type",
-            kind: vscode.CompletionItemKind.Enum,
-          },
-          {
-            label: "where",
-            insertText: 'where="${1:condition}"',
-            detail: "Filter condition",
-            kind: vscode.CompletionItemKind.Property,
-          },
-          {
-            label: "compress",
-            insertText: "compress",
-            detail: "Enable compression",
-            kind: vscode.CompletionItemKind.Keyword,
-          },
-          {
-            label: "name",
-            insertText: "name=${1:queue_alias}",
-            detail: "Queue alias name",
-            kind: vscode.CompletionItemKind.Property,
-          },
-        ]
-          .filter(({ label }) => !hasOpt(label))
+      // ── in-line: options after source -> queue ───────────────────────────────
+      // Only show when something meaningful is written after ->
+      if (/^in(?:put)?\s+\S+\s*->\s*\S/i.test(lineTrimmed)) {
+        const srcMatch = lineTrimmed.match(/^in(?:put)?\s+(\S+)/i);
+        const src = (srcMatch?.[1] ?? "").toLowerCase();
+        // Scope options by source type:
+        //   S3 source      → no options (remote, read-only)
+        //   CSV source     → where=, name=  (no db=, compress is out-only)
+        //   DB/other       → db=, where=, name=
+        const inOpts = src.startsWith("s3://")
+          ? []
+          : src.endsWith(".csv")
+            ? [
+                {
+                  label: "where",
+                  insertText: 'where="${1:condition}"',
+                  detail: "Filter rows by condition",
+                  kind: vscode.CompletionItemKind.Property,
+                },
+                {
+                  label: "name",
+                  insertText: "name=${1:queue_alias}",
+                  detail: "Queue alias name",
+                  kind: vscode.CompletionItemKind.Property,
+                },
+              ]
+            : [
+                {
+                  label: "db",
+                  insertText: "db=${1|PG,MSSQL|}",
+                  detail: "Database type",
+                  kind: vscode.CompletionItemKind.Enum,
+                },
+                {
+                  label: "where",
+                  insertText: 'where="${1:condition}"',
+                  detail: "Filter rows by condition",
+                  kind: vscode.CompletionItemKind.Property,
+                },
+                {
+                  label: "name",
+                  insertText: "name=${1:queue_alias}",
+                  detail: "Queue alias name",
+                  kind: vscode.CompletionItemKind.Property,
+                },
+              ];
+        inOpts
+          .filter(({ label }) => !hasOpt(label, lineTrimmed))
           .forEach(({ label, insertText, detail, kind }) => {
             suggestions.push(
               createCompletionItem(label, insertText, detail, kind),
             );
-            seenKeywords.add(label);
           });
         return suggestions;
       }
 
-      // out-line context: offer snippet variants only when nothing follows yet
+      // ── out-line: snippet variants (nothing typed after keyword yet) ─────────
       if (/^out(?:put)?\s+$/i.test(lineTrimmed)) {
         [
           {
@@ -179,59 +174,85 @@ export function createCompletionProvider(
           },
         ].forEach(({ label, snippet, description }) => {
           suggestions.push(createSnippet("out", label, snippet, description));
-          seenKeywords.add("out");
         });
         return suggestions;
       }
 
-      // out-line with -> present: offer optional per-output flags (exclude already-used)
-      if (/^out(?:put)?\s+\S.*->/i.test(lineTrimmed)) {
-        [
-          {
-            label: "db",
-            insertText: "db=${1|PG,MSSQL|}",
-            detail: "Database type",
-            kind: vscode.CompletionItemKind.Enum,
-          },
-          {
-            label: "mode",
-            insertText: "mode=${1|Append,Replace|}",
-            detail: "Write mode for S3 outputs",
-            kind: vscode.CompletionItemKind.Enum,
-          },
-          {
-            label: "compress",
-            insertText: "compress",
-            detail: "Enable compression",
-            kind: vscode.CompletionItemKind.Keyword,
-          },
-          {
-            label: "exec_when",
-            insertText: "exec_when=${1:tag}",
-            detail: "Execution condition tag",
-            kind: vscode.CompletionItemKind.Property,
-          },
-        ]
-          .filter(({ label }) => !hasOpt(label))
+      // ── out-line: options after queue -> dest ────────────────────────────────
+      if (/^out(?:put)?\s+\S+\s*->\s*\S/i.test(lineTrimmed)) {
+        const dstMatch = lineTrimmed.match(/->\s*(\S+)/i);
+        const dst = (dstMatch?.[1] ?? "").toLowerCase();
+        // Scope options by destination type:
+        //   S3 dest    → mode=, compress, exec_when=  (no db=)
+        //   CSV dest   → compress, exec_when=  (no db=, no mode=)
+        //   DB/other   → db=, compress, exec_when=  (no mode=)
+        const outOpts = dst.startsWith("s3://")
+          ? [
+              {
+                label: "mode",
+                insertText: "mode=${1|Append,Replace|}",
+                detail: "Write mode",
+                kind: vscode.CompletionItemKind.Enum,
+              },
+              {
+                label: "compress",
+                insertText: "compress",
+                detail: "Enable compression",
+                kind: vscode.CompletionItemKind.Keyword,
+              },
+              {
+                label: "exec_when",
+                insertText: "exec_when=${1:tag}",
+                detail: "Execution condition tag",
+                kind: vscode.CompletionItemKind.Property,
+              },
+            ]
+          : dst.endsWith(".csv")
+            ? [
+                {
+                  label: "compress",
+                  insertText: "compress",
+                  detail: "Enable compression",
+                  kind: vscode.CompletionItemKind.Keyword,
+                },
+                {
+                  label: "exec_when",
+                  insertText: "exec_when=${1:tag}",
+                  detail: "Execution condition tag",
+                  kind: vscode.CompletionItemKind.Property,
+                },
+              ]
+            : [
+                {
+                  label: "db",
+                  insertText: "db=${1|PG,MSSQL|}",
+                  detail: "Database type",
+                  kind: vscode.CompletionItemKind.Enum,
+                },
+                {
+                  label: "compress",
+                  insertText: "compress",
+                  detail: "Enable compression",
+                  kind: vscode.CompletionItemKind.Keyword,
+                },
+                {
+                  label: "exec_when",
+                  insertText: "exec_when=${1:tag}",
+                  detail: "Execution condition tag",
+                  kind: vscode.CompletionItemKind.Property,
+                },
+              ];
+        outOpts
+          .filter(({ label }) => !hasOpt(label, lineTrimmed))
           .forEach(({ label, insertText, detail, kind }) => {
             suggestions.push(
               createCompletionItem(label, insertText, detail, kind),
             );
-            seenKeywords.add(label);
           });
         return suggestions;
       }
 
-      // When triggered by space and not in a recognised context, suppress
-      // completions to avoid noisy suggestions on every space keystroke
-      if (
-        context.triggerKind === vscode.CompletionTriggerKind.TriggerCharacter &&
-        context.triggerCharacter === " "
-      ) {
-        return suggestions;
-      }
-
-      // node-after-parens context: offer node-level options (exclude already-used)
+      // ── node-after-parens: node-level options ────────────────────────────────
       if (/^node\s+\w+\([^)]*\)\([^)]*\)/i.test(lineTrimmed)) {
         [
           {
@@ -288,22 +309,18 @@ export function createCompletionProvider(
             detail: "Write a dynamic fact",
             kind: vscode.CompletionItemKind.Property,
           },
-        ].forEach(({ label, insertText, detail, kind }) => {
-          // Always mark as seen so addAntlrTokens() won't re-add these option keywords
-          seenKeywords.add(label);
-          if (!hasOpt(label)) {
+        ]
+          .filter(({ label }) => !hasOpt(label, lineTrimmed))
+          .forEach(({ label, insertText, detail, kind }) => {
             suggestions.push(
               createCompletionItem(label, insertText, detail, kind),
             );
-          }
-        });
-        addAntlrTokens();
+          });
         return suggestions;
       }
 
-      // Model continuation: on the model line itself, or on an indented line
-      // within 10 lines of a model statement. Collect already-defined options
-      // so we don't suggest duplicates.
+      // ── model continuation: indented line below a model statement ────────────
+      // Must be checked BEFORE the space-suppress guard so space trigger works.
       const isModelLine = /^model\s/i.test(lineTrimmed);
       const isIndented = linePrefix.length > lineTrimmed.length;
       let isModelContinuation = isModelLine;
@@ -321,7 +338,6 @@ export function createCompletionProvider(
             modelStartLine = i;
             break;
           }
-          // Stop if we hit a non-indented, non-empty line (top-level statement)
           if (prevTrimmed !== "" && prevLine.length === prevTrimmed.length) {
             break;
           }
@@ -329,17 +345,22 @@ export function createCompletionProvider(
       }
 
       if (isModelContinuation) {
-        // Collect options already defined between model start and current line
+        // Scan model start through current cursor position for already-defined opts
         const definedModelOpts = new Set<string>();
+        const modelOpts = [
+          "type",
+          "label",
+          "exceptq",
+          "scenario",
+          "unittest",
+          "modelname",
+        ];
         if (modelStartLine >= 0) {
-          for (let i = modelStartLine; i < position.line; i++) {
-            const lineText = document.lineAt(i).text;
-            for (const opt of [
-              "exceptq",
-              "scenario",
-              "unittest",
-              "modelname",
-            ]) {
+          for (let i = modelStartLine; i <= position.line; i++) {
+            // For the current line use only what's before the cursor
+            const lineText =
+              i === position.line ? linePrefix : document.lineAt(i).text;
+            for (const opt of modelOpts) {
               if (new RegExp(`\\b${opt}\\b`, "i").test(lineText)) {
                 definedModelOpts.add(opt);
               }
@@ -348,27 +369,39 @@ export function createCompletionProvider(
         }
         [
           {
+            label: "type",
+            insertText: 'type="${1|Default,Report,Model|}"',
+            detail: "Model type",
+            kind: vscode.CompletionItemKind.Enum,
+          },
+          {
+            label: "label",
+            insertText: 'label="${1:description}"',
+            detail: "Human-readable label",
+            kind: vscode.CompletionItemKind.Property,
+          },
+          {
             label: "exceptq",
             insertText: "exceptq=${1:exception_queue}",
-            detail: "Exception queue for model nodes",
+            detail: "Exception queue",
             kind: vscode.CompletionItemKind.Property,
           },
           {
             label: "scenario",
             insertText: "scenario=${1|true,false|}",
-            detail: "Enable scenario for model nodes",
+            detail: "Enable scenario testing",
             kind: vscode.CompletionItemKind.Enum,
           },
           {
             label: "unittest",
             insertText: "unittest=${1|true,false|}",
-            detail: "Enable unit test for model nodes",
+            detail: "Enable unit testing",
             kind: vscode.CompletionItemKind.Enum,
           },
           {
             label: "modelname",
             insertText: 'modelname="${1:model_name}"',
-            detail: "Model name for model nodes",
+            detail: "Display name for model",
             kind: vscode.CompletionItemKind.Property,
           },
         ]
@@ -377,13 +410,22 @@ export function createCompletionProvider(
             suggestions.push(
               createCompletionItem(label, insertText, detail, kind),
             );
-            seenKeywords.add(label);
           });
         return suggestions;
       }
 
-      // Top-level context: name, type, label, lang, in, out, node, model, db, mode
-      // Only show top-level keywords when the cursor is at/near line start
+      // ── space-suppress guard ─────────────────────────────────────────────────
+      // Only reached when none of the specific contexts above matched.
+      // Suppress noisy completions on every other space keystroke.
+      if (
+        context.triggerKind === vscode.CompletionTriggerKind.TriggerCharacter &&
+        context.triggerCharacter === " "
+      ) {
+        return suggestions;
+      }
+
+      // ── top-level context: predefined keyword list only ───────────────────────
+      // No ANTLR token dump — only show the grammar's top-level statements.
       const isAtLineStart =
         lineTrimmed.length === 0 || !lineTrimmed.includes(" ");
       if (isAtLineStart) {
@@ -391,37 +433,25 @@ export function createCompletionProvider(
           {
             label: `name ${fileName}`,
             insertText: `name ${fileName}`,
-            detail: "Suggests filename",
+            detail: "Process name (filename suggestion)",
             kind: vscode.CompletionItemKind.Variable,
           },
           {
             label: "type",
             insertText: "type ${1|Default,Report,Model|}",
-            detail: "Select a type",
-            kind: vscode.CompletionItemKind.Enum,
-          },
-          {
-            label: "lang",
-            insertText: "lang=${1|go,python|}",
-            detail: "Select a language",
-            kind: vscode.CompletionItemKind.Enum,
-          },
-          {
-            label: "db",
-            insertText: "db=${1|PG,MSSQL|}",
-            detail: "Select a database",
-            kind: vscode.CompletionItemKind.Enum,
-          },
-          {
-            label: "mode",
-            insertText: "mode=${1|Append,Replace|}",
-            detail: "Select a mode",
+            detail: "Process type",
             kind: vscode.CompletionItemKind.Enum,
           },
           {
             label: "label",
             insertText: 'label "${1:description}"',
-            detail: "Process label",
+            detail: "Human-readable label",
+            kind: vscode.CompletionItemKind.Variable,
+          },
+          {
+            label: "descr",
+            insertText: 'descr "${1:description}"',
+            detail: "Process description",
             kind: vscode.CompletionItemKind.Variable,
           },
         ].forEach(({ label, insertText, detail, kind }) => {
@@ -431,7 +461,6 @@ export function createCompletionProvider(
           seenKeywords.add(label.split(" ")[0]!);
         });
 
-        // in and out as basic keyword completions at top level
         for (const kw of ["in", "out"]) {
           suggestions.push(
             new vscode.CompletionItem(kw, vscode.CompletionItemKind.Keyword),
@@ -443,7 +472,7 @@ export function createCompletionProvider(
           "node",
           vscode.CompletionItemKind.Keyword,
         );
-        nodeItem.detail = "Define a NODE statement";
+        nodeItem.detail = "Processing node";
         nodeItem.documentation = new vscode.MarkdownString(
           "Defines a processing node with input and output queues.\n\n" +
             "```strm\nnode nodeName(input1)(output1)\n```",
@@ -458,19 +487,30 @@ export function createCompletionProvider(
           "model",
           vscode.CompletionItemKind.Keyword,
         );
-        modelItem.detail = "Define a MODEL statement";
+        modelItem.detail = "Standalone model node (no node name)";
         modelItem.documentation = new vscode.MarkdownString(
-          "Defines a model node with input and output queues.\n\n" +
-            "```strm\nmodel nodeName(input1)(output1)\n```",
+          "Defines a model node. Note: no node name in the grammar.\n\n" +
+            "```strm\nmodel (input1)(output1)\n```",
         );
+        // Grammar: model has NO node name — model (inputs)(outputs) [opts]
         modelItem.insertText = new vscode.SnippetString(
-          "model ${1:nodeName}(${2:input1})(${3:output1})$4",
+          "model (${1:input1})(${2:output1})$3",
         );
         suggestions.push(modelItem);
         seenKeywords.add("model");
+
+        const subprocItem = new vscode.CompletionItem(
+          "subprocess",
+          vscode.CompletionItemKind.Keyword,
+        );
+        subprocItem.detail = "Named subprocess block";
+        subprocItem.insertText = new vscode.SnippetString(
+          "subprocess ${1:name}(${2:inputs})(${3:outputs}) {\n\t$4\n}",
+        );
+        suggestions.push(subprocItem);
+        seenKeywords.add("subprocess");
       }
 
-      addAntlrTokens();
       return suggestions;
     },
   };
