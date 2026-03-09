@@ -134,10 +134,12 @@ export function createHoverProvider(): vscode.HoverProvider {
       }
 
       const normalized =
-        ({ input: "in", output: "out", process: "subprocess" } as Record<
-          string,
-          string
-        >)[word] ?? word;
+        (
+          { input: "in", output: "out", process: "subprocess" } as Record<
+            string,
+            string
+          >
+        )[word] ?? word;
       const keywordDoc = KEYWORD_DOCS[normalized];
       if (keywordDoc) {
         return new vscode.Hover(buildKeywordHover(keywordDoc), wordRange);

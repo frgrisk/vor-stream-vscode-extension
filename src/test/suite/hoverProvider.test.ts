@@ -98,7 +98,11 @@ suite("HoverProvider", () => {
     assert.ok(hoverCanon, "Expected hover for canonical 'in'");
     const aliasValue = (hoverAlias.contents[0] as vscode.MarkdownString).value;
     const canonValue = (hoverCanon.contents[0] as vscode.MarkdownString).value;
-    assert.strictEqual(aliasValue, canonValue, "Alias hover should match canonical hover");
+    assert.strictEqual(
+      aliasValue,
+      canonValue,
+      "Alias hover should match canonical hover",
+    );
   });
 
   test("hovering on 'output' alias returns same hover as 'out'", async () => {
@@ -108,7 +112,11 @@ suite("HoverProvider", () => {
     assert.ok(hoverCanon, "Expected hover for canonical 'out'");
     const aliasValue = (hoverAlias.contents[0] as vscode.MarkdownString).value;
     const canonValue = (hoverCanon.contents[0] as vscode.MarkdownString).value;
-    assert.strictEqual(aliasValue, canonValue, "Alias hover should match canonical hover");
+    assert.strictEqual(
+      aliasValue,
+      canonValue,
+      "Alias hover should match canonical hover",
+    );
   });
 
   test("hovering on 'process' alias returns same hover as 'subprocess'", async () => {
@@ -118,12 +126,20 @@ suite("HoverProvider", () => {
     assert.ok(hoverCanon, "Expected hover for canonical 'subprocess'");
     const aliasValue = (hoverAlias.contents[0] as vscode.MarkdownString).value;
     const canonValue = (hoverCanon.contents[0] as vscode.MarkdownString).value;
-    assert.strictEqual(aliasValue, canonValue, "Alias hover should match canonical hover");
+    assert.strictEqual(
+      aliasValue,
+      canonValue,
+      "Alias hover should match canonical hover",
+    );
   });
 
   test("hovering on a comment line returns undefined", async () => {
     const hover = await getHover("// name myprocess\n", 0, 4);
-    assert.strictEqual(hover, undefined, "Expected undefined hover inside comment");
+    assert.strictEqual(
+      hover,
+      undefined,
+      "Expected undefined hover inside comment",
+    );
   });
 
   test("hovering on all documented keywords returns a hover", async () => {
