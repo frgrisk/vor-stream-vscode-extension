@@ -167,7 +167,11 @@ export function activate(context: vscode.ExtensionContext) {
       const isIndented = linePrefix.length > lineTrimmed.length;
       let isModelContinuation = isModelLine;
       if (!isModelContinuation && isIndented) {
-        for (let i = position.line - 1; i >= Math.max(0, position.line - 10); i--) {
+        for (
+          let i = position.line - 1;
+          i >= Math.max(0, position.line - 10);
+          i--
+        ) {
           const prevLine = document.lineAt(i).text;
           const prevTrimmed = prevLine.trim();
           if (/^model\s/i.test(prevTrimmed)) {
