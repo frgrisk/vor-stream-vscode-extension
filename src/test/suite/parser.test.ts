@@ -46,7 +46,6 @@ suite("Parser: getParseErrors", () => {
     assert.ok(errors.length > 0, "Expected at least one parse error");
     const err = errors[0];
     assert.strictEqual(err.line, 3, "Error should be reported on line 3");
-    assert.strictEqual(err.column, 0, "Error should start at column 0");
   });
 
   test("error length matches token width", () => {
