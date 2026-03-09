@@ -92,4 +92,76 @@ suite("DocumentSymbolProvider", () => {
     assert.ok(firstChild, "Expected a child node");
     assert.strictEqual(firstChild.name, "innernode");
   });
+
+  test("multi-line model range spans all continuation lines", async () => {
+    const content = [
+      "model mymodel(input)(output)",
+      "  exceptq=error_queue",
+      "  scenario=true",
+      "  unittest=false",
+      '  modelname="MyModel"',
+      "node anothernode(input)(output)",
+    ].join("\n");
+    const symbols = await getSymbols(content);
+    const sym = symbols.find((s) => s.detail === "model");
+    assert.ok(sym, "Expected a 'model' symbol");
+    assert.strictEqual(sym.name, "mymodel");
+    // range should span from line 0 to line 4 (the last continuation line)
+    assert.strictEqual(sym.range.start.line, 0, "range should start on line 0");
+    assert.strictEqual(sym.range.end.line, 4, "range should end on line 4");
+    // selectionRange stays on the first line
+    assert.strictEqual(sym.selectionRange.start.line, 0);
+    assert.strictEqual(sym.selectionRange.end.line, 0);
+  });
+
+  test("single-line model range is not expanded", async () => {
+    const content = "model mymodel(input)(output)\nnode other(input)(output)\n";
+    const symbols = await getSymbols(content);
+    const sym = symbols.find((s) => s.detail === "model");
+    assert.ok(sym, "Expected a 'model' symbol");
+    assert.strictEqual(sym.range.start.line, 0);
+    assert.strictEqual(
+      sym.range.end.line,
+      0,
+      "Single-line model range should not expand",
+    );
+  });
+
+  test("nameless model uses modelname= as display name", async () => {
+    const content =
+      'model (enriched)(scored) type="Default" modelname="Credit Risk Model"';
+    const symbols = await getSymbols(content);
+    const sym = symbols.find((s) => s.detail === "model");
+    assert.ok(sym, "Expected a 'model' symbol for nameless model");
+    assert.strictEqual(sym.name, "Credit Risk Model");
+  });
+
+  test("nameless model without modelname= uses inputs as display name", async () => {
+    const content = 'model (enriched)(classified) type="Default"';
+    const symbols = await getSymbols(content);
+    const sym = symbols.find((s) => s.detail === "model");
+    assert.ok(
+      sym,
+      "Expected a 'model' symbol for nameless model without modelname",
+    );
+    assert.strictEqual(sym.name, "(enriched)");
+  });
+
+  test("nameless multi-line model range spans continuation lines", async () => {
+    const content = [
+      'model (enriched)(classified) type="Default"',
+      "  exceptq=exception_queue",
+      "  scenario=true",
+      "  unittest=false",
+      "node other(input)(output)",
+    ].join("\n");
+    const symbols = await getSymbols(content);
+    const sym = symbols.find((s) => s.detail === "model");
+    assert.ok(sym, "Expected a 'model' symbol");
+    assert.strictEqual(
+      sym.range.end.line,
+      3,
+      "range should end on last continuation line",
+    );
+  });
 });
