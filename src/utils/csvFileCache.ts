@@ -14,7 +14,6 @@ export class CsvFileCache {
     this.watcher = vscode.workspace.createFileSystemWatcher("**/*.csv");
     this.watcher.onDidCreate(() => this.invalidate());
     this.watcher.onDidDelete(() => this.invalidate());
-    this.watcher.onDidChange(() => this.invalidate());
     context.subscriptions.push(this.watcher);
   }
 
@@ -23,7 +22,7 @@ export class CsvFileCache {
   }
 
   async getFiles(directories: string[]): Promise<string[]> {
-    const key = directories.sort().join("|");
+    const key = [...directories].sort().join("|");
     if (this.cache.has(key)) {
       return this.cache.get(key)!;
     }
@@ -38,7 +37,8 @@ export class CsvFileCache {
         try {
           const entries = await fs.promises.readdir(dir);
           return entries.filter((f) => f.endsWith(".csv"));
-        } catch {
+        } catch (err) {
+          console.warn(`csvFileCache: could not read ${dir}:`, err);
           return [];
         }
       }),
