@@ -124,4 +124,42 @@ suite("DocumentSymbolProvider", () => {
       "Single-line model range should not expand",
     );
   });
+
+  test("nameless model uses modelname= as display name", async () => {
+    const content =
+      'model (enriched)(scored) type="Default" modelname="Credit Risk Model"';
+    const symbols = await getSymbols(content);
+    const sym = symbols.find((s) => s.detail === "model");
+    assert.ok(sym, "Expected a 'model' symbol for nameless model");
+    assert.strictEqual(sym.name, "Credit Risk Model");
+  });
+
+  test("nameless model without modelname= uses inputs as display name", async () => {
+    const content = 'model (enriched)(classified) type="Default"';
+    const symbols = await getSymbols(content);
+    const sym = symbols.find((s) => s.detail === "model");
+    assert.ok(
+      sym,
+      "Expected a 'model' symbol for nameless model without modelname",
+    );
+    assert.strictEqual(sym.name, "(enriched)");
+  });
+
+  test("nameless multi-line model range spans continuation lines", async () => {
+    const content = [
+      'model (enriched)(classified) type="Default"',
+      "  exceptq=exception_queue",
+      "  scenario=true",
+      "  unittest=false",
+      "node other(input)(output)",
+    ].join("\n");
+    const symbols = await getSymbols(content);
+    const sym = symbols.find((s) => s.detail === "model");
+    assert.ok(sym, "Expected a 'model' symbol");
+    assert.strictEqual(
+      sym.range.end.line,
+      3,
+      "range should end on last continuation line",
+    );
+  });
 });

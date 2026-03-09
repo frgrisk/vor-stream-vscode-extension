@@ -93,8 +93,9 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
           continue;
         }
 
-        // model <name>
-        const modelMatch = text.match(/^\s*model\s+(\w+)/i);
+        // model [name](inputs)(outputs) [opts]
+        // The node name is optional in newer grammar; fall back to modelname= or inputs.
+        const modelMatch = text.match(/^\s*model\b/i);
         if (modelMatch) {
           let endLine = i;
           let j = i + 1;
@@ -109,8 +110,18 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
               break;
             }
           }
+          // Derive display name: explicit node name > modelname= on this line > inputs > "model"
+          const nodeNameMatch = text.match(/^\s*model\s+(\w+)\s*\(/i);
+          const modelnameMatch =
+            text.match(/\bmodelname\s*=\s*"([^"]+)"/i) ??
+            text.match(/\bmodelname\s*=\s*(\S+)/i);
+          const inputsMatch = text.match(/^\s*model\s*\(([^)]*)\)/i);
+          const displayName =
+            nodeNameMatch?.[1] ??
+            modelnameMatch?.[1] ??
+            (inputsMatch ? `(${inputsMatch[1]})` : "model");
           const sym = new vscode.DocumentSymbol(
-            modelMatch[1],
+            displayName,
             "model",
             vscode.SymbolKind.Class,
             new vscode.Range(
