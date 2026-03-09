@@ -96,12 +96,30 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
         // model <name>
         const modelMatch = text.match(/^\s*model\s+(\w+)/i);
         if (modelMatch) {
+          let endLine = i;
+          let j = i + 1;
+          while (j < document.lineCount) {
+            const nextText = document.lineAt(j).text;
+            if (
+              /^\s+(exceptq|scenario|unittest|modelname)\s*=/i.test(nextText)
+            ) {
+              endLine = j;
+              j++;
+            } else {
+              break;
+            }
+          }
           const sym = new vscode.DocumentSymbol(
             modelMatch[1],
             "model",
             vscode.SymbolKind.Class,
-            range,
-            range,
+            new vscode.Range(
+              i,
+              0,
+              endLine,
+              document.lineAt(endLine).text.length,
+            ),
+            range, // selectionRange stays on first line
           );
           if (subprocessStack.length > 0) {
             subprocessStack[subprocessStack.length - 1].children.push(sym);
