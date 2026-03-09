@@ -4,6 +4,7 @@ import * as fs from "fs";
 import { getTokensForCompletion } from "./parser";
 import { createDocumentSymbolProvider } from "./documentSymbolProvider";
 import { registerDiagnosticProvider } from "./diagnosticProvider";
+import { createHoverProvider } from "./hoverProvider";
 
 const templates = {
   Go: `// Stream Go Template
@@ -49,6 +50,10 @@ export function activate(context: vscode.ExtensionContext) {
       "strm",
       createDocumentSymbolProvider(),
     ),
+  );
+
+  context.subscriptions.push(
+    vscode.languages.registerHoverProvider("strm", createHoverProvider()),
   );
 
   const provider = vscode.languages.registerCompletionItemProvider("strm", {
