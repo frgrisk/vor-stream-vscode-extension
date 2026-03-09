@@ -90,4 +90,34 @@ suite("DocumentSymbolProvider", () => {
     assert.strictEqual(subproc.children.length, 1, "Expected 1 child node");
     assert.strictEqual(subproc.children[0].name, "innernode");
   });
+
+  test("multi-line model range spans all continuation lines", async () => {
+    const content = [
+      "model mymodel(input)(output)",
+      "  exceptq=error_queue",
+      "  scenario=true",
+      "  unittest=false",
+      "  modelname=\"MyModel\"",
+      "node anothernode(input)(output)",
+    ].join("\n");
+    const symbols = await getSymbols(content);
+    const sym = symbols.find((s) => s.detail === "model");
+    assert.ok(sym, "Expected a 'model' symbol");
+    assert.strictEqual(sym.name, "mymodel");
+    // range should span from line 0 to line 4 (the last continuation line)
+    assert.strictEqual(sym.range.start.line, 0, "range should start on line 0");
+    assert.strictEqual(sym.range.end.line, 4, "range should end on line 4");
+    // selectionRange stays on the first line
+    assert.strictEqual(sym.selectionRange.start.line, 0);
+    assert.strictEqual(sym.selectionRange.end.line, 0);
+  });
+
+  test("single-line model range is not expanded", async () => {
+    const content = "model mymodel(input)(output)\nnode other(input)(output)\n";
+    const symbols = await getSymbols(content);
+    const sym = symbols.find((s) => s.detail === "model");
+    assert.ok(sym, "Expected a 'model' symbol");
+    assert.strictEqual(sym.range.start.line, 0);
+    assert.strictEqual(sym.range.end.line, 0, "Single-line model range should not expand");
+  });
 });

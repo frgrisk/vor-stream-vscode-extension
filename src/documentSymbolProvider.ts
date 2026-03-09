@@ -126,6 +126,7 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
           } else {
             symbols.push(sym);
           }
+          i = endLine; // skip already-consumed continuation lines
           continue;
         }
 
