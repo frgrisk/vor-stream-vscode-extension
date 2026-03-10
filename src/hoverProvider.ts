@@ -118,6 +118,39 @@ const KEYWORD_DOCS: Record<string, KeywordDoc> = {
     summary: "`exec_when` — Execution condition tag list.",
     usage: "exec_when=debug",
   },
+  predict: {
+    summary: "`predict` — Prediction model name for SQL nodes.",
+    usage: "predict=my_model",
+  },
+  minimize: {
+    summary:
+      "`minimize` — Optimization target for SQL nodes. Values: `MEMORY`, `TIME`.",
+    usage: "minimize=MEMORY\n// or:\nminimize=TIME",
+  },
+  syntax_version: {
+    summary: "`syntax_version` — SQL syntax version number.",
+    usage: "syntax_version=1",
+  },
+  sascmd: {
+    summary: "`sascmd` — Path to the SAS executable.",
+    usage: 'sascmd="/path/to/sas"',
+  },
+  sasfile: {
+    summary: "`sasfile` — Path to the SAS script file.",
+    usage: 'sasfile="model.sas"',
+  },
+  saswork: {
+    summary: "`saswork` — SAS work directory list (comma-separated quoted paths).",
+    usage: 'saswork="/tmp/saswork"',
+  },
+  scenariods: {
+    summary: "`scenariods` — Scenario dataset name for SAS nodes.",
+    usage: "scenariods=my_dataset",
+  },
+  framework: {
+    summary: "`framework` — SAS framework name.",
+    usage: "framework=my_framework",
+  },
 };
 
 function buildKeywordHover(doc: KeywordDoc): vscode.MarkdownString {

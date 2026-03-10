@@ -325,6 +325,52 @@ export function createCompletionProvider(
         return suggestions;
       }
 
+      // ── sql-after-semicolon: options that follow the SQL body ────────────────
+      // Grammar: sqlStmt: SQL everythingSemi nameDescrPredict
+      // Options (nameDescrPredict): name, descr, label, predict, setFact, getFact, minimize, syntaxVersion
+      if (/^sql\s+/i.test(lineTrimmed) && lineTrimmed.includes(";")) {
+        const afterSemi = lineTrimmed.slice(lineTrimmed.lastIndexOf(";") + 1);
+        [
+          {
+            label: "predict",
+            insertText: "predict=${1:model_name}",
+            detail: "Prediction model name",
+            kind: vscode.CompletionItemKind.Property,
+          },
+          {
+            label: "minimize",
+            insertText: "minimize=${1|MEMORY,TIME|}",
+            detail: "Optimization target (MEMORY or TIME)",
+            kind: vscode.CompletionItemKind.Enum,
+          },
+          {
+            label: "syntax_version",
+            insertText: "syntax_version=${1:1}",
+            detail: "SQL syntax version number",
+            kind: vscode.CompletionItemKind.Property,
+          },
+          {
+            label: "name",
+            insertText: "name=${1:query_name}",
+            detail: "Query name",
+            kind: vscode.CompletionItemKind.Property,
+          },
+          {
+            label: "descr",
+            insertText: 'descr="${1:description}"',
+            detail: "Query description",
+            kind: vscode.CompletionItemKind.Property,
+          },
+        ]
+          .filter(({ label }) => !hasOpt(label, afterSemi))
+          .forEach(({ label, insertText, detail, kind }) => {
+            suggestions.push(
+              createCompletionItem(label, insertText, detail, kind),
+            );
+          });
+        return suggestions;
+      }
+
       // ── model continuation: indented line below a model statement ────────────
       // Must be checked BEFORE the space-suppress guard so space trigger works.
       const isModelLine = /^model\s/i.test(lineTrimmed);
@@ -412,6 +458,94 @@ export function createCompletionProvider(
           },
         ]
           .filter(({ label }) => !definedModelOpts.has(label))
+          .forEach(({ label, insertText, detail, kind }) => {
+            suggestions.push(
+              createCompletionItem(label, insertText, detail, kind),
+            );
+          });
+        return suggestions;
+      }
+
+      // ── sas continuation: indented line below a sas statement ────────────────
+      // Grammar: sasOpts: name | descr | label | sascmd | sasFile | getFact | getSig | workDir | scenariods | framework
+      const isSasLine = /^sas\s/i.test(lineTrimmed);
+      let isSasContinuation = isSasLine;
+      let sasStartLine = isSasLine ? position.line : -1;
+      if (!isSasContinuation && isIndented) {
+        for (
+          let i = position.line - 1;
+          i >= Math.max(0, position.line - 10);
+          i--
+        ) {
+          const prevLine = document.lineAt(i).text;
+          const prevTrimmed = prevLine.trim();
+          if (/^sas\s/i.test(prevTrimmed)) {
+            isSasContinuation = true;
+            sasStartLine = i;
+            break;
+          }
+          if (prevTrimmed !== "" && prevLine.length === prevTrimmed.length) {
+            break;
+          }
+        }
+      }
+
+      if (isSasContinuation) {
+        const definedSasOpts = new Set<string>();
+        const sasOptsList = [
+          "sascmd",
+          "sasfile",
+          "saswork",
+          "scenariods",
+          "framework",
+          "name",
+          "descr",
+          "label",
+        ];
+        if (sasStartLine >= 0) {
+          for (let i = sasStartLine; i <= position.line; i++) {
+            const lineText =
+              i === position.line ? linePrefix : document.lineAt(i).text;
+            for (const opt of sasOptsList) {
+              if (new RegExp(`\\b${opt}\\b`, "i").test(lineText)) {
+                definedSasOpts.add(opt);
+              }
+            }
+          }
+        }
+        [
+          {
+            label: "sascmd",
+            insertText: 'sascmd="${1:/path/to/sas}"',
+            detail: "SAS executable path",
+            kind: vscode.CompletionItemKind.Property,
+          },
+          {
+            label: "sasfile",
+            insertText: 'sasfile="${1:file.sas}"',
+            detail: "SAS script file path",
+            kind: vscode.CompletionItemKind.Property,
+          },
+          {
+            label: "saswork",
+            insertText: 'saswork="${1:/work/dir}"',
+            detail: "SAS work directory list",
+            kind: vscode.CompletionItemKind.Property,
+          },
+          {
+            label: "scenariods",
+            insertText: "scenariods=${1:dataset_name}",
+            detail: "Scenario dataset name",
+            kind: vscode.CompletionItemKind.Property,
+          },
+          {
+            label: "framework",
+            insertText: "framework=${1:framework_name}",
+            detail: "SAS framework name",
+            kind: vscode.CompletionItemKind.Property,
+          },
+        ]
+          .filter(({ label }) => !definedSasOpts.has(label))
           .forEach(({ label, insertText, detail, kind }) => {
             suggestions.push(
               createCompletionItem(label, insertText, detail, kind),
