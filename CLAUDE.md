@@ -196,8 +196,6 @@ VOR Stream process files use keywords like:
 
 - **`runProcessCommand` is cursor-position fragile**: Requires cursor on the `name` line.
   Should parse the whole document instead.
-- **`dist/` build artifacts committed**: `vor-stream-0.0.1.vsix`, `dist/metadata.json`,
-  `dist/artifacts.json`, `dist/config.yaml` should be in `.gitignore`.
 
 ## Dependencies
 

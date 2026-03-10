@@ -13,13 +13,10 @@ export function registerRunProcessCommand(
       }
 
       const document = editor.document;
-      const position = editor.selection.active;
 
-      // Get the current line text
-      const lineText = document.lineAt(position.line).text;
-
-      // Extract the process name after "NAME "
-      const match = lineText.match(/\bNAME\s+(\w+)/i);
+      // Scan the entire document for the process name declaration
+      const fullText = document.getText();
+      const match = fullText.match(/^name\s+(\w+)/im);
       if (!match) {
         return;
       }
