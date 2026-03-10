@@ -1,0 +1,19 @@
+import * as vscode from "vscode";
+
+export async function openFirstExisting(
+  possiblePaths: string[],
+): Promise<void> {
+  for (const filePath of possiblePaths) {
+    const uri = vscode.Uri.file(filePath);
+    try {
+      await vscode.workspace.fs.stat(uri);
+      await vscode.window.showTextDocument(uri);
+      return;
+    } catch (err) {
+      console.debug(`File not found: ${filePath}`, err);
+    }
+  }
+  vscode.window.showInformationMessage(
+    `File not found in expected locations: ${possiblePaths.join(", ")}`,
+  );
+}
