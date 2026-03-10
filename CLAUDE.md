@@ -98,19 +98,24 @@ Update the completion provider to reflect new keywords and context-scoped option
 
 Add new keywords to the appropriate `keyword.control.process` or `keyword.other.process` patterns.
 
-### Current Grammar vs Extension State (as of 2026-03-05)
+### Current Grammar vs Extension State (as of 2026-03-10)
 
-The extension is behind `vor-stream`'s grammar. Missing:
+The extension is fully synced with `vor-stream`'s grammar. All previously missing items are now
+implemented, and the following additional keywords were added:
 
-| Grammar addition                    | `extension.ts` | `tmLanguage.json`               |
-| ----------------------------------- | -------------- | ------------------------------- |
-| `labelStmt` / `label=` option       | Missing        | Partial (LABEL in control only) |
-| `modelStmt` (standalone model node) | Missing        | Missing                         |
-| `EXCEPTQ=` (model exception queue)  | Missing        | Missing                         |
-| `SCENARIO=` (true/false)            | Missing        | Missing                         |
-| `UNITTEST=` (true/false)            | Missing        | Missing                         |
-| `MODELNAME=`                        | Missing        | Missing                         |
-| `DB` keyword                        | In completions | Missing from highlighting       |
+| Feature / keyword                                              | Completions | `tmLanguage.json` | Hover docs |
+| -------------------------------------------------------------- | ----------- | ----------------- | ---------- |
+| `labelStmt` / `label=` option                                  | ✅ Present  | ✅ Present        | ✅ Present |
+| `modelStmt` (standalone model node)                            | ✅ Present  | ✅ Present        | ✅ Present |
+| `EXCEPTQ=` (model exception queue)                             | ✅ Present  | ✅ Present        | ✅ Present |
+| `SCENARIO=` (true/false)                                       | ✅ Present  | ✅ Present        | ✅ Present |
+| `UNITTEST=` (true/false)                                       | ✅ Present  | ✅ Present        | ✅ Present |
+| `MODELNAME=`                                                   | ✅ Present  | ✅ Present        | ✅ Present |
+| `DB` keyword                                                   | ✅ Present  | ✅ Present        | ✅ Present |
+| `COMPRESS`, `MINIMIZE`, `CONNECTION`                           | ✅ Present  | ✅ Present        | ✅ Present |
+| `SASCMD`, `SASFILE`, `SASWORK`, `SCENARIODS`                   | ✅ Present  | ✅ Present        | ✅ Present |
+| SQL context: `predict=`, `minimize=`, `syntax_version=`        | ✅ Present  | ✅ Present        | ✅ Present |
+| SAS context: `sascmd=`, `sasfile=`, `saswork=`, `scenariods=`, `framework=` | ✅ Present | ✅ Present | ✅ Present |
 
 ## Architecture Overview
 
@@ -194,8 +199,7 @@ VOR Stream process files use keywords like:
 
 ## Known Bugs / Technical Debt
 
-- **`runProcessCommand` is cursor-position fragile**: Requires cursor on the `name` line.
-  Should parse the whole document instead.
+None known.
 
 ## Dependencies
 
