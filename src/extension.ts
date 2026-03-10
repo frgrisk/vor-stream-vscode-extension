@@ -54,7 +54,6 @@ export function createCompletionProvider(
       context: vscode.CompletionContext,
     ) {
       const suggestions: vscode.CompletionItem[] = [];
-      const seenKeywords = new Set<string>();
 
       const fileName = path.parse(document.fileName).name;
 
@@ -458,14 +457,12 @@ export function createCompletionProvider(
           suggestions.push(
             createCompletionItem(label, insertText, detail, kind),
           );
-          seenKeywords.add(label.split(" ")[0]!);
         });
 
         for (const kw of ["in", "out"]) {
           suggestions.push(
             new vscode.CompletionItem(kw, vscode.CompletionItemKind.Keyword),
           );
-          seenKeywords.add(kw);
         }
 
         const nodeItem = new vscode.CompletionItem(
@@ -481,7 +478,6 @@ export function createCompletionProvider(
           "node ${1:nodeName}(${2:input1})(${3:output1})$4",
         );
         suggestions.push(nodeItem);
-        seenKeywords.add("node");
 
         const modelItem = new vscode.CompletionItem(
           "model",
@@ -497,7 +493,6 @@ export function createCompletionProvider(
           "model (${1:input1})(${2:output1})$3",
         );
         suggestions.push(modelItem);
-        seenKeywords.add("model");
 
         const subprocItem = new vscode.CompletionItem(
           "subprocess",
@@ -508,7 +503,6 @@ export function createCompletionProvider(
           "subprocess ${1:name}(${2:inputs})(${3:outputs}) {\n\t$4\n}",
         );
         suggestions.push(subprocItem);
-        seenKeywords.add("subprocess");
       }
 
       return suggestions;
