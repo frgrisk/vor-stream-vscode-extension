@@ -45,6 +45,14 @@ The hooks configured in `.pre-commit-config.yaml`:
 - **conventional-pre-commit** (`commit-msg` stage) — enforces conventional commit format locally,
   matching the CI check (allowed types: feat, fix, docs, style, refactor, test, build, ci, chore, revert, perf)
 
+### Testing
+
+```bash
+npm run test              # Compile and run tests with @vscode/test-electron
+```
+
+Tests live in `src/test/suite/` and are discovered automatically by the Mocha loader.
+
 ### Publishing
 
 ```bash
@@ -76,9 +84,15 @@ java -jar antlr-4.12.0-complete.jar \
   /home/kng/repo/vor-stream/cmd/process/process.g4
 ```
 
-### 2. Sync completions in `src/extension.ts`
+### 2. Sync completions in `src/providers/completionProvider.ts`
 
-Update `predefinedCompletions` and `snippetTemplates` to reflect new keywords and options.
+Update the completion provider to reflect new keywords and context-scoped options:
+
+- Top-level keywords (`name`, `type`, `label`, `descr`, `in`, `out`, `node`, `model`, `subprocess`)
+- Input statement options (vary by source: CSV, DB, S3)
+- Output statement options (vary by destination: CSV, DB, S3)
+- Node statement options (`lang=`, `exec_when=`, `where=`, facts/signals options)
+- Model statement options (`type=`, `label=`, `exceptq=`, `scenario=`, `unittest=`, `modelname=`)
 
 ### 3. Sync syntax highlighting in `syntaxes/strm.tmLanguage.json`
 
@@ -109,31 +123,56 @@ This VSCode extension provides language support for `.strm` files used in VOR St
    - ANTLR4-generated JavaScript parser for `.strm` syntax
    - Generated from `vor-stream/cmd/process/process.g4` via ANTLR 4.12.0
    - Uses the `antlr4` npm package (official JS runtime) — **not** `antlr4ts`
-   - Consumed by `src/parser.ts` to extract tokens for auto-completion
+   - Consumed by `src/parser.ts` to extract tokens and parse errors
 
 2. **Extension Entry Point** (`src/extension.ts`)
 
-   - Registers completion providers for intelligent auto-completion
-   - Implements commands for template insertion (Go/Python)
-   - Handles navigation commands (Go to Node File, Go to Input File)
-   - Integrates with VOR CLI commands (create/run process)
+   - Registers all language providers and commands on activation
+   - Instantiates shared utilities (e.g., `CsvFileCache`) and wires them into providers
 
-3. **Language Configuration**
+3. **Language Providers**
+
+   - `src/diagnosticProvider.ts` — Real-time syntax error squiggles (500 ms debounce)
+   - `src/hoverProvider.ts` — Documentation popups for keywords and node/model signatures
+   - `src/documentSymbolProvider.ts` — Outline panel with hierarchical symbol tree
+   - `src/providers/completionProvider.ts` — Context-aware auto-completion
+
+4. **Commands** (`src/commands/`)
+
+   - `insertTemplate.ts` — Insert Go/Python process scaffolding
+   - `openNodeFile.ts` — F12: navigate to Go/Python implementation file
+   - `openInputFile.ts` — Context menu: navigate to input CSV file
+   - `createProcess.ts` — Run `vor create process` via VOR Terminal
+   - `runProcess.ts` — Run `vor run <name>` via VOR Terminal
+
+5. **Utilities** (`src/utils/`)
+
+   - `csvFileCache.ts` — `FileSystemWatcher`-backed CSV file discovery cache
+   - `fileUtils.ts` — `openFirstExisting()`: tries candidate paths in order
+
+6. **Language Configuration**
    - `syntaxes/strm.tmLanguage.json`: TextMate grammar for syntax highlighting
    - `language-configuration.json`: Bracket matching and comment configuration
 
 ### Key Features Implementation
 
-- **Auto-completion**: Context-aware suggestions based on ANTLR4 parsing, predefined templates, and file system analysis
-- **Navigation**: F12 to jump to node implementation files (Go/Python), with intelligent path resolution
+- **Auto-completion**: Context-aware suggestions scoped by statement type (`in`, `out`, `node`, `model`, top-level); CSV file names sourced from `CsvFileCache`
+- **Hover documentation**: `KEYWORD_DOCS` map in `hoverProvider.ts` covers all top-level keywords plus node/model/subprocess signatures
+- **Diagnostics**: ANTLR parse errors mapped to `vscode.Diagnostic`; clears on document close
+- **Outline panel**: Hierarchical symbols — subprocess → node/model children; multi-line `model` block range support
+- **Navigation**: F12 routes by line type (`in` → CSV, `node`/`model` → Go/Python implementation)
 - **File Resolution**:
-  - Node files: `src/nodes/<nodename>/<nodename>U.go` for Go, `src/python/<nodename>U.py` for Python
-  - Input files: Searches in `input/` directory at current level and parent level
+  - Node files: `src/nodes/<nodename>/<nodename>U.go` for Go, `src/python/<nodename>U.py` for Python (with non-`src/` fallbacks)
+  - Input files: Searches `input/` at current level then parent level
 - **Template Insertion**: Quick scaffolding for Go and Python process files
 
 ### Extension Activation
 
 The extension activates when a `.strm` file is opened (`onLanguage:strm`). All providers and commands are registered during activation.
+
+### Test Infrastructure
+
+Tests use Mocha 11 + `@vscode/test-electron`. Test files live in `src/test/suite/` and cover the parser, completion provider, document symbol provider, and hover provider.
 
 ## .strm File Structure
 
@@ -155,15 +194,8 @@ VOR Stream process files use keywords like:
 
 ## Known Bugs / Technical Debt
 
-- **F12 keybinding hijacks all files**: `extension.openNodeFile` is bound to `f12` with
-  `when: "editorTextFocus"`, overriding VS Code's native Go to Definition in every language.
-  Should be `when: "editorLangId == strm"`. Fixed in `fix/p1-bugs`.
 - **`runProcessCommand` is cursor-position fragile**: Requires cursor on the `name` line.
   Should parse the whole document instead.
-- **`antlr4ts` is an unused dependency**: `package.json` lists `antlr4ts` (`^0.5.0-alpha.4`,
-  unmaintained) but all code uses `antlr4`. Safe to remove.
-- **`completionItemProvider` in `package.json` contributes**: Not a standard VS Code manifest
-  field — does nothing. Can be removed.
 - **`dist/` build artifacts committed**: `vor-stream-0.0.1.vsix`, `dist/metadata.json`,
   `dist/artifacts.json`, `dist/config.yaml` should be in `.gitignore`.
 

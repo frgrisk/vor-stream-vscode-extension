@@ -14,9 +14,25 @@ as well as custom completions for commonly used keywords.
 
 - **Intelligent Auto-Completion**
 
-  - Context-aware suggestions based on your grammar
-  - Common keywords like `NAME`, `TYPE=`, `LANG=`
-  - Process-specific completions
+  - Context-aware suggestions scoped by statement type (`in`, `out`, `node`, `model`, top-level)
+  - CSV file names from `input/` directories (auto-refreshed via file watcher)
+  - Source/destination-specific options (e.g. S3 `mode=`, DB connection snippets)
+
+- **Hover Documentation**
+
+  - Keyword descriptions and usage examples on hover
+  - Node and model signatures showing inputs and outputs
+
+- **Diagnostics**
+
+  - Real-time syntax error squiggles from the ANTLR parser
+  - Errors clear automatically when the document is closed
+
+- **Outline Panel**
+
+  - Document structure in the VS Code Outline panel
+  - Hierarchical tree: subprocess → node/model children
+  - Symbols for `name`, `subprocess`, `node`, `model`, `in`, `out`, `sql`
 
 - **Template Support**
 
@@ -34,8 +50,9 @@ as well as custom completions for commonly used keywords.
 
 ## Known Limitations
 
-- Autocomplete suggestions include quoted strings from the ANTLR parser (noisy); identifier-only filtering is planned
+- Autocomplete may include quoted strings from the ANTLR parser on some token types; identifier-only filtering is planned
 - F12 on `out` lines is intentionally unsupported
+- `runProcessCommand` requires the cursor to be on the `name` line
 
 ## Installation
 
