@@ -103,19 +103,19 @@ Add new keywords to the appropriate `keyword.control.process` or `keyword.other.
 The extension is fully synced with `vor-stream`'s grammar. All previously missing items are now
 implemented, and the following additional keywords were added:
 
-| Feature / keyword                                              | Completions | `tmLanguage.json` | Hover docs |
-| -------------------------------------------------------------- | ----------- | ----------------- | ---------- |
-| `labelStmt` / `label=` option                                  | ✅ Present  | ✅ Present        | ✅ Present |
-| `modelStmt` (standalone model node)                            | ✅ Present  | ✅ Present        | ✅ Present |
-| `EXCEPTQ=` (model exception queue)                             | ✅ Present  | ✅ Present        | ✅ Present |
-| `SCENARIO=` (true/false)                                       | ✅ Present  | ✅ Present        | ✅ Present |
-| `UNITTEST=` (true/false)                                       | ✅ Present  | ✅ Present        | ✅ Present |
-| `MODELNAME=`                                                   | ✅ Present  | ✅ Present        | ✅ Present |
-| `DB` keyword                                                   | ✅ Present  | ✅ Present        | ✅ Present |
-| `COMPRESS`, `MINIMIZE`, `CONNECTION`                           | ✅ Present  | ✅ Present        | ✅ Present |
-| `SASCMD`, `SASFILE`, `SASWORK`, `SCENARIODS`                   | ✅ Present  | ✅ Present        | ✅ Present |
-| SQL context: `predict=`, `minimize=`, `syntax_version=`        | ✅ Present  | ✅ Present        | ✅ Present |
-| SAS context: `sascmd=`, `sasfile=`, `saswork=`, `scenariods=`, `framework=` | ✅ Present | ✅ Present | ✅ Present |
+| Feature / keyword                                                           | Completions | `tmLanguage.json` | Hover docs |
+| --------------------------------------------------------------------------- | ----------- | ----------------- | ---------- |
+| `labelStmt` / `label=` option                                               | ✅ Present  | ✅ Present        | ✅ Present |
+| `modelStmt` (standalone model node)                                         | ✅ Present  | ✅ Present        | ✅ Present |
+| `EXCEPTQ=` (model exception queue)                                          | ✅ Present  | ✅ Present        | ✅ Present |
+| `SCENARIO=` (true/false)                                                    | ✅ Present  | ✅ Present        | ✅ Present |
+| `UNITTEST=` (true/false)                                                    | ✅ Present  | ✅ Present        | ✅ Present |
+| `MODELNAME=`                                                                | ✅ Present  | ✅ Present        | ✅ Present |
+| `DB` keyword                                                                | ✅ Present  | ✅ Present        | ✅ Present |
+| `COMPRESS`, `MINIMIZE`, `CONNECTION`                                        | ✅ Present  | ✅ Present        | ✅ Present |
+| `SASCMD`, `SASFILE`, `SASWORK`, `SCENARIODS`                                | ✅ Present  | ✅ Present        | ✅ Present |
+| SQL context: `predict=`, `minimize=`, `syntax_version=`                     | ✅ Present  | ✅ Present        | ✅ Present |
+| SAS context: `sascmd=`, `sasfile=`, `saswork=`, `scenariods=`, `framework=` | ✅ Present  | ✅ Present        | ✅ Present |
 
 ## Architecture Overview
 

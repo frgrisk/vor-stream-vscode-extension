@@ -140,7 +140,8 @@ const KEYWORD_DOCS: Record<string, KeywordDoc> = {
     usage: 'sasfile="model.sas"',
   },
   saswork: {
-    summary: "`saswork` — SAS work directory list (comma-separated quoted paths).",
+    summary:
+      "`saswork` — SAS work directory list (comma-separated quoted paths).",
     usage: 'saswork="/tmp/saswork"',
   },
   scenariods: {
