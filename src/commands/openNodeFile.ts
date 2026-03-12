@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import { openFirstExisting } from "../utils/fileUtils";
+import { openFirstExisting, openInputCsv } from "../utils/fileUtils";
 
 export function registerOpenNodeFileCommand(
   context: vscode.ExtensionContext,
@@ -24,11 +24,7 @@ export function registerOpenNodeFileCommand(
         const isS3 = source.startsWith("s3://");
         const isDb = /\bdb\s*=/i.test(lineText);
         if (!isS3 && !isDb) {
-          const baseName = path.basename(source).replace(/\.csv$/i, "");
-          await openFirstExisting([
-            path.join(currentFileDir, "input", `${baseName}.csv`),
-            path.join(path.dirname(currentFileDir), "input", `${baseName}.csv`),
-          ]);
+          await openInputCsv(source, currentFileDir);
         }
         return;
       }
