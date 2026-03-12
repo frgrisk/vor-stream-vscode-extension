@@ -215,9 +215,9 @@ Every merge to `main` using [conventional commits](https://www.conventionalcommi
 ### What you must do before merging the Release PR
 
 - [ ] Verify `## [Unreleased]` in `CHANGELOG.md` accurately describes all changes
-  (release-please generates this from commit messages — review and edit if needed)
+      (release-please generates this from commit messages — review and edit if needed)
 - [ ] The What's New panel will show users exactly this section on their first activation
-  after updating, so make sure it reads well
+      after updating, so make sure it reads well
 
 ### What you must NOT do
 
