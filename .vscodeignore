@@ -6,6 +6,11 @@ src/**
 # Build artifacts (keep only bundled output)
 out/
 node_modules/
+dist/artifacts.json
+dist/checksums.txt
+dist/config.yaml
+dist/metadata.json
+dist/*.zip
 
 # Development files
 .vscode/**
@@ -13,6 +18,13 @@ node_modules/
 .gitignore
 .yarnrc
 .editorconfig
+.github/**
+.idea/**
+.pre-commit-config.yaml
+.goreleaser.yaml
+.release-please-manifest.json
+release-please-config.json
+testdata/
 
 # Documentation (except README)
 CLAUDE.md
@@ -21,10 +33,13 @@ docs/
 
 # Configuration files
 tsconfig.json
+tsconfig.build.json
 webpack.config.js
+eslint.config.mjs
 .eslintrc*
 .prettierrc*
 package-lock.json
+.claude/
 
 # Scripts and tools
 scripts/

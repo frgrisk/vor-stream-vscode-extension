@@ -96,14 +96,21 @@ export async function showWhatsNewPanel(
   context: vscode.ExtensionContext,
   currentVersion: string,
 ): Promise<void> {
-  const changelogPath = path.join(context.extensionPath, "CHANGELOG.md");
+  // vsce lowercases CHANGELOG.md → changelog.md in the packaged vsix;
+  // try both so the feature works when installed and during local dev.
+  const candidates = ["CHANGELOG.md", "changelog.md"];
   let section = "";
-  try {
-    const markdown = await fs.promises.readFile(changelogPath, "utf-8");
-    section = parseChangelogSection(markdown, currentVersion);
-  } catch {
-    // Changelog not readable — skip silently, do not mark as seen so it retries
-    return;
+  for (const name of candidates) {
+    try {
+      const markdown = await fs.promises.readFile(
+        path.join(context.extensionPath, name),
+        "utf-8",
+      );
+      section = parseChangelogSection(markdown, currentVersion);
+      break;
+    } catch {
+      // try next candidate
+    }
   }
 
   if (!section) {
