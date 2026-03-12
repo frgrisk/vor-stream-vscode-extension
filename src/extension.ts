@@ -10,9 +10,15 @@ import { createDocumentSymbolProvider } from "./documentSymbolProvider";
 import { registerDiagnosticProvider } from "./diagnosticProvider";
 import { createHoverProvider } from "./hoverProvider";
 import { CsvFileCache } from "./utils/csvFileCache";
+import { shouldShowWhatsNew, showWhatsNewPanel } from "./whatsNew";
 
 export function activate(context: vscode.ExtensionContext) {
   const csvCache = new CsvFileCache(context);
+
+  const currentVersion = context.extension.packageJSON.version as string;
+  if (shouldShowWhatsNew(context, currentVersion)) {
+    void showWhatsNewPanel(context, currentVersion);
+  }
 
   registerInsertTemplateCommands(context);
   registerDiagnosticProvider(context);
