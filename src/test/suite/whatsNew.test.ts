@@ -41,10 +41,7 @@ suite("parseChangelogSection", () => {
       !result.includes("Initial release"),
       "should not contain 0.1.0 content",
     );
-    assert.ok(
-      !result.includes("0.1.0"),
-      "should not contain the 0.1.0 header",
-    );
+    assert.ok(!result.includes("0.1.0"), "should not contain the 0.1.0 header");
   });
 
   test("does not bleed into [Unreleased] content", () => {
