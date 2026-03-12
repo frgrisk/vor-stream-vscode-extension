@@ -7,6 +7,12 @@
 - Pre-commit hooks for prettier, end-of-file-fixer, and trailing-whitespace
 - `format` and `format:check` npm scripts
 - Webpack bundling for extension distribution
+- **What's New panel**: shows the current version's changelog section in a VS Code
+  webview on first activation after an update; skips silently if the section is missing
+- **Release pipeline**: release-please automation opens a Release PR on every push to
+  `main`; a tag-triggered workflow lints, tests, packages the `.vsix`, and publishes
+  via GoReleaser
+- `@vscode/vsce` dev dependency and `vsce:package` npm script
 
 ### Changed
 
