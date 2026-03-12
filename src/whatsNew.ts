@@ -52,7 +52,7 @@ function getWebviewContent(markdownSection: string, version: string): string {
     .replace(/^### (.+)$/gm, "<h3>$1</h3>")
     .replace(/^## (.+)$/gm, "<h2>$1</h2>")
     .replace(/^- (.+)$/gm, "<li>$1</li>")
-    .replace(/(<li>[^]*?<\/li>\n?)+/g, "<ul>$&</ul>")
+    .replace(/((?:<li>.*<\/li>\n?)+)/g, "<ul>$1</ul>")
     .replace(/`([^`]+)`/g, "<code>$1</code>")
     .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
 
@@ -99,7 +99,7 @@ export async function showWhatsNewPanel(
   const changelogPath = path.join(context.extensionPath, "CHANGELOG.md");
   let section = "";
   try {
-    const markdown = fs.readFileSync(changelogPath, "utf-8");
+    const markdown = await fs.promises.readFile(changelogPath, "utf-8");
     section = parseChangelogSection(markdown, currentVersion);
   } catch {
     // Changelog not readable — skip silently, do not mark as seen so it retries
@@ -119,5 +119,10 @@ export async function showWhatsNewPanel(
   );
 
   panel.webview.html = getWebviewContent(section, currentVersion);
-  await context.globalState.update("lastSeenVersion", currentVersion);
+  try {
+    await context.globalState.update("lastSeenVersion", currentVersion);
+  } catch (error) {
+    // If storage write fails, ignore so the panel shows again next activation
+    console.error("Failed to update lastSeenVersion in globalState:", error);
+  }
 }

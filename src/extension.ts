@@ -17,7 +17,9 @@ export function activate(context: vscode.ExtensionContext) {
 
   const currentVersion = context.extension.packageJSON.version as string;
   if (shouldShowWhatsNew(context, currentVersion)) {
-    void showWhatsNewPanel(context, currentVersion);
+    void showWhatsNewPanel(context, currentVersion).catch((error) => {
+      console.error("Failed to show What's New panel:", error);
+    });
   }
 
   registerInsertTemplateCommands(context);
