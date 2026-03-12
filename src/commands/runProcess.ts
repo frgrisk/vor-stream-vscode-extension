@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { getOrCreateVorTerminal } from "../utils/terminal";
 
 export function registerRunProcessCommand(
   context: vscode.ExtensionContext,
@@ -23,10 +24,7 @@ export function registerRunProcessCommand(
 
       const processName = match[1]; // Extracted process name
 
-      // Open a new terminal or reuse an existing one
-      const terminal =
-        vscode.window.terminals.find((t) => t.name === "VOR Terminal") ||
-        vscode.window.createTerminal("VOR Terminal");
+      const terminal = getOrCreateVorTerminal();
       terminal.show();
 
       // Run "vor run process <processName>"
