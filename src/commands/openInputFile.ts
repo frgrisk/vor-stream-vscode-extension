@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import * as path from "path";
-import { openFirstExisting } from "../utils/fileUtils";
+import { openInputCsv } from "../utils/fileUtils";
 
 export function registerOpenInputFileCommand(
   context: vscode.ExtensionContext,
@@ -38,12 +38,7 @@ export function registerOpenInputFileCommand(
         return;
       }
 
-      const currentFileDir = path.dirname(document.uri.fsPath);
-      const baseName = path.basename(source).replace(/\.csv$/i, "");
-      await openFirstExisting([
-        path.join(currentFileDir, "input", `${baseName}.csv`),
-        path.join(path.dirname(currentFileDir), "input", `${baseName}.csv`),
-      ]);
+      await openInputCsv(source, path.dirname(document.uri.fsPath));
     },
   );
 

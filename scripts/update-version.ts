@@ -9,8 +9,11 @@ const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
 const versionMatch = process.env.GITHUB_REF?.match(
   /refs\/tags\/v(\d+\.\d+\.\d+)/,
 );
-const version = versionMatch ? versionMatch[1] : "0.0.0";
+if (!versionMatch) {
+  console.log("update-version: no version tag in GITHUB_REF, skipping.");
+  process.exit(0);
+}
 
 // Update package.json version
-packageJson.version = version;
+packageJson.version = versionMatch[1];
 fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2) + "\n");

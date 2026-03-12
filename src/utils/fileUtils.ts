@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import * as path from "path";
 
 export async function openFirstExisting(
   possiblePaths: string[],
@@ -6,7 +7,6 @@ export async function openFirstExisting(
   for (const filePath of possiblePaths) {
     const uri = vscode.Uri.file(filePath);
     try {
-      await vscode.workspace.fs.stat(uri);
       await vscode.window.showTextDocument(uri);
       return;
     } catch (err) {
@@ -16,4 +16,15 @@ export async function openFirstExisting(
   vscode.window.showInformationMessage(
     `File not found in expected locations: ${possiblePaths.join(", ")}`,
   );
+}
+
+export async function openInputCsv(
+  source: string,
+  fromDir: string,
+): Promise<void> {
+  const baseName = path.basename(source).replace(/\.csv$/i, "");
+  await openFirstExisting([
+    path.join(fromDir, "input", `${baseName}.csv`),
+    path.join(path.dirname(fromDir), "input", `${baseName}.csv`),
+  ]);
 }
