@@ -10,9 +10,17 @@ import { createDocumentSymbolProvider } from "./documentSymbolProvider";
 import { registerDiagnosticProvider } from "./diagnosticProvider";
 import { createHoverProvider } from "./hoverProvider";
 import { CsvFileCache } from "./utils/csvFileCache";
+import { shouldShowWhatsNew, showWhatsNewPanel } from "./whatsNew";
 
 export function activate(context: vscode.ExtensionContext) {
   const csvCache = new CsvFileCache(context);
+
+  const currentVersion = context.extension.packageJSON.version as string;
+  if (shouldShowWhatsNew(context, currentVersion)) {
+    void showWhatsNewPanel(context, currentVersion).catch((error) => {
+      console.error("Failed to show What's New panel:", error);
+    });
+  }
 
   registerInsertTemplateCommands(context);
   registerDiagnosticProvider(context);

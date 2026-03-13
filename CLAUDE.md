@@ -197,6 +197,49 @@ VOR Stream process files use keywords like:
 - `unittest=`: `true`/`false` model option
 - `modelname=`: Model name string for model nodes
 
+## Release Process
+
+Releases are fully automated via [release-please](https://github.com/googleapis/release-please).
+Every merge to `main` using [conventional commits](https://www.conventionalcommits.org/) feeds the pipeline.
+
+### How a release happens
+
+1. **Merge to `main`** using conventional commit messages (`feat:`, `fix:`, `docs:`, etc.)
+2. **release-please** automatically opens (or updates) a Release PR that:
+   - Bumps `package.json` version (minor for `feat:`, patch for `fix:`)
+   - Moves `## [Unreleased]` → `## [x.y.z] - YYYY-MM-DD` in `CHANGELOG.md`
+3. **Review and merge the Release PR** — this is the only manual step
+4. release-please pushes a `vx.y.z` tag, which triggers `.github/workflows/release.yaml`:
+   - Lint → test → update version in `package.json` → bundle → package `.vsix` → GoReleaser publishes to GitHub Releases
+
+### What you must do before merging the Release PR
+
+- [ ] Verify `## [Unreleased]` in `CHANGELOG.md` accurately describes all changes
+      (release-please generates this from commit messages — review and edit if needed)
+- [ ] The What's New panel will show users exactly this section on their first activation
+      after updating, so make sure it reads well
+
+### What you must NOT do
+
+- Do **not** manually edit `package.json` version — release-please owns it
+- Do **not** push `v*` tags manually — that triggers the release workflow immediately
+
+### Testing the What's New panel locally before release
+
+```bash
+# Build vsix from current branch (update-version skips without a tag — that's fine)
+npm run vsce:package
+
+# Launch VS Code with a fresh isolated profile
+code --user-data-dir /tmp/vsc-test --extensions-dir /tmp/vsc-ext
+
+# Install the .vsix via Extensions panel → ⋯ → Install from VSIX
+# Open any .strm file → What's New panel should appear showing the current version's changelog
+```
+
+> **Note:** VS Code preserves `globalState` (including `lastSeenVersion`) across
+> extension uninstall/reinstall. Always use `--user-data-dir` for a clean test.
+
 ## Known Bugs / Technical Debt
 
 None known.
