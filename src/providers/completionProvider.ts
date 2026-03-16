@@ -304,14 +304,14 @@ export function createCompletionProvider(
             kind: vscode.CompletionItemKind.Property,
           },
           {
-            label: "getdyn",
-            insertText: "getdyn=${1:dyn_fact}",
+            label: "get_dyn",
+            insertText: "get_dyn=${1:dyn_fact}",
             detail: "Read a dynamic fact",
             kind: vscode.CompletionItemKind.Property,
           },
           {
-            label: "setdyn",
-            insertText: "setdyn=${1:dyn_fact}",
+            label: "set_dyn",
+            insertText: "set_dyn=${1:dyn_fact}",
             detail: "Write a dynamic fact",
             kind: vscode.CompletionItemKind.Property,
           },
@@ -402,10 +402,10 @@ export function createCompletionProvider(
         const modelOpts = [
           "type",
           "label",
-          "exceptq",
+          "exception_queue",
           "scenario",
-          "unittest",
-          "modelname",
+          "unit_test",
+          "model_name",
         ];
         if (modelStartLine >= 0) {
           for (let i = modelStartLine; i <= position.line; i++) {
@@ -433,8 +433,8 @@ export function createCompletionProvider(
             kind: vscode.CompletionItemKind.Property,
           },
           {
-            label: "exceptq",
-            insertText: "exceptq=${1:exception_queue}",
+            label: "exception_queue",
+            insertText: "exception_queue=${1:queue_name}",
             detail: "Exception queue",
             kind: vscode.CompletionItemKind.Property,
           },
@@ -445,14 +445,14 @@ export function createCompletionProvider(
             kind: vscode.CompletionItemKind.Enum,
           },
           {
-            label: "unittest",
-            insertText: "unittest=${1|true,false|}",
+            label: "unit_test",
+            insertText: "unit_test=${1|true,false|}",
             detail: "Enable unit testing",
             kind: vscode.CompletionItemKind.Enum,
           },
           {
-            label: "modelname",
-            insertText: 'modelname="${1:model_name}"',
+            label: "model_name",
+            insertText: 'model_name="${1:model_name}"',
             detail: "Display name for model",
             kind: vscode.CompletionItemKind.Property,
           },

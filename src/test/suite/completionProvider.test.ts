@@ -178,10 +178,10 @@ suite("CompletionProvider", () => {
         ),
       );
       const ls = labels(items);
-      assert.ok(ls.includes("exceptq"), `Expected 'exceptq' in ${ls}`);
+      assert.ok(ls.includes("exception_queue"), `Expected 'exception_queue' in ${ls}`);
       assert.ok(ls.includes("scenario"), `Expected 'scenario' in ${ls}`);
-      assert.ok(ls.includes("unittest"), `Expected 'unittest' in ${ls}`);
-      assert.ok(ls.includes("modelname"), `Expected 'modelname' in ${ls}`);
+      assert.ok(ls.includes("unit_test"), `Expected 'unit_test' in ${ls}`);
+      assert.ok(ls.includes("model_name"), `Expected 'model_name' in ${ls}`);
     });
 
     test("model continuation does NOT include unrelated keywords", async () => {
@@ -211,7 +211,7 @@ suite("CompletionProvider", () => {
       );
     });
 
-    test("returns 6 model options (type,label,exceptq,scenario,unittest,modelname) when none defined", async () => {
+    test("returns 6 model options (type,label,exception_queue,scenario,unit_test,model_name) when none defined", async () => {
       const content = "model mymodel(a)(b)\n  ";
       const doc = await vscode.workspace.openTextDocument({
         content,
@@ -230,7 +230,7 @@ suite("CompletionProvider", () => {
       const ls = labels(items);
       assert.ok(ls.includes("type"), `Expected 'type' in ${ls}`);
       assert.ok(ls.includes("label"), `Expected 'label' in ${ls}`);
-      assert.ok(ls.includes("exceptq"), `Expected 'exceptq' in ${ls}`);
+      assert.ok(ls.includes("exception_queue"), `Expected 'exception_queue' in ${ls}`);
       assert.strictEqual(
         items.length,
         6,
@@ -239,7 +239,7 @@ suite("CompletionProvider", () => {
     });
 
     test("excludes options defined on previous continuation lines", async () => {
-      const content = "model mymodel(a)(b)\n  exceptq=errq\n  ";
+      const content = "model mymodel(a)(b)\n  exception_queue=errq\n  ";
       const doc = await vscode.workspace.openTextDocument({
         content,
         language: "strm",
@@ -256,8 +256,8 @@ suite("CompletionProvider", () => {
       );
       const ls = labels(items);
       assert.ok(
-        !ls.includes("exceptq"),
-        `'exceptq' should be excluded since it is already defined: ${ls}`,
+        !ls.includes("exception_queue"),
+        `'exception_queue' should be excluded since it is already defined: ${ls}`,
       );
       assert.ok(
         ls.includes("scenario"),
@@ -272,7 +272,7 @@ suite("CompletionProvider", () => {
 
     test("excludes options already typed on the model line itself", async () => {
       const content =
-        'model mymodel(a)(b) type="Default" exceptq=errq scenario=true unittest=false modelname="M" label="L" ';
+        'model mymodel(a)(b) type="Default" exception_queue=errq scenario=true unit_test=false model_name="M" label="L" ';
       const doc = await vscode.workspace.openTextDocument({
         content,
         language: "strm",
@@ -436,8 +436,8 @@ suite("CompletionProvider", () => {
       const items = await getCompletions("", 0);
       const ls = labels(items);
       assert.ok(
-        !ls.includes("exceptq"),
-        `'exceptq' must not appear at top level: ${ls}`,
+        !ls.includes("exception_queue"),
+        `'exception_queue' must not appear at top level: ${ls}`,
       );
       assert.ok(
         !ls.includes("lang"),
