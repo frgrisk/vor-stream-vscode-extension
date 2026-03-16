@@ -44,14 +44,20 @@ export function shouldShowWhatsNew(
   return context.globalState.get<string>("lastSeenVersion") !== currentVersion;
 }
 
-function getWebviewContent(markdownSection: string, version: string): string {
+/**
+ * Converts a markdown changelog section to an HTML fragment.
+ * Handles headings, unordered lists (both `*` and `-` bullets), inline code,
+ * bold text, and strips `[text](url)` link syntax (links are not navigable in
+ * the webview).
+ */
+export function markdownToHtml(markdownSection: string): string {
   // Strip markdown link syntax ([text](url) → text) before HTML-escaping,
   // since links are not navigable in the webview and clutter the output.
   const stripped = markdownSection.replace(/\[([^\]]+)\]\([^)]+\)/g, "$1");
 
   // HTML-escape first, then apply structural markdown → HTML conversions.
   // Order matters: escape raw content before wrapping in tags.
-  const html = escapeHtml(stripped)
+  return escapeHtml(stripped)
     .replace(/^#### (.+)$/gm, "<h4>$1</h4>")
     .replace(/^### (.+)$/gm, "<h3>$1</h3>")
     .replace(/^## (.+)$/gm, "<h2>$1</h2>")
@@ -59,6 +65,10 @@ function getWebviewContent(markdownSection: string, version: string): string {
     .replace(/((?:<li>.*<\/li>\n?)+)/g, "<ul>$1</ul>")
     .replace(/`([^`]+)`/g, "<code>$1</code>")
     .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+}
+
+function getWebviewContent(markdownSection: string, version: string): string {
+  const html = markdownToHtml(markdownSection);
 
   const nonce = randomBytes(16).toString("hex");
 
