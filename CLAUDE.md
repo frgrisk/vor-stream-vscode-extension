@@ -92,25 +92,25 @@ Update the completion provider to reflect new keywords and context-scoped option
 - Input statement options (vary by source: CSV, DB, S3)
 - Output statement options (vary by destination: CSV, DB, S3)
 - Node statement options (`lang=`, `exec_when=`, `where=`, facts/signals options)
-- Model statement options (`type=`, `label=`, `exceptq=`, `scenario=`, `unittest=`, `modelname=`)
+- Model statement options (`type=`, `label=`, `exception_queue=`, `scenario=`, `unit_test=`, `model_name=`)
 
 ### 3. Sync syntax highlighting in `syntaxes/strm.tmLanguage.json`
 
 Add new keywords to the appropriate `keyword.control.process` or `keyword.other.process` patterns.
 
-### Current Grammar vs Extension State (as of 2026-03-10)
+### Current Grammar vs Extension State (as of 2026-03-16)
 
-The extension is fully synced with `vor-stream`'s grammar. All previously missing items are now
-implemented, and the following additional keywords were added:
+The extension is fully synced with `vor-stream`'s grammar (commit 832a9b33b, VS-1390).
 
 | Feature / keyword                                                           | Completions | `tmLanguage.json` | Hover docs |
 | --------------------------------------------------------------------------- | ----------- | ----------------- | ---------- |
 | `labelStmt` / `label=` option                                               | ✅ Present  | ✅ Present        | ✅ Present |
 | `modelStmt` (standalone model node)                                         | ✅ Present  | ✅ Present        | ✅ Present |
-| `EXCEPTQ=` (model exception queue)                                          | ✅ Present  | ✅ Present        | ✅ Present |
+| `EXCEPTION_QUEUE=` (model exception queue, renamed from `EXCEPTQ`)          | ✅ Present  | ✅ Present        | ✅ Present |
 | `SCENARIO=` (true/false)                                                    | ✅ Present  | ✅ Present        | ✅ Present |
-| `UNITTEST=` (true/false)                                                    | ✅ Present  | ✅ Present        | ✅ Present |
-| `MODELNAME=`                                                                | ✅ Present  | ✅ Present        | ✅ Present |
+| `UNIT_TEST=` (true/false, renamed from `UNITTEST`)                          | ✅ Present  | ✅ Present        | ✅ Present |
+| `MODEL_NAME=` (renamed from `MODELNAME`)                                    | ✅ Present  | ✅ Present        | ✅ Present |
+| `GET_DYN=` / `SET_DYN=` (snake_case aliases for `GETDYN`/`SETDYN`)          | ✅ Present  | ✅ Present        | ✅ Present |
 | `DB` keyword                                                                | ✅ Present  | ✅ Present        | ✅ Present |
 | `COMPRESS`, `MINIMIZE`, `CONNECTION`                                        | ✅ Present  | ✅ Present        | ✅ Present |
 | `SASCMD`, `SASFILE`, `SASWORK`, `SCENARIODS`                                | ✅ Present  | ✅ Present        | ✅ Present |
@@ -192,10 +192,10 @@ VOR Stream process files use keywords like:
 - `model`: Standalone model node — `model name(inputs)(outputs) [opts]`
 - `db`: Database — `db=PG` or `db=MSSQL`
 - `mode`: Processing mode — `mode=Append` or `mode=Replace`
-- `exceptq=`: Exception queue for model nodes
+- `exception_queue=`: Exception queue for model nodes
 - `scenario=`: `true`/`false` model option
-- `unittest=`: `true`/`false` model option
-- `modelname=`: Model name string for model nodes
+- `unit_test=`: `true`/`false` model option
+- `model_name=`: Model name string for model nodes
 
 ## Release Process
 

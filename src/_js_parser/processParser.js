@@ -1,11 +1,11 @@
-// Generated from /home/kng/repo/vor-stream/cmd/process/process.g4 by ANTLR 4.12.0
+// Generated from /home/kng/repo/vor-stream/cmd/process/process.g4 by ANTLR 4.13.1
 // jshint ignore: start
 import antlr4 from "antlr4";
 import processListener from "./processListener.js";
 import processVisitor from "./processVisitor.js";
 
 const serializedATN = [
-  4, 1, 105, 918, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7, 4, 2,
+  4, 1, 107, 918, 2, 0, 7, 0, 2, 1, 7, 1, 2, 2, 7, 2, 2, 3, 7, 3, 2, 4, 7, 4, 2,
   5, 7, 5, 2, 6, 7, 6, 2, 7, 7, 7, 2, 8, 7, 8, 2, 9, 7, 9, 2, 10, 7, 10, 2, 11,
   7, 11, 2, 12, 7, 12, 2, 13, 7, 13, 2, 14, 7, 14, 2, 15, 7, 15, 2, 16, 7, 16,
   2, 17, 7, 17, 2, 18, 7, 18, 2, 19, 7, 19, 2, 20, 7, 20, 2, 21, 7, 21, 2, 22,
@@ -103,68 +103,68 @@ const serializedATN = [
   188, 190, 192, 194, 196, 198, 200, 202, 204, 206, 208, 210, 212, 214, 216, 0,
   14, 3, 0, 34, 34, 55, 55, 68, 68, 1, 0, 47, 48, 1, 0, 65, 66, 2, 0, 62, 62,
   90, 90, 1, 0, 13, 22, 1, 0, 85, 87, 1, 0, 88, 89, 2, 0, 53, 53, 81, 81, 2, 0,
-  40, 40, 83, 83, 1, 0, 78, 79, 1, 0, 43, 44, 2, 0, 46, 46, 63, 63, 1, 0, 93,
-  94, 5, 0, 30, 34, 36, 39, 41, 69, 71, 82, 84, 99, 955, 0, 222, 1, 0, 0, 0, 2,
-  227, 1, 0, 0, 0, 4, 234, 1, 0, 0, 0, 6, 246, 1, 0, 0, 0, 8, 248, 1, 0, 0, 0,
-  10, 251, 1, 0, 0, 0, 12, 254, 1, 0, 0, 0, 14, 257, 1, 0, 0, 0, 16, 260, 1, 0,
-  0, 0, 18, 262, 1, 0, 0, 0, 20, 273, 1, 0, 0, 0, 22, 294, 1, 0, 0, 0, 24, 314,
-  1, 0, 0, 0, 26, 324, 1, 0, 0, 0, 28, 328, 1, 0, 0, 0, 30, 342, 1, 0, 0, 0, 32,
-  357, 1, 0, 0, 0, 34, 366, 1, 0, 0, 0, 36, 370, 1, 0, 0, 0, 38, 377, 1, 0, 0,
-  0, 40, 381, 1, 0, 0, 0, 42, 385, 1, 0, 0, 0, 44, 388, 1, 0, 0, 0, 46, 410, 1,
-  0, 0, 0, 48, 412, 1, 0, 0, 0, 50, 414, 1, 0, 0, 0, 52, 421, 1, 0, 0, 0, 54,
-  429, 1, 0, 0, 0, 56, 431, 1, 0, 0, 0, 58, 435, 1, 0, 0, 0, 60, 439, 1, 0, 0,
-  0, 62, 456, 1, 0, 0, 0, 64, 483, 1, 0, 0, 0, 66, 494, 1, 0, 0, 0, 68, 505, 1,
-  0, 0, 0, 70, 516, 1, 0, 0, 0, 72, 524, 1, 0, 0, 0, 74, 535, 1, 0, 0, 0, 76,
-  537, 1, 0, 0, 0, 78, 541, 1, 0, 0, 0, 80, 545, 1, 0, 0, 0, 82, 549, 1, 0, 0,
-  0, 84, 553, 1, 0, 0, 0, 86, 557, 1, 0, 0, 0, 88, 561, 1, 0, 0, 0, 90, 569, 1,
-  0, 0, 0, 92, 573, 1, 0, 0, 0, 94, 575, 1, 0, 0, 0, 96, 579, 1, 0, 0, 0, 98,
-  587, 1, 0, 0, 0, 100, 589, 1, 0, 0, 0, 102, 600, 1, 0, 0, 0, 104, 619, 1, 0,
-  0, 0, 106, 621, 1, 0, 0, 0, 108, 623, 1, 0, 0, 0, 110, 633, 1, 0, 0, 0, 112,
-  635, 1, 0, 0, 0, 114, 639, 1, 0, 0, 0, 116, 643, 1, 0, 0, 0, 118, 647, 1, 0,
-  0, 0, 120, 651, 1, 0, 0, 0, 122, 655, 1, 0, 0, 0, 124, 659, 1, 0, 0, 0, 126,
-  671, 1, 0, 0, 0, 128, 683, 1, 0, 0, 0, 130, 685, 1, 0, 0, 0, 132, 689, 1, 0,
-  0, 0, 134, 693, 1, 0, 0, 0, 136, 697, 1, 0, 0, 0, 138, 705, 1, 0, 0, 0, 140,
-  707, 1, 0, 0, 0, 142, 711, 1, 0, 0, 0, 144, 715, 1, 0, 0, 0, 146, 726, 1, 0,
-  0, 0, 148, 739, 1, 0, 0, 0, 150, 741, 1, 0, 0, 0, 152, 745, 1, 0, 0, 0, 154,
-  750, 1, 0, 0, 0, 156, 755, 1, 0, 0, 0, 158, 757, 1, 0, 0, 0, 160, 759, 1, 0,
-  0, 0, 162, 761, 1, 0, 0, 0, 164, 763, 1, 0, 0, 0, 166, 774, 1, 0, 0, 0, 168,
-  781, 1, 0, 0, 0, 170, 789, 1, 0, 0, 0, 172, 796, 1, 0, 0, 0, 174, 798, 1, 0,
-  0, 0, 176, 821, 1, 0, 0, 0, 178, 824, 1, 0, 0, 0, 180, 828, 1, 0, 0, 0, 182,
-  830, 1, 0, 0, 0, 184, 834, 1, 0, 0, 0, 186, 838, 1, 0, 0, 0, 188, 840, 1, 0,
-  0, 0, 190, 844, 1, 0, 0, 0, 192, 848, 1, 0, 0, 0, 194, 850, 1, 0, 0, 0, 196,
-  854, 1, 0, 0, 0, 198, 858, 1, 0, 0, 0, 200, 862, 1, 0, 0, 0, 202, 866, 1, 0,
-  0, 0, 204, 870, 1, 0, 0, 0, 206, 876, 1, 0, 0, 0, 208, 903, 1, 0, 0, 0, 210,
-  905, 1, 0, 0, 0, 212, 907, 1, 0, 0, 0, 214, 911, 1, 0, 0, 0, 216, 915, 1, 0,
-  0, 0, 218, 221, 3, 4, 2, 0, 219, 221, 3, 2, 1, 0, 220, 218, 1, 0, 0, 0, 220,
-  219, 1, 0, 0, 0, 221, 224, 1, 0, 0, 0, 222, 220, 1, 0, 0, 0, 222, 223, 1, 0,
-  0, 0, 223, 225, 1, 0, 0, 0, 224, 222, 1, 0, 0, 0, 225, 226, 5, 0, 0, 1, 226,
-  1, 1, 0, 0, 0, 227, 228, 5, 105, 0, 0, 228, 3, 1, 0, 0, 0, 229, 235, 3, 8, 4,
-  0, 230, 235, 3, 10, 5, 0, 231, 235, 3, 12, 6, 0, 232, 235, 3, 14, 7, 0, 233,
-  235, 3, 6, 3, 0, 234, 229, 1, 0, 0, 0, 234, 230, 1, 0, 0, 0, 234, 231, 1, 0,
-  0, 0, 234, 232, 1, 0, 0, 0, 234, 233, 1, 0, 0, 0, 235, 5, 1, 0, 0, 0, 236,
-  247, 3, 20, 10, 0, 237, 247, 3, 22, 11, 0, 238, 247, 3, 24, 12, 0, 239, 247,
-  3, 26, 13, 0, 240, 247, 3, 28, 14, 0, 241, 247, 3, 32, 16, 0, 242, 247, 5,
-  101, 0, 0, 243, 247, 5, 102, 0, 0, 244, 247, 5, 104, 0, 0, 245, 247, 3, 18, 9,
-  0, 246, 236, 1, 0, 0, 0, 246, 237, 1, 0, 0, 0, 246, 238, 1, 0, 0, 0, 246, 239,
-  1, 0, 0, 0, 246, 240, 1, 0, 0, 0, 246, 241, 1, 0, 0, 0, 246, 242, 1, 0, 0, 0,
-  246, 243, 1, 0, 0, 0, 246, 244, 1, 0, 0, 0, 246, 245, 1, 0, 0, 0, 247, 7, 1,
-  0, 0, 0, 248, 249, 5, 58, 0, 0, 249, 250, 3, 206, 103, 0, 250, 9, 1, 0, 0, 0,
-  251, 252, 5, 35, 0, 0, 252, 253, 3, 192, 96, 0, 253, 11, 1, 0, 0, 0, 254, 255,
-  5, 84, 0, 0, 255, 256, 3, 16, 8, 0, 256, 13, 1, 0, 0, 0, 257, 258, 5, 98, 0,
-  0, 258, 259, 3, 192, 96, 0, 259, 15, 1, 0, 0, 0, 260, 261, 7, 0, 0, 0, 261,
-  17, 1, 0, 0, 0, 262, 271, 3, 30, 15, 0, 263, 267, 5, 1, 0, 0, 264, 266, 3, 6,
-  3, 0, 265, 264, 1, 0, 0, 0, 266, 269, 1, 0, 0, 0, 267, 265, 1, 0, 0, 0, 267,
-  268, 1, 0, 0, 0, 268, 270, 1, 0, 0, 0, 269, 267, 1, 0, 0, 0, 270, 272, 5, 2,
-  0, 0, 271, 263, 1, 0, 0, 0, 271, 272, 1, 0, 0, 0, 272, 19, 1, 0, 0, 0, 273,
-  292, 7, 1, 0, 0, 274, 278, 3, 36, 18, 0, 275, 278, 3, 38, 19, 0, 276, 278, 3,
-  40, 20, 0, 277, 274, 1, 0, 0, 0, 277, 275, 1, 0, 0, 0, 277, 276, 1, 0, 0, 0,
-  278, 282, 1, 0, 0, 0, 279, 281, 3, 70, 35, 0, 280, 279, 1, 0, 0, 0, 281, 284,
-  1, 0, 0, 0, 282, 280, 1, 0, 0, 0, 282, 283, 1, 0, 0, 0, 283, 293, 1, 0, 0, 0,
-  284, 282, 1, 0, 0, 0, 285, 289, 3, 58, 29, 0, 286, 288, 3, 72, 36, 0, 287,
-  286, 1, 0, 0, 0, 288, 291, 1, 0, 0, 0, 289, 287, 1, 0, 0, 0, 289, 290, 1, 0,
-  0, 0, 290, 293, 1, 0, 0, 0, 291, 289, 1, 0, 0, 0, 292, 277, 1, 0, 0, 0, 292,
-  285, 1, 0, 0, 0, 293, 21, 1, 0, 0, 0, 294, 312, 7, 2, 0, 0, 295, 298, 3, 44,
-  22, 0, 296, 298, 3, 50, 25, 0, 297, 295, 1, 0, 0, 0, 297, 296, 1, 0, 0, 0,
+  40, 40, 83, 83, 2, 0, 78, 79, 100, 100, 2, 0, 43, 44, 99, 99, 2, 0, 46, 46,
+  63, 63, 1, 0, 93, 94, 5, 0, 30, 34, 36, 39, 41, 69, 71, 82, 84, 101, 955, 0,
+  222, 1, 0, 0, 0, 2, 227, 1, 0, 0, 0, 4, 234, 1, 0, 0, 0, 6, 246, 1, 0, 0, 0,
+  8, 248, 1, 0, 0, 0, 10, 251, 1, 0, 0, 0, 12, 254, 1, 0, 0, 0, 14, 257, 1, 0,
+  0, 0, 16, 260, 1, 0, 0, 0, 18, 262, 1, 0, 0, 0, 20, 273, 1, 0, 0, 0, 22, 294,
+  1, 0, 0, 0, 24, 314, 1, 0, 0, 0, 26, 324, 1, 0, 0, 0, 28, 328, 1, 0, 0, 0, 30,
+  342, 1, 0, 0, 0, 32, 357, 1, 0, 0, 0, 34, 366, 1, 0, 0, 0, 36, 370, 1, 0, 0,
+  0, 38, 377, 1, 0, 0, 0, 40, 381, 1, 0, 0, 0, 42, 385, 1, 0, 0, 0, 44, 388, 1,
+  0, 0, 0, 46, 410, 1, 0, 0, 0, 48, 412, 1, 0, 0, 0, 50, 414, 1, 0, 0, 0, 52,
+  421, 1, 0, 0, 0, 54, 429, 1, 0, 0, 0, 56, 431, 1, 0, 0, 0, 58, 435, 1, 0, 0,
+  0, 60, 439, 1, 0, 0, 0, 62, 456, 1, 0, 0, 0, 64, 483, 1, 0, 0, 0, 66, 494, 1,
+  0, 0, 0, 68, 505, 1, 0, 0, 0, 70, 516, 1, 0, 0, 0, 72, 524, 1, 0, 0, 0, 74,
+  535, 1, 0, 0, 0, 76, 537, 1, 0, 0, 0, 78, 541, 1, 0, 0, 0, 80, 545, 1, 0, 0,
+  0, 82, 549, 1, 0, 0, 0, 84, 553, 1, 0, 0, 0, 86, 557, 1, 0, 0, 0, 88, 561, 1,
+  0, 0, 0, 90, 569, 1, 0, 0, 0, 92, 573, 1, 0, 0, 0, 94, 575, 1, 0, 0, 0, 96,
+  579, 1, 0, 0, 0, 98, 587, 1, 0, 0, 0, 100, 589, 1, 0, 0, 0, 102, 600, 1, 0, 0,
+  0, 104, 619, 1, 0, 0, 0, 106, 621, 1, 0, 0, 0, 108, 623, 1, 0, 0, 0, 110, 633,
+  1, 0, 0, 0, 112, 635, 1, 0, 0, 0, 114, 639, 1, 0, 0, 0, 116, 643, 1, 0, 0, 0,
+  118, 647, 1, 0, 0, 0, 120, 651, 1, 0, 0, 0, 122, 655, 1, 0, 0, 0, 124, 659, 1,
+  0, 0, 0, 126, 671, 1, 0, 0, 0, 128, 683, 1, 0, 0, 0, 130, 685, 1, 0, 0, 0,
+  132, 689, 1, 0, 0, 0, 134, 693, 1, 0, 0, 0, 136, 697, 1, 0, 0, 0, 138, 705, 1,
+  0, 0, 0, 140, 707, 1, 0, 0, 0, 142, 711, 1, 0, 0, 0, 144, 715, 1, 0, 0, 0,
+  146, 726, 1, 0, 0, 0, 148, 739, 1, 0, 0, 0, 150, 741, 1, 0, 0, 0, 152, 745, 1,
+  0, 0, 0, 154, 750, 1, 0, 0, 0, 156, 755, 1, 0, 0, 0, 158, 757, 1, 0, 0, 0,
+  160, 759, 1, 0, 0, 0, 162, 761, 1, 0, 0, 0, 164, 763, 1, 0, 0, 0, 166, 774, 1,
+  0, 0, 0, 168, 781, 1, 0, 0, 0, 170, 789, 1, 0, 0, 0, 172, 796, 1, 0, 0, 0,
+  174, 798, 1, 0, 0, 0, 176, 821, 1, 0, 0, 0, 178, 824, 1, 0, 0, 0, 180, 828, 1,
+  0, 0, 0, 182, 830, 1, 0, 0, 0, 184, 834, 1, 0, 0, 0, 186, 838, 1, 0, 0, 0,
+  188, 840, 1, 0, 0, 0, 190, 844, 1, 0, 0, 0, 192, 848, 1, 0, 0, 0, 194, 850, 1,
+  0, 0, 0, 196, 854, 1, 0, 0, 0, 198, 858, 1, 0, 0, 0, 200, 862, 1, 0, 0, 0,
+  202, 866, 1, 0, 0, 0, 204, 870, 1, 0, 0, 0, 206, 876, 1, 0, 0, 0, 208, 903, 1,
+  0, 0, 0, 210, 905, 1, 0, 0, 0, 212, 907, 1, 0, 0, 0, 214, 911, 1, 0, 0, 0,
+  216, 915, 1, 0, 0, 0, 218, 221, 3, 4, 2, 0, 219, 221, 3, 2, 1, 0, 220, 218, 1,
+  0, 0, 0, 220, 219, 1, 0, 0, 0, 221, 224, 1, 0, 0, 0, 222, 220, 1, 0, 0, 0,
+  222, 223, 1, 0, 0, 0, 223, 225, 1, 0, 0, 0, 224, 222, 1, 0, 0, 0, 225, 226, 5,
+  0, 0, 1, 226, 1, 1, 0, 0, 0, 227, 228, 5, 107, 0, 0, 228, 3, 1, 0, 0, 0, 229,
+  235, 3, 8, 4, 0, 230, 235, 3, 10, 5, 0, 231, 235, 3, 12, 6, 0, 232, 235, 3,
+  14, 7, 0, 233, 235, 3, 6, 3, 0, 234, 229, 1, 0, 0, 0, 234, 230, 1, 0, 0, 0,
+  234, 231, 1, 0, 0, 0, 234, 232, 1, 0, 0, 0, 234, 233, 1, 0, 0, 0, 235, 5, 1,
+  0, 0, 0, 236, 247, 3, 20, 10, 0, 237, 247, 3, 22, 11, 0, 238, 247, 3, 24, 12,
+  0, 239, 247, 3, 26, 13, 0, 240, 247, 3, 28, 14, 0, 241, 247, 3, 32, 16, 0,
+  242, 247, 5, 103, 0, 0, 243, 247, 5, 104, 0, 0, 244, 247, 5, 106, 0, 0, 245,
+  247, 3, 18, 9, 0, 246, 236, 1, 0, 0, 0, 246, 237, 1, 0, 0, 0, 246, 238, 1, 0,
+  0, 0, 246, 239, 1, 0, 0, 0, 246, 240, 1, 0, 0, 0, 246, 241, 1, 0, 0, 0, 246,
+  242, 1, 0, 0, 0, 246, 243, 1, 0, 0, 0, 246, 244, 1, 0, 0, 0, 246, 245, 1, 0,
+  0, 0, 247, 7, 1, 0, 0, 0, 248, 249, 5, 58, 0, 0, 249, 250, 3, 206, 103, 0,
+  250, 9, 1, 0, 0, 0, 251, 252, 5, 35, 0, 0, 252, 253, 3, 192, 96, 0, 253, 11,
+  1, 0, 0, 0, 254, 255, 5, 84, 0, 0, 255, 256, 3, 16, 8, 0, 256, 13, 1, 0, 0, 0,
+  257, 258, 5, 98, 0, 0, 258, 259, 3, 192, 96, 0, 259, 15, 1, 0, 0, 0, 260, 261,
+  7, 0, 0, 0, 261, 17, 1, 0, 0, 0, 262, 271, 3, 30, 15, 0, 263, 267, 5, 1, 0, 0,
+  264, 266, 3, 6, 3, 0, 265, 264, 1, 0, 0, 0, 266, 269, 1, 0, 0, 0, 267, 265, 1,
+  0, 0, 0, 267, 268, 1, 0, 0, 0, 268, 270, 1, 0, 0, 0, 269, 267, 1, 0, 0, 0,
+  270, 272, 5, 2, 0, 0, 271, 263, 1, 0, 0, 0, 271, 272, 1, 0, 0, 0, 272, 19, 1,
+  0, 0, 0, 273, 292, 7, 1, 0, 0, 274, 278, 3, 36, 18, 0, 275, 278, 3, 38, 19, 0,
+  276, 278, 3, 40, 20, 0, 277, 274, 1, 0, 0, 0, 277, 275, 1, 0, 0, 0, 277, 276,
+  1, 0, 0, 0, 278, 282, 1, 0, 0, 0, 279, 281, 3, 70, 35, 0, 280, 279, 1, 0, 0,
+  0, 281, 284, 1, 0, 0, 0, 282, 280, 1, 0, 0, 0, 282, 283, 1, 0, 0, 0, 283, 293,
+  1, 0, 0, 0, 284, 282, 1, 0, 0, 0, 285, 289, 3, 58, 29, 0, 286, 288, 3, 72, 36,
+  0, 287, 286, 1, 0, 0, 0, 288, 291, 1, 0, 0, 0, 289, 287, 1, 0, 0, 0, 289, 290,
+  1, 0, 0, 0, 290, 293, 1, 0, 0, 0, 291, 289, 1, 0, 0, 0, 292, 277, 1, 0, 0, 0,
+  292, 285, 1, 0, 0, 0, 293, 21, 1, 0, 0, 0, 294, 312, 7, 2, 0, 0, 295, 298, 3,
+  44, 22, 0, 296, 298, 3, 50, 25, 0, 297, 295, 1, 0, 0, 0, 297, 296, 1, 0, 0, 0,
   298, 302, 1, 0, 0, 0, 299, 301, 3, 66, 33, 0, 300, 299, 1, 0, 0, 0, 301, 304,
   1, 0, 0, 0, 302, 300, 1, 0, 0, 0, 302, 303, 1, 0, 0, 0, 303, 313, 1, 0, 0, 0,
   304, 302, 1, 0, 0, 0, 305, 309, 3, 56, 28, 0, 306, 308, 3, 68, 34, 0, 307,
@@ -208,7 +208,7 @@ const serializedATN = [
   417, 51, 1, 0, 0, 0, 418, 419, 3, 54, 27, 0, 419, 420, 5, 7, 0, 0, 420, 422,
   1, 0, 0, 0, 421, 418, 1, 0, 0, 0, 421, 422, 1, 0, 0, 0, 422, 423, 1, 0, 0, 0,
   423, 424, 3, 54, 27, 0, 424, 425, 5, 7, 0, 0, 425, 426, 3, 54, 27, 0, 426, 53,
-  1, 0, 0, 0, 427, 430, 5, 100, 0, 0, 428, 430, 3, 216, 108, 0, 429, 427, 1, 0,
+  1, 0, 0, 0, 427, 430, 5, 102, 0, 0, 428, 430, 3, 216, 108, 0, 429, 427, 1, 0,
   0, 0, 429, 428, 1, 0, 0, 0, 430, 55, 1, 0, 0, 0, 431, 432, 3, 206, 103, 0,
   432, 433, 5, 5, 0, 0, 433, 434, 3, 60, 30, 0, 434, 57, 1, 0, 0, 0, 435, 436,
   3, 60, 30, 0, 436, 437, 5, 5, 0, 0, 437, 438, 3, 206, 103, 0, 438, 59, 1, 0,
@@ -258,12 +258,12 @@ const serializedATN = [
   84, 0, 0, 538, 539, 5, 3, 0, 0, 539, 540, 3, 192, 96, 0, 540, 77, 1, 0, 0, 0,
   541, 542, 5, 56, 0, 0, 542, 543, 5, 3, 0, 0, 543, 544, 3, 192, 96, 0, 544, 79,
   1, 0, 0, 0, 545, 546, 5, 75, 0, 0, 546, 547, 5, 3, 0, 0, 547, 548, 3, 186, 93,
-  0, 548, 81, 1, 0, 0, 0, 549, 550, 5, 99, 0, 0, 550, 551, 5, 3, 0, 0, 551, 552,
-  3, 186, 93, 0, 552, 83, 1, 0, 0, 0, 553, 554, 5, 39, 0, 0, 554, 555, 5, 3, 0,
-  0, 555, 556, 3, 206, 103, 0, 556, 85, 1, 0, 0, 0, 557, 558, 5, 76, 0, 0, 558,
-  559, 5, 3, 0, 0, 559, 560, 3, 192, 96, 0, 560, 87, 1, 0, 0, 0, 561, 562, 5,
-  33, 0, 0, 562, 567, 5, 3, 0, 0, 563, 568, 3, 100, 50, 0, 564, 568, 3, 102, 51,
-  0, 565, 568, 3, 104, 52, 0, 566, 568, 3, 106, 53, 0, 567, 563, 1, 0, 0, 0,
+  0, 548, 81, 1, 0, 0, 0, 549, 550, 5, 101, 0, 0, 550, 551, 5, 3, 0, 0, 551,
+  552, 3, 186, 93, 0, 552, 83, 1, 0, 0, 0, 553, 554, 5, 39, 0, 0, 554, 555, 5,
+  3, 0, 0, 555, 556, 3, 206, 103, 0, 556, 85, 1, 0, 0, 0, 557, 558, 5, 76, 0, 0,
+  558, 559, 5, 3, 0, 0, 559, 560, 3, 192, 96, 0, 560, 87, 1, 0, 0, 0, 561, 562,
+  5, 33, 0, 0, 562, 567, 5, 3, 0, 0, 563, 568, 3, 100, 50, 0, 564, 568, 3, 102,
+  51, 0, 565, 568, 3, 104, 52, 0, 566, 568, 3, 106, 53, 0, 567, 563, 1, 0, 0, 0,
   567, 564, 1, 0, 0, 0, 567, 565, 1, 0, 0, 0, 567, 566, 1, 0, 0, 0, 568, 89, 1,
   0, 0, 0, 569, 570, 5, 36, 0, 0, 570, 571, 5, 3, 0, 0, 571, 572, 3, 92, 46, 0,
   572, 91, 1, 0, 0, 0, 573, 574, 7, 4, 0, 0, 574, 93, 1, 0, 0, 0, 575, 576, 5,
@@ -370,7 +370,7 @@ const serializedATN = [
   862, 863, 7, 9, 0, 0, 863, 864, 5, 3, 0, 0, 864, 865, 3, 168, 84, 0, 865, 201,
   1, 0, 0, 0, 866, 867, 7, 10, 0, 0, 867, 868, 5, 3, 0, 0, 868, 869, 3, 168, 84,
   0, 869, 203, 1, 0, 0, 0, 870, 871, 5, 51, 0, 0, 871, 872, 5, 3, 0, 0, 872,
-  873, 7, 11, 0, 0, 873, 205, 1, 0, 0, 0, 874, 877, 5, 100, 0, 0, 875, 877, 3,
+  873, 7, 11, 0, 0, 873, 205, 1, 0, 0, 0, 874, 877, 5, 102, 0, 0, 875, 877, 3,
   216, 108, 0, 876, 874, 1, 0, 0, 0, 876, 875, 1, 0, 0, 0, 877, 207, 1, 0, 0, 0,
   878, 880, 5, 9, 0, 0, 879, 878, 1, 0, 0, 0, 879, 880, 1, 0, 0, 0, 880, 881, 1,
   0, 0, 0, 881, 886, 3, 206, 103, 0, 882, 883, 5, 9, 0, 0, 883, 885, 3, 206,
@@ -474,7 +474,7 @@ export default class processParser extends antlr4.Parser {
     "DELIM",
     "DYN",
     "EXEC_WHEN",
-    "EXCEPTQ",
+    "EXCEPTION_QUEUE",
     "FALSE",
     "FIRE_TRIGGERS",
     "FRAMEWORK",
@@ -491,7 +491,7 @@ export default class processParser extends antlr4.Parser {
     "MEMORY",
     "MINIMIZE",
     "MODEL",
-    "MODELNAME",
+    "MODEL_NAME",
     "MSSQL",
     "NAME",
     "NODE",
@@ -534,7 +534,9 @@ export default class processParser extends antlr4.Parser {
     "SYNTAX_VERSION",
     "CONNECTION",
     "LABEL",
-    "UNITTEST",
+    "GET_DYN",
+    "SET_DYN",
+    "UNIT_TEST",
     "IDENTIFIER",
     "SINGLE_LINE_COMMENT",
     "MULTILINE_COMMENT",
@@ -665,6 +667,8 @@ export default class processParser extends antlr4.Parser {
     this.ruleNames = processParser.ruleNames;
     this.literalNames = processParser.literalNames;
     this.symbolicNames = processParser.symbolicNames;
+
+    this.isSQLStmt = false;
   }
 
   parse() {
@@ -679,10 +683,8 @@ export default class processParser extends antlr4.Parser {
       while (
         (((_la - 35) & ~0x1f) === 0 &&
           ((1 << (_la - 35)) & 3381669889) !== 0) ||
-        (((_la - 71) & ~0x1f) === 0 &&
-          ((1 << (_la - 71)) & 3355976193) !== 0) ||
-        _la === 104 ||
-        _la === 105
+        (((_la - 71) & ~0x1f) === 0 && ((1 << (_la - 71)) & 134750721) !== 0) ||
+        (((_la - 103) & ~0x1f) === 0 && ((1 << (_la - 103)) & 27) !== 0)
       ) {
         this.state = 220;
         this._errHandler.sync(this);
@@ -701,13 +703,13 @@ export default class processParser extends antlr4.Parser {
           case 84:
           case 90:
           case 98:
-          case 101:
-          case 102:
+          case 103:
           case 104:
+          case 106:
             this.state = 218;
             this.processStmtList();
             break;
-          case 105:
+          case 107:
             this.state = 219;
             this.parseerror();
             break;
@@ -792,9 +794,9 @@ export default class processParser extends antlr4.Parser {
         case 71:
         case 80:
         case 90:
-        case 101:
-        case 102:
+        case 103:
         case 104:
+        case 106:
           this.enterOuterAlt(localctx, 5);
           this.state = 233;
           this.process();
@@ -855,17 +857,17 @@ export default class processParser extends antlr4.Parser {
           this.state = 241;
           this.modelStmt();
           break;
-        case 101:
+        case 103:
           this.enterOuterAlt(localctx, 7);
           this.state = 242;
           this.match(processParser.SINGLE_LINE_COMMENT);
           break;
-        case 102:
+        case 104:
           this.enterOuterAlt(localctx, 8);
           this.state = 243;
           this.match(processParser.MULTILINE_COMMENT);
           break;
-        case 104:
+        case 106:
           this.enterOuterAlt(localctx, 9);
           this.state = 244;
           this.match(processParser.NEWLINE);
@@ -1033,7 +1035,7 @@ export default class processParser extends antlr4.Parser {
         while (
           (((_la - 47) & ~0x1f) === 0 &&
             ((1 << (_la - 47)) & 17600771) !== 0) ||
-          (((_la - 80) & ~0x1f) === 0 && ((1 << (_la - 80)) & 23069697) !== 0)
+          (((_la - 80) & ~0x1f) === 0 && ((1 << (_la - 80)) & 92275713) !== 0)
         ) {
           this.state = 264;
           this.process();
@@ -1143,6 +1145,8 @@ export default class processParser extends antlr4.Parser {
         case 98:
         case 99:
         case 100:
+        case 101:
+        case 102:
           this.state = 277;
           this._errHandler.sync(this);
           var la_ = this._interp.adaptivePredict(this._input, 6, this._ctx);
@@ -1436,6 +1440,8 @@ export default class processParser extends antlr4.Parser {
             case 98:
             case 99:
             case 100:
+            case 101:
+            case 102:
               this.state = 329;
               this.sasIn();
               break;
@@ -1903,7 +1909,7 @@ export default class processParser extends antlr4.Parser {
       this.state = 429;
       this._errHandler.sync(this);
       switch (this._input.LA(1)) {
-        case 100:
+        case 102:
           this.enterOuterAlt(localctx, 1);
           this.state = 427;
           this.match(processParser.IDENTIFIER);
@@ -1974,6 +1980,8 @@ export default class processParser extends antlr4.Parser {
         case 97:
         case 98:
         case 99:
+        case 100:
+        case 101:
           this.enterOuterAlt(localctx, 2);
           this.state = 428;
           this.keyword();
@@ -2184,6 +2192,8 @@ export default class processParser extends antlr4.Parser {
               case 98:
               case 99:
               case 100:
+              case 101:
+              case 102:
                 this.state = 454;
                 this.s3AnyName();
                 break;
@@ -2338,6 +2348,7 @@ export default class processParser extends antlr4.Parser {
           break;
         case 43:
         case 44:
+        case 99:
           this.enterOuterAlt(localctx, 8);
           this.state = 492;
           this.getFact();
@@ -2403,6 +2414,7 @@ export default class processParser extends antlr4.Parser {
           break;
         case 43:
         case 44:
+        case 99:
           this.enterOuterAlt(localctx, 7);
           this.state = 502;
           this.getFact();
@@ -2478,6 +2490,7 @@ export default class processParser extends antlr4.Parser {
           break;
         case 43:
         case 44:
+        case 99:
           this.enterOuterAlt(localctx, 8);
           this.state = 514;
           this.getFact();
@@ -2533,6 +2546,7 @@ export default class processParser extends antlr4.Parser {
           break;
         case 43:
         case 44:
+        case 99:
           this.enterOuterAlt(localctx, 5);
           this.state = 522;
           this.getFact();
@@ -2583,6 +2597,7 @@ export default class processParser extends antlr4.Parser {
           break;
         case 43:
         case 44:
+        case 99:
           this.enterOuterAlt(localctx, 4);
           this.state = 529;
           this.getFact();
@@ -2592,7 +2607,7 @@ export default class processParser extends antlr4.Parser {
           this.state = 530;
           this.scenario();
           break;
-        case 99:
+        case 101:
           this.enterOuterAlt(localctx, 6);
           this.state = 531;
           this.unittest();
@@ -2660,7 +2675,7 @@ export default class processParser extends antlr4.Parser {
     try {
       this.enterOuterAlt(localctx, 1);
       this.state = 541;
-      this.match(processParser.MODELNAME);
+      this.match(processParser.MODEL_NAME);
       this.state = 542;
       this.match(processParser.T__2);
       this.state = 543;
@@ -2710,7 +2725,7 @@ export default class processParser extends antlr4.Parser {
     try {
       this.enterOuterAlt(localctx, 1);
       this.state = 549;
-      this.match(processParser.UNITTEST);
+      this.match(processParser.UNIT_TEST);
       this.state = 550;
       this.match(processParser.T__2);
       this.state = 551;
@@ -2735,7 +2750,7 @@ export default class processParser extends antlr4.Parser {
     try {
       this.enterOuterAlt(localctx, 1);
       this.state = 553;
-      this.match(processParser.EXCEPTQ);
+      this.match(processParser.EXCEPTION_QUEUE);
       this.state = 554;
       this.match(processParser.T__2);
       this.state = 555;
@@ -3008,10 +3023,11 @@ export default class processParser extends antlr4.Parser {
         case 90:
         case 91:
         case 98:
-        case 101:
-        case 102:
+        case 99:
+        case 103:
         case 104:
-        case 105:
+        case 106:
+        case 107:
           break;
         default:
           break;
@@ -3108,10 +3124,11 @@ export default class processParser extends antlr4.Parser {
         case 90:
         case 91:
         case 98:
-        case 101:
-        case 102:
+        case 99:
+        case 103:
         case 104:
-        case 105:
+        case 106:
+        case 107:
           break;
         default:
           break;
@@ -3461,12 +3478,14 @@ export default class processParser extends antlr4.Parser {
           break;
         case 78:
         case 79:
+        case 100:
           this.enterOuterAlt(localctx, 5);
           this.state = 667;
           this.setFact();
           break;
         case 43:
         case 44:
+        case 99:
           this.enterOuterAlt(localctx, 6);
           this.state = 668;
           this.getFact();
@@ -3532,6 +3551,7 @@ export default class processParser extends antlr4.Parser {
           break;
         case 43:
         case 44:
+        case 99:
           this.enterOuterAlt(localctx, 6);
           this.state = 678;
           this.getFact();
@@ -4104,7 +4124,7 @@ export default class processParser extends antlr4.Parser {
           ((1 << (_la - 30)) & 4294966239) !== 0) ||
         (((_la - 62) & ~0x1f) === 0 &&
           ((1 << (_la - 62)) & 4292869887) !== 0) ||
-        (((_la - 94) & ~0x1f) === 0 && ((1 << (_la - 94)) & 127) !== 0)
+        (((_la - 94) & ~0x1f) === 0 && ((1 << (_la - 94)) & 511) !== 0)
       ) {
         this.state = 775;
         this.queue();
@@ -4265,6 +4285,8 @@ export default class processParser extends antlr4.Parser {
         case 98:
         case 99:
         case 100:
+        case 101:
+        case 102:
           this.enterOuterAlt(localctx, 1);
           this.state = 794;
           this.anyName();
@@ -4307,7 +4329,7 @@ export default class processParser extends antlr4.Parser {
           ((1 << (_la - 30)) & 4294966239) !== 0) ||
         (((_la - 62) & ~0x1f) === 0 &&
           ((1 << (_la - 62)) & 4292869887) !== 0) ||
-        (((_la - 94) & ~0x1f) === 0 && ((1 << (_la - 94)) & 127) !== 0)
+        (((_la - 94) & ~0x1f) === 0 && ((1 << (_la - 94)) & 511) !== 0)
       ) {
         this.state = 799;
         this.queue();
@@ -4372,11 +4394,13 @@ export default class processParser extends antlr4.Parser {
               break;
             case 78:
             case 79:
+            case 100:
               this.state = 815;
               this.setFact();
               break;
             case 43:
             case 44:
+            case 99:
               this.state = 816;
               this.getFact();
               break;
@@ -4695,7 +4719,9 @@ export default class processParser extends antlr4.Parser {
       this.enterOuterAlt(localctx, 1);
       this.state = 862;
       _la = this._input.LA(1);
-      if (!(_la === 78 || _la === 79)) {
+      if (
+        !(((_la - 78) & ~0x1f) === 0 && ((1 << (_la - 78)) & 4194307) !== 0)
+      ) {
         this._errHandler.recoverInline(this);
       } else {
         this._errHandler.reportMatch(this);
@@ -4727,7 +4753,7 @@ export default class processParser extends antlr4.Parser {
       this.enterOuterAlt(localctx, 1);
       this.state = 866;
       _la = this._input.LA(1);
-      if (!(_la === 43 || _la === 44)) {
+      if (!(_la === 43 || _la === 44 || _la === 99)) {
         this._errHandler.recoverInline(this);
       } else {
         this._errHandler.reportMatch(this);
@@ -4790,7 +4816,7 @@ export default class processParser extends antlr4.Parser {
       this.state = 876;
       this._errHandler.sync(this);
       switch (this._input.LA(1)) {
-        case 100:
+        case 102:
           this.enterOuterAlt(localctx, 1);
           this.state = 874;
           this.match(processParser.IDENTIFIER);
@@ -4861,6 +4887,8 @@ export default class processParser extends antlr4.Parser {
         case 97:
         case 98:
         case 99:
+        case 100:
+        case 101:
           this.enterOuterAlt(localctx, 2);
           this.state = 875;
           this.keyword();
@@ -5061,7 +5089,7 @@ export default class processParser extends antlr4.Parser {
             ((1 << (_la - 30)) & 4294966239) !== 0) ||
           (((_la - 62) & ~0x1f) === 0 &&
             ((1 << (_la - 62)) & 4292869887) !== 0) ||
-          (((_la - 94) & ~0x1f) === 0 && ((1 << (_la - 94)) & 63) !== 0)
+          (((_la - 94) & ~0x1f) === 0 && ((1 << (_la - 94)) & 255) !== 0)
         )
       ) {
         this._errHandler.recoverInline(this);
@@ -5123,7 +5151,7 @@ processParser.DESCR = 35;
 processParser.DELIM = 36;
 processParser.DYN = 37;
 processParser.EXEC_WHEN = 38;
-processParser.EXCEPTQ = 39;
+processParser.EXCEPTION_QUEUE = 39;
 processParser.FALSE = 40;
 processParser.FIRE_TRIGGERS = 41;
 processParser.FRAMEWORK = 42;
@@ -5140,7 +5168,7 @@ processParser.SASFILE = 52;
 processParser.MEMORY = 53;
 processParser.MINIMIZE = 54;
 processParser.MODEL = 55;
-processParser.MODELNAME = 56;
+processParser.MODEL_NAME = 56;
 processParser.MSSQL = 57;
 processParser.NAME = 58;
 processParser.NODE = 59;
@@ -5183,13 +5211,15 @@ processParser.VAR = 95;
 processParser.SYNTAX_VERSION = 96;
 processParser.CONNECTION = 97;
 processParser.LABEL = 98;
-processParser.UNITTEST = 99;
-processParser.IDENTIFIER = 100;
-processParser.SINGLE_LINE_COMMENT = 101;
-processParser.MULTILINE_COMMENT = 102;
-processParser.SPACES = 103;
-processParser.NEWLINE = 104;
-processParser.UNEXPECTED_CHAR = 105;
+processParser.GET_DYN = 99;
+processParser.SET_DYN = 100;
+processParser.UNIT_TEST = 101;
+processParser.IDENTIFIER = 102;
+processParser.SINGLE_LINE_COMMENT = 103;
+processParser.MULTILINE_COMMENT = 104;
+processParser.SPACES = 105;
+processParser.NEWLINE = 106;
+processParser.UNEXPECTED_CHAR = 107;
 
 processParser.RULE_parse = 0;
 processParser.RULE_parseerror = 1;
@@ -7361,8 +7391,8 @@ class ModelNameOptContext extends antlr4.ParserRuleContext {
     this.modelName = null;
   }
 
-  MODELNAME() {
-    return this.getToken(processParser.MODELNAME, 0);
+  MODEL_NAME() {
+    return this.getToken(processParser.MODEL_NAME, 0);
   }
 
   quoteString() {
@@ -7445,8 +7475,8 @@ class UnittestContext extends antlr4.ParserRuleContext {
     this.ruleIndex = processParser.RULE_unittest;
   }
 
-  UNITTEST() {
-    return this.getToken(processParser.UNITTEST, 0);
+  UNIT_TEST() {
+    return this.getToken(processParser.UNIT_TEST, 0);
   }
 
   trueFalse() {
@@ -7488,8 +7518,8 @@ class ExceptionQueueContext extends antlr4.ParserRuleContext {
     this.excptQ = null;
   }
 
-  EXCEPTQ() {
-    return this.getToken(processParser.EXCEPTQ, 0);
+  EXCEPTION_QUEUE() {
+    return this.getToken(processParser.EXCEPTION_QUEUE, 0);
   }
 
   anyName() {
@@ -10119,6 +10149,10 @@ class SetFactContext extends antlr4.ParserRuleContext {
     return this.getToken(processParser.SETDYN, 0);
   }
 
+  SET_DYN() {
+    return this.getToken(processParser.SET_DYN, 0);
+  }
+
   enterRule(listener) {
     if (listener instanceof processListener) {
       listener.enterSetFact(this);
@@ -10163,6 +10197,10 @@ class GetFactContext extends antlr4.ParserRuleContext {
 
   GETDYN() {
     return this.getToken(processParser.GETDYN, 0);
+  }
+
+  GET_DYN() {
+    return this.getToken(processParser.GET_DYN, 0);
   }
 
   enterRule(listener) {
@@ -10546,8 +10584,8 @@ class KeywordContext extends antlr4.ParserRuleContext {
     return this.getToken(processParser.MODEL, 0);
   }
 
-  MODELNAME() {
-    return this.getToken(processParser.MODELNAME, 0);
+  MODEL_NAME() {
+    return this.getToken(processParser.MODEL_NAME, 0);
   }
 
   MEMORY() {
@@ -10598,8 +10636,8 @@ class KeywordContext extends antlr4.ParserRuleContext {
     return this.getToken(processParser.DATASET, 0);
   }
 
-  EXCEPTQ() {
-    return this.getToken(processParser.EXCEPTQ, 0);
+  EXCEPTION_QUEUE() {
+    return this.getToken(processParser.EXCEPTION_QUEUE, 0);
   }
 
   MSSQL() {
@@ -10662,8 +10700,16 @@ class KeywordContext extends antlr4.ParserRuleContext {
     return this.getToken(processParser.GETDYN, 0);
   }
 
+  GET_DYN() {
+    return this.getToken(processParser.GET_DYN, 0);
+  }
+
   SETDYN() {
     return this.getToken(processParser.SETDYN, 0);
+  }
+
+  SET_DYN() {
+    return this.getToken(processParser.SET_DYN, 0);
   }
 
   NODE() {
@@ -10730,8 +10776,8 @@ class KeywordContext extends antlr4.ParserRuleContext {
     return this.getToken(processParser.LABEL, 0);
   }
 
-  UNITTEST() {
-    return this.getToken(processParser.UNITTEST, 0);
+  UNIT_TEST() {
+    return this.getToken(processParser.UNIT_TEST, 0);
   }
 
   enterRule(listener) {

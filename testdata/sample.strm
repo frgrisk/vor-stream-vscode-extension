@@ -75,12 +75,12 @@ node dynnode(null)(null) getdyn=dynFact setdyn=dynFact lang=python
    MODEL NODE  (newer grammar feature — no name, inputs/outputs only)
    -------------------------------------------------------------------------- */
 
-model (enriched)(scored) type="Default" modelname="Credit Risk Model" label="Regression v2"
+model (enriched)(scored) type="Default" model_name="Credit Risk Model" label="Regression v2"
 
 model (enriched)(classified) type="Default"
-  exceptq=exception_queue
+  exception_queue=exception_queue
   scenario=true
-  unittest=false
+  unit_test=false
 
 /* --------------------------------------------------------------------------
    SUBPROCESS BLOCK

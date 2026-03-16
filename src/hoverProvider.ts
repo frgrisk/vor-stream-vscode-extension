@@ -44,7 +44,7 @@ const KEYWORD_DOCS: Record<string, KeywordDoc> = {
     summary:
       "`model` — Standalone model node. Has no node name; takes inputs and outputs directly.",
     usage:
-      'model (inputs)(outputs) [options]\n// e.g.:\nmodel (enriched)(scored) type="Default" modelname="Credit Risk Model"',
+      'model (inputs)(outputs) [options]\n// e.g.:\nmodel (enriched)(scored) type="Default" model_name="Credit Risk Model"',
   },
   db: {
     summary: "`db` — Database type. Values: `PG`, `MSSQL`, `CSV`, `SAS`.",
@@ -59,21 +59,36 @@ const KEYWORD_DOCS: Record<string, KeywordDoc> = {
       "`compress` — Enable output compression (standalone flag, no `=`).",
     usage: "out queue_name -> destination compress",
   },
+  exception_queue: {
+    summary: "`exception_queue` — Exception queue for model nodes.",
+    usage: "exception_queue=queue_name",
+  },
   exceptq: {
-    summary: "`exceptq` — Exception queue for model nodes.",
-    usage: "exceptq=queue_name",
+    summary:
+      "⚠️ `exceptq` was renamed to `exception_queue`. Replace with `exception_queue=queue_name`.",
+    usage: "exception_queue=queue_name",
   },
   scenario: {
     summary: "`scenario` — Enable scenario testing. Values: `true`, `false`.",
     usage: "scenario=true",
   },
+  unit_test: {
+    summary: "`unit_test` — Enable unit testing. Values: `true`, `false`.",
+    usage: "unit_test=true",
+  },
   unittest: {
-    summary: "`unittest` — Enable unit testing. Values: `true`, `false`.",
-    usage: "unittest=true",
+    summary:
+      "⚠️ `unittest` was renamed to `unit_test`. Replace with `unit_test=true`.",
+    usage: "unit_test=true",
+  },
+  model_name: {
+    summary: "`model_name` — Display name for model nodes (quoted string).",
+    usage: 'model_name="Credit Risk Model"',
   },
   modelname: {
-    summary: "`modelname` — Display name for model nodes (quoted string).",
-    usage: 'modelname="Credit Risk Model"',
+    summary:
+      '⚠️ `modelname` was renamed to `model_name`. Replace with `model_name="..."`.',
+    usage: 'model_name="Credit Risk Model"',
   },
   descr: {
     summary:
@@ -103,12 +118,20 @@ const KEYWORD_DOCS: Record<string, KeywordDoc> = {
     usage: "setsig=done_signal",
   },
   getdyn: {
-    summary: "`getdyn` — Read a dynamic fact.",
+    summary: "`getdyn` — Read a dynamic fact (legacy alias for `get_dyn`).",
     usage: "getdyn=dynFact",
   },
+  get_dyn: {
+    summary: "`get_dyn` — Read a dynamic fact.",
+    usage: "get_dyn=dynFact",
+  },
   setdyn: {
-    summary: "`setdyn` — Write a dynamic fact.",
+    summary: "`setdyn` — Write a dynamic fact (legacy alias for `set_dyn`).",
     usage: "setdyn=dynFact",
+  },
+  set_dyn: {
+    summary: "`set_dyn` — Write a dynamic fact.",
+    usage: "set_dyn=dynFact",
   },
   where: {
     summary: "`where` — Filter condition applied to input rows.",

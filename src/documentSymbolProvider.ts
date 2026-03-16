@@ -94,7 +94,7 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
         }
 
         // model [name](inputs)(outputs) [opts]
-        // The node name is optional in newer grammar; fall back to modelname= or inputs.
+        // The node name is optional in newer grammar; fall back to model_name= or inputs.
         const modelMatch = text.match(/^\s*model\b/i);
         if (modelMatch) {
           let endLine = i;
@@ -102,7 +102,9 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
           while (j < document.lineCount) {
             const nextText = document.lineAt(j).text;
             if (
-              /^\s+(exceptq|scenario|unittest|modelname)\s*=/i.test(nextText)
+              /^\s+(exception_queue|exceptq|scenario|unit_test|unittest|model_name|modelname)\s*=/i.test(
+                nextText,
+              )
             ) {
               endLine = j;
               j++;
@@ -110,11 +112,11 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
               break;
             }
           }
-          // Derive display name: explicit node name > modelname= on this line > inputs > "model"
+          // Derive display name: explicit node name > model_name= on this line > inputs > "model"
           const nodeNameMatch = text.match(/^\s*model\s+(\w+)\s*\(/i);
           const modelnameMatch =
-            text.match(/\bmodelname\s*=\s*"([^"]+)"/i) ??
-            text.match(/\bmodelname\s*=\s*(\S+)/i);
+            text.match(/\b(?:model_name|modelname)\s*=\s*"([^"]+)"/i) ??
+            text.match(/\b(?:model_name|modelname)\s*=\s*(\S+)/i);
           const inputsMatch = text.match(/^\s*model\s*\(([^)]*)\)/i);
           const displayName =
             nodeNameMatch?.[1] ??

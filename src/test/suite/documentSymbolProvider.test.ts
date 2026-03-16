@@ -96,10 +96,10 @@ suite("DocumentSymbolProvider", () => {
   test("multi-line model range spans all continuation lines", async () => {
     const content = [
       "model mymodel(input)(output)",
-      "  exceptq=error_queue",
+      "  exception_queue=error_queue",
       "  scenario=true",
-      "  unittest=false",
-      '  modelname="MyModel"',
+      "  unit_test=false",
+      '  model_name="MyModel"',
       "node anothernode(input)(output)",
     ].join("\n");
     const symbols = await getSymbols(content);
@@ -127,22 +127,22 @@ suite("DocumentSymbolProvider", () => {
     );
   });
 
-  test("nameless model uses modelname= as display name", async () => {
+  test("nameless model uses model_name= as display name", async () => {
     const content =
-      'model (enriched)(scored) type="Default" modelname="Credit Risk Model"';
+      'model (enriched)(scored) type="Default" model_name="Credit Risk Model"';
     const symbols = await getSymbols(content);
     const sym = symbols.find((s) => s.detail === "model");
     assert.ok(sym, "Expected a 'model' symbol for nameless model");
     assert.strictEqual(sym.name, "Credit Risk Model");
   });
 
-  test("nameless model without modelname= uses inputs as display name", async () => {
+  test("nameless model without model_name= uses inputs as display name", async () => {
     const content = 'model (enriched)(classified) type="Default"';
     const symbols = await getSymbols(content);
     const sym = symbols.find((s) => s.detail === "model");
     assert.ok(
       sym,
-      "Expected a 'model' symbol for nameless model without modelname",
+      "Expected a 'model' symbol for nameless model without model_name",
     );
     assert.strictEqual(sym.name, "(enriched)");
   });
@@ -150,9 +150,9 @@ suite("DocumentSymbolProvider", () => {
   test("nameless multi-line model range spans continuation lines", async () => {
     const content = [
       'model (enriched)(classified) type="Default"',
-      "  exceptq=exception_queue",
+      "  exception_queue=exception_queue",
       "  scenario=true",
-      "  unittest=false",
+      "  unit_test=false",
       "node other(input)(output)",
     ].join("\n");
     const symbols = await getSymbols(content);

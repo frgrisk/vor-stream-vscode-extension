@@ -304,15 +304,27 @@ export function createCompletionProvider(
             kind: vscode.CompletionItemKind.Property,
           },
           {
+            label: "get_dyn",
+            insertText: "get_dyn=${1:dyn_fact}",
+            detail: "Read a dynamic fact",
+            kind: vscode.CompletionItemKind.Property,
+          },
+          {
+            label: "set_dyn",
+            insertText: "set_dyn=${1:dyn_fact}",
+            detail: "Write a dynamic fact",
+            kind: vscode.CompletionItemKind.Property,
+          },
+          {
             label: "getdyn",
             insertText: "getdyn=${1:dyn_fact}",
-            detail: "Read a dynamic fact",
+            detail: "Read a dynamic fact (legacy)",
             kind: vscode.CompletionItemKind.Property,
           },
           {
             label: "setdyn",
             insertText: "setdyn=${1:dyn_fact}",
-            detail: "Write a dynamic fact",
+            detail: "Write a dynamic fact (legacy)",
             kind: vscode.CompletionItemKind.Property,
           },
         ]
@@ -402,11 +414,19 @@ export function createCompletionProvider(
         const modelOpts = [
           "type",
           "label",
+          "exception_queue",
           "exceptq",
           "scenario",
+          "unit_test",
           "unittest",
+          "model_name",
           "modelname",
         ];
+        const legacyToNew: Record<string, string> = {
+          exceptq: "exception_queue",
+          unittest: "unit_test",
+          modelname: "model_name",
+        };
         if (modelStartLine >= 0) {
           for (let i = modelStartLine; i <= position.line; i++) {
             // For the current line use only what's before the cursor
@@ -415,6 +435,9 @@ export function createCompletionProvider(
             for (const opt of modelOpts) {
               if (new RegExp(`\\b${opt}\\b`, "i").test(lineText)) {
                 definedModelOpts.add(opt);
+                // Also mark the canonical new form so legacy usage suppresses new-form completions
+                const canonical = legacyToNew[opt];
+                if (canonical) definedModelOpts.add(canonical);
               }
             }
           }
@@ -433,8 +456,8 @@ export function createCompletionProvider(
             kind: vscode.CompletionItemKind.Property,
           },
           {
-            label: "exceptq",
-            insertText: "exceptq=${1:exception_queue}",
+            label: "exception_queue",
+            insertText: "exception_queue=${1:queue_name}",
             detail: "Exception queue",
             kind: vscode.CompletionItemKind.Property,
           },
@@ -445,14 +468,14 @@ export function createCompletionProvider(
             kind: vscode.CompletionItemKind.Enum,
           },
           {
-            label: "unittest",
-            insertText: "unittest=${1|true,false|}",
+            label: "unit_test",
+            insertText: "unit_test=${1|true,false|}",
             detail: "Enable unit testing",
             kind: vscode.CompletionItemKind.Enum,
           },
           {
-            label: "modelname",
-            insertText: 'modelname="${1:model_name}"',
+            label: "model_name",
+            insertText: 'model_name="${1:model_name}"',
             detail: "Display name for model",
             kind: vscode.CompletionItemKind.Property,
           },
