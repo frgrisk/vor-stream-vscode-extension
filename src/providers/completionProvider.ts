@@ -403,9 +403,12 @@ export function createCompletionProvider(
           "type",
           "label",
           "exception_queue",
+          "exceptq",
           "scenario",
           "unit_test",
+          "unittest",
           "model_name",
+          "modelname",
         ];
         if (modelStartLine >= 0) {
           for (let i = modelStartLine; i <= position.line; i++) {

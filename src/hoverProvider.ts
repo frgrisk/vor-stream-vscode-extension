@@ -104,7 +104,7 @@ const KEYWORD_DOCS: Record<string, KeywordDoc> = {
   },
   getdyn: {
     summary: "`getdyn` — Read a dynamic fact (legacy alias for `get_dyn`).",
-    usage: "get_dyn=dynFact",
+    usage: "getdyn=dynFact",
   },
   get_dyn: {
     summary: "`get_dyn` — Read a dynamic fact.",
@@ -112,7 +112,7 @@ const KEYWORD_DOCS: Record<string, KeywordDoc> = {
   },
   setdyn: {
     summary: "`setdyn` — Write a dynamic fact (legacy alias for `set_dyn`).",
-    usage: "set_dyn=dynFact",
+    usage: "setdyn=dynFact",
   },
   set_dyn: {
     summary: "`set_dyn` — Write a dynamic fact.",

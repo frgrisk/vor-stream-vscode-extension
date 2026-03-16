@@ -102,7 +102,7 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
           while (j < document.lineCount) {
             const nextText = document.lineAt(j).text;
             if (
-              /^\s+(exception_queue|scenario|unit_test|model_name)\s*=/i.test(
+              /^\s+(exception_queue|exceptq|scenario|unit_test|unittest|model_name|modelname)\s*=/i.test(
                 nextText,
               )
             ) {
@@ -115,8 +115,8 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
           // Derive display name: explicit node name > model_name= on this line > inputs > "model"
           const nodeNameMatch = text.match(/^\s*model\s+(\w+)\s*\(/i);
           const modelnameMatch =
-            text.match(/\bmodel_name\s*=\s*"([^"]+)"/i) ??
-            text.match(/\bmodel_name\s*=\s*(\S+)/i);
+            text.match(/\b(?:model_name|modelname)\s*=\s*"([^"]+)"/i) ??
+            text.match(/\b(?:model_name|modelname)\s*=\s*(\S+)/i);
           const inputsMatch = text.match(/^\s*model\s*\(([^)]*)\)/i);
           const displayName =
             nodeNameMatch?.[1] ??
