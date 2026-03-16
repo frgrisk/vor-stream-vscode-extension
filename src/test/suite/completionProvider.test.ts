@@ -178,7 +178,10 @@ suite("CompletionProvider", () => {
         ),
       );
       const ls = labels(items);
-      assert.ok(ls.includes("exception_queue"), `Expected 'exception_queue' in ${ls}`);
+      assert.ok(
+        ls.includes("exception_queue"),
+        `Expected 'exception_queue' in ${ls}`,
+      );
       assert.ok(ls.includes("scenario"), `Expected 'scenario' in ${ls}`);
       assert.ok(ls.includes("unit_test"), `Expected 'unit_test' in ${ls}`);
       assert.ok(ls.includes("model_name"), `Expected 'model_name' in ${ls}`);
@@ -230,7 +233,10 @@ suite("CompletionProvider", () => {
       const ls = labels(items);
       assert.ok(ls.includes("type"), `Expected 'type' in ${ls}`);
       assert.ok(ls.includes("label"), `Expected 'label' in ${ls}`);
-      assert.ok(ls.includes("exception_queue"), `Expected 'exception_queue' in ${ls}`);
+      assert.ok(
+        ls.includes("exception_queue"),
+        `Expected 'exception_queue' in ${ls}`,
+      );
       assert.strictEqual(
         items.length,
         6,

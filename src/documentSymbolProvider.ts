@@ -102,7 +102,9 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
           while (j < document.lineCount) {
             const nextText = document.lineAt(j).text;
             if (
-              /^\s+(exception_queue|scenario|unit_test|model_name)\s*=/i.test(nextText)
+              /^\s+(exception_queue|scenario|unit_test|model_name)\s*=/i.test(
+                nextText,
+              )
             ) {
               endLine = j;
               j++;
