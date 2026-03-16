@@ -150,7 +150,10 @@ suite("markdownToHtml", () => {
 
   test("strips link inside a list item", () => {
     const result = markdownToHtml("* Fix [#42](https://github.com/issues/42)");
-    assert.ok(result.includes("<li>Fix #42</li>"), "link stripped in list item");
+    assert.ok(
+      result.includes("<li>Fix #42</li>"),
+      "link stripped in list item",
+    );
   });
 
   test("renders headings", () => {
