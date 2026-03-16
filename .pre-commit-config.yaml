@@ -7,10 +7,13 @@ repos:
       - id: trailing-whitespace
         exclude: "src/_js_parser/"
 
-  - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.5.3
+  - repo: local
     hooks:
       - id: prettier
+        name: prettier
+        language: node
+        entry: node_modules/.bin/prettier
+        args: ["--write"]
         types_or: [javascript, ts, json, markdown, yaml]
         exclude: "src/_js_parser/"
 
