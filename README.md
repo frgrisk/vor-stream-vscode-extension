@@ -50,42 +50,41 @@ as well as custom completions for commonly used keywords.
 
 ## Known Limitations
 
-- Autocomplete may include quoted strings from the ANTLR parser on some token types; identifier-only filtering is planned
 - F12 on `out` lines is intentionally unsupported
 - `runProcessCommand` requires the cursor to be on the `name` line
 
+## Releases
+
+Releases follow [Calendar Versioning](https://calver.org/) in the format `YY.MINOR.MICRO`:
+
+- `YY` — two-digit year (e.g. `26` for 2026)
+- `MINOR` — incremental release number within the year, starting at 1
+- `MICRO` — patch release number for bug fixes, starting at 0
+
+Each release produces a `.vsix` package attached to the [GitHub Release](https://github.com/frgrisk/vor-stream-vscode-extension/releases). The extension is not currently published to the VS Code Marketplace; install manually from the `.vsix` file.
+
 ## Installation
 
-### VS Code Marketplace
+### From GitHub Releases
 
-1. Open Visual Studio Code
-2. Press `Ctrl+Shift+X` (Windows/Linux) or `Cmd+Shift+X` (macOS) to open Extensions
-3. Search for "VOR Stream"
-4. Click Install
+1. Download the latest `vor-stream-YY.MINOR.MICRO.vsix` from [Releases](https://github.com/frgrisk/vor-stream-vscode-extension/releases)
+2. In VS Code, open the Extensions panel (`Ctrl+Shift+X` / `Cmd+Shift+X`)
+3. Click `⋯` → **Install from VSIX…** and select the downloaded file
 
-### Manual Installation
+### From Source
 
 ```bash
-# Clone this repository:
-
 git clone git@github.com:frgrisk/vor-stream-vscode-extension.git
 cd vor-stream-vscode-extension
-
-# Install dependencies:
-
 npm install
-
-# Compile the extension:
-
 npm run compile
-
-# Open the extension in VSCode and press F5 to launch a new VSCode window with the loaded extension.
+# Press F5 in VS Code to launch a development host window
 ```
 
 ## Requirements
 
 - Visual Studio Code 1.73.0 or higher
-- Node.js 16.x or higher (for development)
+- Node.js 22.x or higher (for development)
 
 ### Development Dependencies
 

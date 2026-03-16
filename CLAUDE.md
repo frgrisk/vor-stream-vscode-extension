@@ -74,10 +74,10 @@ When `vor-stream`'s grammar (`cmd/process/process.g4`) changes, update the exten
 
 ### 1. Regenerate the ANTLR JS parser
 
-Run ANTLR 4.12+ against the grammar with the JavaScript target:
+Run ANTLR 4.13+ against the grammar with the JavaScript target:
 
 ```bash
-java -jar antlr-4.12.0-complete.jar \
+java -jar antlr-4.13.2-complete.jar \
   -Dlanguage=JavaScript \
   -visitor \
   -o src/_js_parser/ \
@@ -126,7 +126,7 @@ This VSCode extension provides language support for `.strm` files used in VOR St
 1. **Grammar Parser** (`src/_js_parser/`)
 
    - ANTLR4-generated JavaScript parser for `.strm` syntax
-   - Generated from `vor-stream/cmd/process/process.g4` via ANTLR 4.12.0
+   - Generated from `vor-stream/cmd/process/process.g4` via ANTLR 4.13.2
    - Uses the `antlr4` npm package (official JS runtime) — **not** `antlr4ts`
    - Consumed by `src/parser.ts` to extract tokens and parse errors
 
@@ -202,22 +202,34 @@ VOR Stream process files use keywords like:
 Releases are fully automated via [release-please](https://github.com/googleapis/release-please).
 Every merge to `main` using [conventional commits](https://www.conventionalcommits.org/) feeds the pipeline.
 
+### Versioning — CalVer `YY.MINOR.MICRO`
+
+The project uses Calendar Versioning aligned with `vor-stream`:
+
+| Commit type                   | Bump                                     |
+| ----------------------------- | ---------------------------------------- |
+| `fix:`                        | MICRO (e.g. 26.1.0 → 26.1.1)             |
+| `feat:`                       | MINOR (e.g. 26.1.0 → 26.2.0)             |
+| `feat!:` / `BREAKING CHANGE:` | YY — only use for major breaking changes |
+
+**Each January:** manually set `.release-please-manifest.json` to `"27.0.0"` (or the current year) and commit to `main` before the first release of that year.
+
 ### How a release happens
 
 1. **Merge to `main`** using conventional commit messages (`feat:`, `fix:`, `docs:`, etc.)
 2. **release-please** automatically opens (or updates) a Release PR that:
-   - Bumps `package.json` version (minor for `feat:`, patch for `fix:`)
-   - Moves `## [Unreleased]` → `## [x.y.z] - YYYY-MM-DD` in `CHANGELOG.md`
+   - Bumps `package.json` version per the table above
+   - Updates `CHANGELOG.md` with entries generated from commit messages
 3. **Review and merge the Release PR** — this is the only manual step
-4. release-please pushes a `vx.y.z` tag, which triggers `.github/workflows/release.yaml`:
-   - Lint → test → update version in `package.json` → bundle → package `.vsix` → GoReleaser publishes to GitHub Releases
+4. release-please pushes a `vYY.MINOR.MICRO` tag, which triggers `.github/workflows/release.yaml`:
+   - Lint → test → update version in `package.json` → bundle → package `.vsix`
+   - GoReleaser publishes a GitHub Release with `vor-stream-YY.MINOR.MICRO.vsix` attached
+5. **Marketplace publish is manual** — download the `.vsix` from the GitHub Release and run `vsce publish` if publishing to the VS Code Marketplace
 
 ### What you must do before merging the Release PR
 
-- [ ] Verify `## [Unreleased]` in `CHANGELOG.md` accurately describes all changes
-      (release-please generates this from commit messages — review and edit if needed)
-- [ ] The What's New panel will show users exactly this section on their first activation
-      after updating, so make sure it reads well
+- [ ] Review the generated `CHANGELOG.md` entries — edit if commit messages aren't user-friendly
+- [ ] The What's New panel shows users exactly this changelog section on first activation after update
 
 ### What you must NOT do
 
