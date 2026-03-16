@@ -63,6 +63,11 @@ const KEYWORD_DOCS: Record<string, KeywordDoc> = {
     summary: "`exception_queue` — Exception queue for model nodes.",
     usage: "exception_queue=queue_name",
   },
+  exceptq: {
+    summary:
+      "`exceptq` — Exception queue for model nodes (legacy alias for `exception_queue`).",
+    usage: "exceptq=queue_name",
+  },
   scenario: {
     summary: "`scenario` — Enable scenario testing. Values: `true`, `false`.",
     usage: "scenario=true",
@@ -71,9 +76,19 @@ const KEYWORD_DOCS: Record<string, KeywordDoc> = {
     summary: "`unit_test` — Enable unit testing. Values: `true`, `false`.",
     usage: "unit_test=true",
   },
+  unittest: {
+    summary:
+      "`unittest` — Enable unit testing (legacy alias for `unit_test`). Values: `true`, `false`.",
+    usage: "unittest=true",
+  },
   model_name: {
     summary: "`model_name` — Display name for model nodes (quoted string).",
     usage: 'model_name="Credit Risk Model"',
+  },
+  modelname: {
+    summary:
+      "`modelname` — Display name for model nodes (legacy alias for `model_name`).",
+    usage: 'modelname="Credit Risk Model"',
   },
   descr: {
     summary:

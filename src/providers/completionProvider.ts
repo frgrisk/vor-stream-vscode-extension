@@ -315,6 +315,18 @@ export function createCompletionProvider(
             detail: "Write a dynamic fact",
             kind: vscode.CompletionItemKind.Property,
           },
+          {
+            label: "getdyn",
+            insertText: "getdyn=${1:dyn_fact}",
+            detail: "Read a dynamic fact (legacy)",
+            kind: vscode.CompletionItemKind.Property,
+          },
+          {
+            label: "setdyn",
+            insertText: "setdyn=${1:dyn_fact}",
+            detail: "Write a dynamic fact (legacy)",
+            kind: vscode.CompletionItemKind.Property,
+          },
         ]
           .filter(({ label }) => !hasOpt(label, lineTrimmed))
           .forEach(({ label, insertText, detail, kind }) => {
@@ -410,6 +422,11 @@ export function createCompletionProvider(
           "model_name",
           "modelname",
         ];
+        const legacyToNew: Record<string, string> = {
+          exceptq: "exception_queue",
+          unittest: "unit_test",
+          modelname: "model_name",
+        };
         if (modelStartLine >= 0) {
           for (let i = modelStartLine; i <= position.line; i++) {
             // For the current line use only what's before the cursor
@@ -418,6 +435,9 @@ export function createCompletionProvider(
             for (const opt of modelOpts) {
               if (new RegExp(`\\b${opt}\\b`, "i").test(lineText)) {
                 definedModelOpts.add(opt);
+                // Also mark the canonical new form so legacy usage suppresses new-form completions
+                const canonical = legacyToNew[opt];
+                if (canonical) definedModelOpts.add(canonical);
               }
             }
           }
