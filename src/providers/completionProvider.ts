@@ -415,18 +415,11 @@ export function createCompletionProvider(
           "type",
           "label",
           "exception_queue",
-          "exceptq",
           "scenario",
           "unit_test",
-          "unittest",
           "model_name",
-          "modelname",
         ];
-        const legacyToNew: Record<string, string> = {
-          exceptq: "exception_queue",
-          unittest: "unit_test",
-          modelname: "model_name",
-        };
+        const legacyToNew: Record<string, string> = {};
         if (modelStartLine >= 0) {
           for (let i = modelStartLine; i <= position.line; i++) {
             // For the current line use only what's before the cursor

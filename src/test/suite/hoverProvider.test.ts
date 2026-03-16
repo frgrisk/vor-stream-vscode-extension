@@ -189,6 +189,17 @@ suite("HoverProvider", () => {
         `Expected non-empty hover for '${kw}'`,
       );
     }
+
+    // Legacy keywords must say "not supported", not "renamed"
+    for (const kw of ["exceptq", "unittest", "modelname"]) {
+      const hover = await getHover(`${kw} foo\n`, 0, 1);
+      assert.ok(hover, `Expected hover for legacy keyword '${kw}'`);
+      const md = hover.contents[0] as vscode.MarkdownString;
+      assert.ok(
+        md.value.includes("not supported"),
+        `Expected 'not supported' in hover for '${kw}'`,
+      );
+    }
   });
 
   test("hovering on a subprocess name shows subprocess detail with inputs and outputs", async () => {

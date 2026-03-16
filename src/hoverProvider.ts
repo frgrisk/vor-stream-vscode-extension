@@ -65,7 +65,7 @@ const KEYWORD_DOCS: Record<string, KeywordDoc> = {
   },
   exceptq: {
     summary:
-      "⚠️ `exceptq` was renamed to `exception_queue`. Replace with `exception_queue=queue_name`.",
+      "`exceptq` is not supported. Use `exception_queue=queue_name` instead.",
     usage: "exception_queue=queue_name",
   },
   scenario: {
@@ -77,8 +77,7 @@ const KEYWORD_DOCS: Record<string, KeywordDoc> = {
     usage: "unit_test=true",
   },
   unittest: {
-    summary:
-      "⚠️ `unittest` was renamed to `unit_test`. Replace with `unit_test=true`.",
+    summary: "`unittest` is not supported. Use `unit_test=true` instead.",
     usage: "unit_test=true",
   },
   model_name: {
@@ -86,8 +85,7 @@ const KEYWORD_DOCS: Record<string, KeywordDoc> = {
     usage: 'model_name="Credit Risk Model"',
   },
   modelname: {
-    summary:
-      '⚠️ `modelname` was renamed to `model_name`. Replace with `model_name="..."`.',
+    summary: '`modelname` is not supported. Use `model_name="..."` instead.',
     usage: 'model_name="Credit Risk Model"',
   },
   descr: {
