@@ -23,12 +23,12 @@ suite("DocumentSymbolProvider", () => {
     assert.strictEqual(sym.kind, vscode.SymbolKind.Module);
   });
 
-  test("node statement produces Function symbol", async () => {
+  test("node statement produces Method symbol", async () => {
     const symbols = await getSymbols("node filternode(a)(b)\n");
     const sym = symbols.find((s) => s.detail === "node");
     assert.ok(sym, "Expected a 'node' symbol");
     assert.strictEqual(sym.name, "filternode");
-    assert.strictEqual(sym.kind, vscode.SymbolKind.Function);
+    assert.strictEqual(sym.kind, vscode.SymbolKind.Method);
   });
 
   test("model statement produces Class symbol", async () => {
@@ -39,20 +39,20 @@ suite("DocumentSymbolProvider", () => {
     assert.strictEqual(sym.kind, vscode.SymbolKind.Class);
   });
 
-  test("in statement produces Event symbol", async () => {
+  test("in statement produces Interface symbol", async () => {
     const symbols = await getSymbols("in input.csv -> raw_input\n");
     const sym = symbols.find((s) => s.detail === "in");
     assert.ok(sym, "Expected an 'in' symbol");
     assert.strictEqual(sym.name, "input.csv → raw_input");
-    assert.strictEqual(sym.kind, vscode.SymbolKind.Event);
+    assert.strictEqual(sym.kind, vscode.SymbolKind.Interface);
   });
 
-  test("out statement produces Event symbol", async () => {
+  test("out statement produces Interface symbol", async () => {
     const symbols = await getSymbols("out enriched -> output.csv\n");
     const sym = symbols.find((s) => s.detail === "out");
     assert.ok(sym, "Expected an 'out' symbol");
     assert.strictEqual(sym.name, "enriched → output.csv");
-    assert.strictEqual(sym.kind, vscode.SymbolKind.Event);
+    assert.strictEqual(sym.kind, vscode.SymbolKind.Interface);
   });
 
   test("blank lines and comments produce no symbols", async () => {
