@@ -30,7 +30,7 @@ jobs:
         run: npm run lint
 
       - name: Test
-        run: npm test
+        run: xvfb-run -a npm test
 
       - name: Update version in package.json from git tag
         run: npm run update-version
