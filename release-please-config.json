@@ -5,6 +5,7 @@
     ".": {
       "changelog-path": "CHANGELOG.md",
       "release-type": "node",
+      "tag-name": "v${version}",
       "draft": false,
       "prerelease": false
     }
