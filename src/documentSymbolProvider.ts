@@ -64,7 +64,7 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
           const sym = new vscode.DocumentSymbol(
             subprocMatch[1]!,
             "subprocess",
-            vscode.SymbolKind.Namespace,
+            vscode.SymbolKind.Package,
             range,
             range,
           );
@@ -81,7 +81,7 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
           const sym = new vscode.DocumentSymbol(
             nodeMatch[1]!,
             "node",
-            vscode.SymbolKind.Function,
+            vscode.SymbolKind.Method,
             range,
             range,
           );
@@ -150,7 +150,7 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
             new vscode.DocumentSymbol(
               `${inMatch[1]} → ${inMatch[2]}`,
               "in",
-              vscode.SymbolKind.Event,
+              vscode.SymbolKind.Interface,
               range,
               range,
             ),
@@ -165,7 +165,7 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
             new vscode.DocumentSymbol(
               `${outMatch[1]} → ${outMatch[2]}`,
               "out",
-              vscode.SymbolKind.Event,
+              vscode.SymbolKind.Interface,
               range,
               range,
             ),
@@ -180,7 +180,7 @@ export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {
             new vscode.DocumentSymbol(
               sqlMatch[1]!,
               "sql",
-              vscode.SymbolKind.Constant,
+              vscode.SymbolKind.String,
               range,
               range,
             ),
