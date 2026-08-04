@@ -15,7 +15,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       # The prettier hook is a `local` hook running node_modules/.bin/prettier,
       # so the dependencies have to exist before pre-commit runs. This overlaps
