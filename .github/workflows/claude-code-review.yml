@@ -86,14 +86,13 @@ jobs:
             unavailable rather than inferring it from the diff.
 
             The skill's rule about skipping what tooling already enforces applies
-            to this repo's three gates:
+            to this repo's CI gates:
 
             - **pre-commit**: prettier, addlicense, markdownlint, gitleaks,
               detect-private-key, the JSON/YAML/TOML checks and the file hygiene
               hooks.
             - **Code Quality**: `npm run format:check`, ESLint, the webpack
               build, and the Mocha suite under `src/test/suite/`.
-            - **Commitlint**: conventional commit format on every commit message.
 
             Don't re-run them and don't report what they already catch. Review
             what they can't. `src/_js_parser/` is ANTLR output generated from

@@ -64,9 +64,11 @@ The hooks configured in `.pre-commit-config.yaml`:
   grows Python of its own.
 - **uv-lock** — keeps `uv.lock` current. Also inert; there is no `pyproject.toml`.
 - **conventional-pre-commit** (`commit-msg` stage) — enforces conventional commit format locally.
-  This is the only commit-message check; there is no CI equivalent, because squash merges
-  replace commit messages with the PR title and body (allowed types: feat, fix, docs, style,
-  refactor, test, build, ci, chore, revert, perf)
+  This is the only automated commit-message check; there is no CI equivalent, because squash
+  merges replace commit messages with the PR title and body (allowed types: feat, fix, docs,
+  style, refactor, test, build, ci, chore, revert, perf). Nothing validates the PR title, which
+  is the message that lands on `main` and the one release-please reads to pick the version bump —
+  getting that right is on the author and the reviewer.
 
 > **Note:** `npm ci` must have run at least once. The prettier hook is a `local`
 > hook pointing at `node_modules/.bin/prettier` so it stays on the exact version
