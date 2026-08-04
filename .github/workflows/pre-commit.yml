@@ -21,7 +21,7 @@ jobs:
       # so the dependencies have to exist before pre-commit runs. This overlaps
       # with code_quality.yaml's `npm run format:check` by design: that job gates
       # formatting on its own, this one needs prettier present for the hook.
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: "npm"
