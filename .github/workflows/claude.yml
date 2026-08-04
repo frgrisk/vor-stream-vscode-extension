@@ -42,4 +42,4 @@ jobs:
           allowed_bots: "dependabot[bot],claude[bot]"
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
 
-          claude_args: "--model ${{ vars.CLAUDE_MODEL || 'claude-opus-4-6' }}"
+          claude_args: "--model ${{ vars.CLAUDE_MODEL || 'claude-opus-5' }}"
