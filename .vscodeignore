@@ -23,7 +23,6 @@ dist/*.zip
 .idea/**
 .pre-commit-config.yaml
 .markdownlint.json
-.commitlintrc.json
 .goreleaser.yaml
 .release-please-manifest.json
 release-please-config.json

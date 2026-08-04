@@ -42,7 +42,7 @@ $(PRE_COMMIT):
 
 # Both hook types: conventional-pre-commit runs at the commit-msg stage, which a
 # bare `pre-commit install` does not wire up, so commit messages would go
-# unchecked locally and only fail in the commitlint job.
+# unchecked entirely.
 ## pre-commit-install: Installs the git pre-commit and commit-msg hooks
 pre-commit-install: $(PRE_COMMIT)
 	$(PRE_COMMIT) install --hook-type pre-commit --hook-type commit-msg
