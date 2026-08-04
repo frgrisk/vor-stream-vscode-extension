@@ -1,3 +1,7 @@
+/**
+ * Copyright 2026 The Financial Risk Group, Inc.
+ */
+
 import * as vscode from "vscode";
 
 export function createDocumentSymbolProvider(): vscode.DocumentSymbolProvider {

@@ -1,3 +1,7 @@
+/**
+ * Copyright 2026 The Financial Risk Group, Inc.
+ */
+
 import fs from "fs";
 import path from "path";
 

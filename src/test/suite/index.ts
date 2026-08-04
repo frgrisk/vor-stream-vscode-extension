@@ -1,3 +1,7 @@
+/**
+ * Copyright 2026 The Financial Risk Group, Inc.
+ */
+
 import * as fs from "fs";
 import * as path from "path";
 import Mocha from "mocha";

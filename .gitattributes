@@ -1,0 +1,28 @@
+# Copyright 2026 The Financial Risk Group, Inc.
+
+# Normalize line endings on the way in; git leaves detected binaries alone.
+* text=auto eol=lf
+
+# ANTLR output regenerated from vor-stream's cmd/process/process.g4. Nobody
+# reviews it by hand and it would otherwise report this repo as mostly
+# JavaScript, so collapse it in diffs and drop it from language statistics.
+src/_js_parser/** linguist-generated
+
+# FRG scaffolding. A real file we maintain, so not "vendored", but 55 bytes of
+# Go template shouldn't count toward this repo's language either. Markdown,
+# YAML, and JSON need no rule: linguist counts only programming and markup
+# types, so prose and data files are already excluded.
+copyright.gotmpl -linguist-detectable
+
+# Binary assets. Marked explicitly so no platform's line-ending conversion can
+# corrupt them.
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.ico  binary
+*.pdf  binary
+*.ttf  binary
+*.woff binary
+*.woff2 binary
+*.vsix binary

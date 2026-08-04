@@ -1,3 +1,7 @@
+/**
+ * Copyright 2026 The Financial Risk Group, Inc.
+ */
+
 import antlr4 from "antlr4";
 import processLexer from "./_js_parser/processLexer";
 // eslint-disable-next-line @typescript-eslint/no-require-imports

@@ -1,3 +1,7 @@
+/**
+ * Copyright 2026 The Financial Risk Group, Inc.
+ */
+
 import eslint from "@eslint/js";
 import stylistic from "@stylistic/eslint-plugin";
 import tseslint from "typescript-eslint";

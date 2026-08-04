@@ -1,3 +1,7 @@
+/**
+ * Copyright 2026 The Financial Risk Group, Inc.
+ */
+
 const path = require("path");
 
 /** @type {import('webpack').Configuration} */
