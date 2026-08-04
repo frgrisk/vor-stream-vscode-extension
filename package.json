@@ -150,7 +150,7 @@
   "devDependencies": {
     "@vscode/vsce": "^3.3.2",
     "@eslint/js": "^9.13.0",
-    "@stylistic/eslint-plugin": "^2.9.0",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "@types/node": "^22.13.1",
     "@types/mocha": "^10.0.10",
     "@types/vscode": "^1.73.0",
