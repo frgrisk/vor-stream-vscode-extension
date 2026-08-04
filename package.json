@@ -148,21 +148,21 @@
     "antlr4": "^4.13.2"
   },
   "devDependencies": {
-    "@vscode/vsce": "^3.3.2",
+    "@vscode/vsce": "^3.9.2",
     "@eslint/js": "^9.13.0",
     "@stylistic/eslint-plugin": "^5.10.0",
     "@types/node": "^22.13.1",
     "@types/mocha": "^10.0.10",
-    "@types/vscode": "^1.73.0",
+    "@types/vscode": "^1.125.0",
     "@vscode/test-electron": "^2.4.1",
-    "mocha": "^11.1.0",
+    "mocha": "^11.7.6",
     "eslint": "^9.13.0",
-    "prettier": "^3.5.3",
-    "ts-loader": "^9.5.2",
+    "prettier": "^3.9.6",
+    "ts-loader": "^9.6.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3",
-    "typescript-eslint": "^8.16.0",
-    "webpack": "^5.105.0",
+    "typescript-eslint": "^8.65.0",
+    "webpack": "^5.109.1",
     "webpack-cli": "^6.0.1"
   },
   "overrides": {
