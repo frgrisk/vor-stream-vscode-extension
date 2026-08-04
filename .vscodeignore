@@ -16,17 +16,24 @@ dist/*.zip
 .vscode/**
 .vscode-test/**
 .gitignore
+.gitattributes
 .yarnrc
 .editorconfig
 .github/**
 .idea/**
 .pre-commit-config.yaml
+.markdownlint.json
+.commitlintrc.json
 .goreleaser.yaml
 .release-please-manifest.json
 release-please-config.json
+copyright.gotmpl
+Makefile
+.venv/
 testdata/
 
 # Documentation (except README)
+AGENTS.md
 CLAUDE.md
 examples/
 docs/

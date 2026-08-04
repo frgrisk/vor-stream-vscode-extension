@@ -61,7 +61,9 @@ Releases follow [Calendar Versioning](https://calver.org/) in the format `YY.MIN
 - `MINOR` — incremental release number within the year, starting at 1
 - `MICRO` — patch release number for bug fixes, starting at 0
 
-Each release produces a `.vsix` package attached to the [GitHub Release](https://github.com/frgrisk/vor-stream-vscode-extension/releases). The extension is not currently published to the VS Code Marketplace; install manually from the `.vsix` file.
+Each release produces a `.vsix` package attached to the
+[GitHub Release](https://github.com/frgrisk/vor-stream-vscode-extension/releases). The extension is not
+currently published to the VS Code Marketplace; install manually from the `.vsix` file.
 
 ## Installation
 
@@ -98,4 +100,5 @@ This project is licensed under the MIT license. See the [LICENSE](LICENSE) file 
 
 ## Support
 
-If you encounter any issues or have questions, please [open an issue](https://github.com/frgrisk/vor-stream-vscode-extension/issues) on our GitHub repository.
+If you encounter any issues or have questions, please
+[open an issue](https://github.com/frgrisk/vor-stream-vscode-extension/issues) on our GitHub repository.

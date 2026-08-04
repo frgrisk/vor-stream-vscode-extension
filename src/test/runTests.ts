@@ -1,3 +1,7 @@
+/**
+ * Copyright 2026 The Financial Risk Group, Inc.
+ */
+
 import * as path from "path";
 import { runTests } from "@vscode/test-electron";
 

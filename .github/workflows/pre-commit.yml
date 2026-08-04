@@ -1,0 +1,51 @@
+# Copyright 2026 The Financial Risk Group, Inc.
+
+name: pre-commit
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  pre-commit:
+    name: Pre-commit checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+
+      # The prettier hook is a `local` hook running node_modules/.bin/prettier,
+      # so the dependencies have to exist before pre-commit runs. This overlaps
+      # with code_quality.yaml's `npm run format:check` by design: that job gates
+      # formatting on its own, this one needs prettier present for the hook.
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: "npm"
+          cache-dependency-path: ./package-lock.json
+
+      - name: Install NPM packages
+        run: npm ci
+
+      - uses: astral-sh/setup-uv@v7
+
+      # uvx runs pre-commit from an ephemeral environment, so this repo needs no
+      # Python manifest. Safe here in a way it isn't locally: CI installs no git
+      # hook, so nothing records a path into uv's prunable cache. Hook versions
+      # are pinned by `rev` in .pre-commit-config.yaml and bumped by Dependabot.
+      - name: Run pre-commit
+        run: uvx pre-commit run --all-files --show-diff-on-failure --color always
+
+      - name: Hint on failure
+        if: failure()
+        run: |
+          echo "::error title=pre-commit failed::Reproduce locally with the commands below, then re-commit and push."
+          echo ""
+          echo "  make pre-commit-install   # one-time: installs the git hooks so this runs on every commit"
+          echo "  make pre-commit           # runs every hook against every file (auto-fixes where possible)"
+          echo ""
+          echo "Most hooks (prettier, addlicense, end-of-file-fixer, trailing-whitespace, mixed-line-ending) auto-fix."
+          echo "gitleaks, markdownlint-cli2 and check-added-large-files report problems for you to address manually."
