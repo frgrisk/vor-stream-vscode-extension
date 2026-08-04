@@ -70,17 +70,6 @@ The hooks configured in `.pre-commit-config.yaml`:
 > hook pointing at `node_modules/.bin/prettier` so it stays on the exact version
 > in `package.json`, rather than drifting from a `rev` pin.
 
-#### If this repo ever grows mkdocs docs
-
-mkdocs Material renders through Python-Markdown, which needs **4-space** indents to
-nest a list. Prettier rewrites nested indents to 2 spaces unconditionally, so raising
-`MD007.indent` back to 4 would not be enough on its own — prettier would flatten the
-indents again on the next commit and the nesting would render wrong. Both are needed:
-
-1. A `.prettierignore` listing `docs/`, taking that tree out of prettier's hands.
-2. A second `docs/.markdownlint.json` with `MD007.indent` of 4. markdownlint-cli2
-   reads the nearest config, so `docs/` gets 4 and everything else keeps 2.
-
 ### Testing
 
 ```bash
