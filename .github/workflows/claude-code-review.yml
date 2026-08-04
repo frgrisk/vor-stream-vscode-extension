@@ -16,16 +16,8 @@ jobs:
     # default, so an agent that stalls waiting on something burns the rest of the
     # day's runner minutes.
     timeout-minutes: 30
-    # The head-repo check skips fork PRs. This repo is public, and GitHub
-    # withholds secrets from a `pull_request` run triggered by a fork, so
-    # CLAUDE_CODE_OAUTH_TOKEN would arrive empty and GITHUB_TOKEN read-only
-    # whatever `permissions` says below. Without this the job fails red on every
-    # contributor PR, which reads as the contributor's fault. Deliberately not
-    # pull_request_target: that supplies the secrets by running in the base repo's
-    # context, but this job checks out the PR's code and turns an agent loose on
-    # it, so the token would be reachable from a fork's own tooling. `@claude` on
-    # a fork PR still works — claude.yml triggers on comment events, which do run
-    # in the base repo's context.
+    # The head-repo check skips fork PRs: GitHub withholds secrets from a
+    # fork-triggered pull_request run, so the job can only fail.
     if: |
       github.event.pull_request.head.repo.full_name == github.repository &&
       !contains(github.event.pull_request.title, '[skip-review]') &&
