@@ -1,0 +1,4 @@
+# ANTLR-generated parser. Regenerated from vor-stream's process.g4, so any
+# formatting applied here is lost on the next regeneration. Already excluded
+# from eslint and addlicense for the same reason.
+src/_js_parser/
