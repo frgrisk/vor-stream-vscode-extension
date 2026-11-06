@@ -18,12 +18,16 @@ concurrency:
 jobs:
   claude-review:
     name: Claude code review
-    runs-on: [self-hosted, permanent]
-    # A review takes minutes. Without this the job inherits GitHub's 6 hour
-    # default, so an agent that stalls waiting on something holds a permanent
-    # runner for the rest of the day.
+    # Hosted, not [self-hosted, permanent]: this repository is public and the org's
+    # runner group does not admit public repos, so a self-hosted job would queue forever.
+    runs-on: ubuntu-latest
+    # A review takes minutes. Without this the job inherits GitHub's 6 hour default,
+    # so an agent that stalls waiting on something holds a runner for hours.
     timeout-minutes: 30
+    # The head-repo check skips fork PRs: GitHub withholds secrets from a
+    # fork-triggered pull_request run, so the job can only fail.
     if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
       !contains(github.event.pull_request.title, '[skip-review]') &&
       !contains(github.event.pull_request.title, '[WIP]') &&
       github.event.pull_request.user.login != 'claude[bot]' &&
